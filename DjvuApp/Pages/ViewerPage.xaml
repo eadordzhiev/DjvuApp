@@ -9,19 +9,10 @@
     xmlns:common="using:DjvuApp.Common"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    Loaded="ViewerPage_OnLoaded">
+    Loaded="LoadedHandler">
 
     <Grid>
         <Grid.Resources>
-            <Style TargetType="ListView" x:Key="zoomedInViewStyle">
-                <Setter Property="Foreground" Value="White" />
-                <Setter Property="ScrollViewer.IsHorizontalScrollChainingEnabled" Value="False" />
-                <Setter Property="IsItemClickEnabled" Value="False" />
-                <Setter Property="IsSwipeEnabled" Value="True" />
-                <Setter Property="SelectionMode" Value="None" />
-                <Setter Property="IncrementalLoadingTrigger" Value="Edge"/>
-                <Setter Property="DataFetchSize" Value="5"/>
-            </Style>
             <ControlTemplate TargetType='ListView' x:Key='zoomedInViewControlTemplate'>
                 <ScrollViewer x:Name='ScrollViewer'
                         TabNavigation='Local'
@@ -55,12 +46,51 @@
             <ItemsPanelTemplate x:Key="zoomedInViewItemsPanelTemplate">
                 <VirtualizingStackPanel Orientation="Vertical"/>
             </ItemsPanelTemplate>
+            <Style TargetType="ListView" x:Key="zoomedInViewStyle">
+                <Setter Property="ScrollViewer.IsHorizontalScrollChainingEnabled" Value="False" />
+                <Setter Property="IsItemClickEnabled" Value="False" />
+                <Setter Property="IsSwipeEnabled" Value="True" />
+                <Setter Property="SelectionMode" Value="None" />
+                <Setter Property="IncrementalLoadingTrigger" Value="Edge"/>
+                <Setter Property="DataFetchSize" Value="5"/>
+                <Setter Property="ItemTemplate" Value="{StaticResource zoomedInViewItemTemplate}"/>
+                <Setter Property="ItemsPanel" Value="{StaticResource zoomedInViewItemsPanelTemplate}"/>
+                <Setter Property="Template" Value="{StaticResource zoomedInViewControlTemplate}"/>
+            </Style>
         </Grid.Resources>
         <ListView
             x:Name="listView"
-                            Style="{StaticResource zoomedInViewStyle}"
-                            ItemTemplate="{StaticResource zoomedInViewItemTemplate}"
-                            ItemsPanel="{StaticResource zoomedInViewItemsPanelTemplate}"
-                            Template="{StaticResource zoomedInViewControlTemplate}"/>
+            Style="{StaticResource zoomedInViewStyle}"/>
     </Grid>
+
+    <i:Interaction.Behaviors>
+        <common:StatusBarBehavior
+            IsVisible="False"/>
+    </i:Interaction.Behaviors>
+
+    <Page.BottomAppBar>
+        <CommandBar 
+            Opened="AppBar_OnOpened"
+            Closed="AppBar_OnClosed"
+            ClosedDisplayMode="Minimal">
+            <CommandBar.PrimaryCommands>
+                <AppBarButton
+                    Label="bookmark"
+                    Icon="Favorite"/>
+                <AppBarButton
+                    x:Name="outlineButton"
+                    Visibility="Collapsed"
+                    Icon="Bookmarks"
+                    Label="outline"
+                    Click="OutlineButtonClickHandler"/>
+            </CommandBar.PrimaryCommands>
+            <CommandBar.SecondaryCommands>
+                <AppBarButton
+                    Label="jump to page"
+                    Click="JumpToPageButtonClickHandler"/>
+                <AppBarButton
+                    Label="bookmarks"/>
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
+    </Page.BottomAppBar>
 </Page>
