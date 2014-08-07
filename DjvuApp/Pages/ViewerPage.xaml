@@ -9,58 +9,44 @@
     xmlns:common="using:DjvuApp.Common"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    Loaded="ViewerPage_OnLoaded">
+    Loaded="LoadedHandler">
 
     <Grid>
-        <Grid.Resources>
-            <Style TargetType="ListView" x:Key="zoomedInViewStyle">
-                <Setter Property="Foreground" Value="White" />
-                <Setter Property="ScrollViewer.IsHorizontalScrollChainingEnabled" Value="False" />
-                <Setter Property="IsItemClickEnabled" Value="False" />
-                <Setter Property="IsSwipeEnabled" Value="True" />
-                <Setter Property="SelectionMode" Value="None" />
-                <Setter Property="IncrementalLoadingTrigger" Value="Edge"/>
-                <Setter Property="DataFetchSize" Value="5"/>
-            </Style>
-            <ControlTemplate TargetType='ListView' x:Key='zoomedInViewControlTemplate'>
-                <ScrollViewer x:Name='ScrollViewer'
-                        TabNavigation='Local'
-                        IsVerticalScrollChainingEnabled='False'
-                        IsHorizontalScrollChainingEnabled='False'
-                        HorizontalScrollMode='Enabled'
-                        IsHorizontalRailEnabled='true'
-                        HorizontalScrollBarVisibility='Auto'
-                        HorizontalSnapPointsType='None'
-                        VerticalScrollMode='Enabled'
-                        IsVerticalRailEnabled='true'
-                        VerticalScrollBarVisibility='Auto'
-                        VerticalSnapPointsType='None'
-                        ZoomMode='Enabled'
-                        MinZoomFactor="0.1"
-                        MaxZoomFactor="0.5">
-                    <ItemsPresenter HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <!--<ItemsPresenter.Transitions>
-                                            <TransitionCollection>
-                                                <EntranceThemeTransition IsStaggeringEnabled="True" FromVerticalOffset="120" />
-                                            </TransitionCollection>
-                                        </ItemsPresenter.Transitions>-->
-                    </ItemsPresenter>
-                </ScrollViewer>
-            </ControlTemplate>
-            <DataTemplate x:Key="zoomedInViewItemTemplate">
-                <Grid>
-                    <Image Source="{Binding Source}" HorizontalAlignment="Center" Height="{Binding Height}" Width="{Binding Width}"></Image>
-                </Grid>
-            </DataTemplate>
-            <ItemsPanelTemplate x:Key="zoomedInViewItemsPanelTemplate">
-                <VirtualizingStackPanel Orientation="Vertical"/>
-            </ItemsPanelTemplate>
-        </Grid.Resources>
-        <ListView
-            x:Name="listView"
-                            Style="{StaticResource zoomedInViewStyle}"
-                            ItemTemplate="{StaticResource zoomedInViewItemTemplate}"
-                            ItemsPanel="{StaticResource zoomedInViewItemsPanelTemplate}"
-                            Template="{StaticResource zoomedInViewControlTemplate}"/>
+        <local:DocumentViewer
+            x:Name="documentViewer"
+            PageMargin="0,12"
+            MinZoomFactor="0.1"
+            MaxZoomFactor="0.5"/>
     </Grid>
+    
+    <i:Interaction.Behaviors>
+        <common:StatusBarBehavior
+            IsVisible="False"/>
+    </i:Interaction.Behaviors>
+
+    <Page.BottomAppBar>
+        <CommandBar 
+            Opened="AppBar_OnOpened"
+            Closed="AppBar_OnClosed"
+            ClosedDisplayMode="Minimal">
+            <CommandBar.PrimaryCommands>
+                <AppBarButton
+                    Label="bookmark"
+                    Icon="Favorite"/>
+                <AppBarButton
+                    x:Name="outlineButton"
+                    Visibility="Collapsed"
+                    Icon="Bookmarks"
+                    Label="outline"
+                    Click="OutlineButtonClickHandler"/>
+            </CommandBar.PrimaryCommands>
+            <CommandBar.SecondaryCommands>
+                <AppBarButton
+                    Label="jump to page"
+                    Click="JumpToPageButtonClickHandler"/>
+                <AppBarButton
+                    Label="bookmarks"/>
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
+    </Page.BottomAppBar>
 </Page>
