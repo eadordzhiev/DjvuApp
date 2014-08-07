@@ -1,0 +1,350 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <CodeSharingProject>248F659F-DAC5-46E8-AC09-60EC9FC95053</CodeSharingProject>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>60070e97-579f-4e00-aa29-2b047d9f6deb</SharedGUID>
+    <ItemsProjectGuid>{1c7d99f4-51b0-4694-a897-692d18834651}</ItemsProjectGuid>
+    <ItemsRootNamespace>DjvuLibRT</ItemsRootNamespace>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)DebugHelper.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)DjvuLibRT.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\Arrays.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\atomic.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\BSByteStream.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\ByteStream.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DataPool.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\ddjvuapi.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\debug.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVmDir.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVmDir0.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVmDoc.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVmNav.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuAnno.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuDocument.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuErrorList.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuFile.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuFileCache.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuGlobal.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuImage.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuInfo.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuMessageLite.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuNavDir.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuPalette.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuPort.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuText.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\GBitmap.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\GContainer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\GException.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\GIFFManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\GMapAreas.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\GOS.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\GPixmap.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\GRect.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\GScaler.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\GSmartPointer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\GString.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\GThreads.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\GURL.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\IFFByteStream.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\IW44Image.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\JB2Image.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\JPEGDecoder.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\miniexp.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\MMRDecoder.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\MMX.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\UnicodeByteStream.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\XMLParser.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\XMLTags.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\ZPCodec.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)pch.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)StringConversion.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ThreadEmulation.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)DebugHelper.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)DjvuLibRT.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\Arrays.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\atomic.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\BSByteStream.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\BSEncodeByteStream.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\ByteStream.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DataPool.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\ddjvuapi.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\debug.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVmDir.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVmDir0.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVmDoc.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVmNav.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuAnno.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuDocument.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuErrorList.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuFile.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuFileCache.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuGlobal.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuGlobalMemory.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuImage.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuInfo.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuMessageLite.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuNavDir.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuPalette.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuPort.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuText.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\GBitmap.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\GContainer.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\GException.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\GIFFManager.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\GMapAreas.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\GOS.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\GPixmap.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\GRect.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\GScaler.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\GSmartPointer.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\GString.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\GThreads.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\GUnicode.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\GURL.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\IFFByteStream.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\IW44EncodeCodec.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\IW44Image.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\JB2EncodeCodec.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\JB2Image.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\JPEGDecoder.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\miniexp.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\MMRDecoder.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\MMX.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\UnicodeByteStream.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\XMLParser.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\XMLTags.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\ZPCodec.cpp">
+      <SDLCheck>false</SDLCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)pch.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)StringConversion.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ThreadEmulation.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+</Project>

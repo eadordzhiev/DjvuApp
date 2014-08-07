@@ -1,0 +1,331 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)DjvuLibRT.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)pch.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)StringConversion.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ThreadEmulation.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)DebugHelper.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\ZPCodec.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\Arrays.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\atomic.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\BSByteStream.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\ByteStream.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DataPool.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\ddjvuapi.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\debug.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVmDir.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVmDir0.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVmDoc.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVmNav.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuAnno.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuDocument.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuErrorList.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuFile.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuFileCache.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuGlobal.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuImage.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuInfo.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuMessageLite.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuNavDir.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuPalette.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuPort.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuText.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\GBitmap.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\GContainer.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\GException.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\GIFFManager.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\GMapAreas.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\GOS.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\GPixmap.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\GRect.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\GScaler.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\GSmartPointer.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\GString.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\GThreads.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\GURL.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\IFFByteStream.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\IW44Image.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\JB2Image.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\JPEGDecoder.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\miniexp.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\MMRDecoder.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\MMX.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\UnicodeByteStream.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\XMLParser.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\XMLTags.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)DjvuLibRT.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)pch.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)StringConversion.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ThreadEmulation.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)DebugHelper.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\GURL.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\IFFByteStream.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\IW44EncodeCodec.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\IW44Image.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\JB2EncodeCodec.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\JB2Image.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\JPEGDecoder.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\miniexp.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\MMRDecoder.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\MMX.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\UnicodeByteStream.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\XMLParser.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\XMLTags.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\ZPCodec.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\Arrays.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\atomic.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\BSByteStream.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\BSEncodeByteStream.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\ByteStream.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DataPool.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\ddjvuapi.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\debug.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVmDir.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVmDir0.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVmDoc.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVmNav.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuAnno.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuDocument.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuErrorList.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuFile.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuFileCache.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuGlobal.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuGlobalMemory.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuImage.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuInfo.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuMessageLite.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuNavDir.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuPalette.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuPort.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuText.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\GBitmap.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\GContainer.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\GException.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\GIFFManager.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\GMapAreas.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\GOS.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\GPixmap.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\GRect.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\GScaler.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\GSmartPointer.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\GString.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\GThreads.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\GUnicode.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="djvulibre">
+      <UniqueIdentifier>{a39ed2ad-715b-446f-b644-5c7240114ff4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="djvulibre\Headers">
+      <UniqueIdentifier>{c561ad50-9335-4aae-9d6d-3cb665f180b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="djvulibre\Source">
+      <UniqueIdentifier>{02070d5e-0465-4e33-90eb-22cd99528035}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

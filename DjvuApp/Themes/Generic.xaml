@@ -1,0 +1,35 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:DjvuApp">
+
+    <Style TargetType="local:ZoomablePagePresenter">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:ZoomablePagePresenter">
+                    <Grid Background="White">
+                        <Image x:Name="ImageContainer"/>
+                    </Grid>
+                    <!--<Image x:Name="ImageContainer"/>-->
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="local:DocumentViewer">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:DocumentViewer">
+                    <Grid>
+                        <ScrollViewer
+                            x:Name="ScrollViewer"
+                            ZoomMode="Enabled"
+                            MinZoomFactor="{TemplateBinding MinZoomFactor}"
+                            MaxZoomFactor="{TemplateBinding MaxZoomFactor}"
+                            HorizontalScrollBarVisibility="Auto"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
