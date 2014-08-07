@@ -119,6 +119,7 @@
       <DependentUpon>ViewerPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\ZoomablePagePresenter.cs" />
+    <Compile Include="ViewModel\DjvuDocumentViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewerViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
