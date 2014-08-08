@@ -1,31 +1,17 @@
-﻿using System.Diagnostics;
+﻿using System;
 using System.Threading.Tasks;
-using Windows.ApplicationModel;
-using Windows.ApplicationModel.DataTransfer;
-using Windows.Storage;
-using Windows.UI.Core;
-using DjvuApp.Common;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.Graphics.Display;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using DjvuApp.Common;
+using DjvuApp.Dialogs;
+using DjvuApp.Model.Books;
+using DjvuApp.Model.Outline;
 using DjvuApp.ViewModel;
 using DjvuLibRT;
-using Microsoft.Practices.ServiceLocation;
 
-namespace DjvuApp
+namespace DjvuApp.Pages
 {
     public sealed partial class ViewerPage : Page
     {
@@ -52,8 +38,6 @@ namespace DjvuApp
             navigationHelper.OnNavigatedFrom(e);
 
             ApplicationView.GetForCurrentView().SetDesiredBoundsMode(ApplicationViewBoundsMode.UseVisible);
-
-            SaveCurrentPosition();
         }
 
         public Book CurrentBook { get; set; }
@@ -79,15 +63,11 @@ namespace DjvuApp
 
             _viewModel = new DjvuDocumentViewModel(CurrentDocument);
             listView.ItemsSource = _viewModel;
-
-
-            GoToPage(CurrentBook.LastOpeningPageNumber);
         }
 
         private async void OutlineButtonClickHandler(object sender, RoutedEventArgs e)
         {
-            var dialog = new OutlineDialog();
-            dialog.DataContext = Outline;
+            var dialog = new OutlineDialog(Outline);
             await dialog.ShowAsync();
 
             var pageNumber = dialog.TargetPageNumber;
@@ -105,12 +85,6 @@ namespace DjvuApp
                 GoToPage(pageNumber.Value);
         }
 
-        private async Task SaveCurrentPosition()
-        {
-            var provider = ServiceLocator.Current.GetInstance<IBookProvider>();
-            //await provider.UpdateBookPositionAsync(CurrentBook, documentViewer.CurrentPageNumber);
-        }
-
         private void GoToPage(uint pageNumber)
         {
             if (_viewModel == null)
@@ -120,24 +94,7 @@ namespace DjvuApp
             var page = _viewModel[pageIndex];
             listView.ScrollIntoView(page, ScrollIntoViewAlignment.Leading);
         }
-
-        //private uint GetCurrentPageNumber()
-        //{
-        //}
-
-        private bool CheckIfElementIsVisible(FrameworkElement element)
-        {
-            Point point;
-            point.X = 0;
-            point.Y = 0;
-            Rect bounds = Window.Current.Bounds;
-            GeneralTransform gt = element.TransformToVisual(Window.Current.Content);
-            Point offset = gt.TransformPoint(point);
-            bool xResult = offset.X + element.ActualWidth >= 0 && offset.X < bounds.Width;
-            bool yResult = offset.Y + element.ActualHeight >= 0 && offset.Y < bounds.Height;
-            return xResult && yResult;
-        }
-
+        
         private void AppBar_OnOpened(object sender, object e)
         {
             StatusBar.GetForCurrentView().ShowAsync();

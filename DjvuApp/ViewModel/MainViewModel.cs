@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.Storage.Pickers;
 using Windows.UI.Popups;
+using DjvuApp.Dialogs;
+using DjvuApp.Model.Books;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 

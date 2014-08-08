@@ -22,6 +22,7 @@ using Windows.UI.Xaml.Navigation;
 
 // The Blank Application template is documented at http://go.microsoft.com/fwlink/?LinkId=391641
 using DjvuApp.Common;
+using DjvuApp.Model.Books;
 using DjvuApp.Pages;
 
 namespace DjvuApp

@@ -1,5 +1,5 @@
 ﻿<Page
-    x:Class="DjvuApp.ViewerPage"
+    x:Class="DjvuApp.Pages.ViewerPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:DjvuApp"
@@ -80,8 +80,8 @@
                 <AppBarButton
                     x:Name="outlineButton"
                     Visibility="Collapsed"
-                    Icon="Bookmarks"
                     Label="outline"
+                    Icon="Bookmarks"
                     Click="OutlineButtonClickHandler"/>
             </CommandBar.PrimaryCommands>
             <CommandBar.SecondaryCommands>

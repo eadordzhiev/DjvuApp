@@ -1,58 +1,15 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
-using System.Text;
 using System.Threading.Tasks;
-using Windows.Data.Json;
 using Windows.Storage;
 using DjvuApp.Annotations;
 using DjvuLibRT;
 
-namespace DjvuApp
+namespace DjvuApp.Model.Books
 {
-    public interface IBookProvider
-    {
-        Task<IList<Book>> GetBooksAsync();
-        Task<Book> AddBookAsync(IStorageFile file);
-        Task RemoveBookAsync(Book book);
-        Task ChangeTitleAsync(Book book, string title);
-        Task UpdateBookPositionAsync(Book book, uint pageNumber);
-    }
-
-    public class DocumentTypeNotSupportedException : Exception
-    {
-        public DocumentTypeNotSupportedException()
-        {
-        }
-
-        public DocumentTypeNotSupportedException(string message) : base(message)
-        {
-        }
-
-        public DocumentTypeNotSupportedException(string message, Exception inner) : base(message, inner)
-        {
-        }
-    }
-
-    public class DjvuDocumentException : Exception
-    {
-        public DjvuDocumentException()
-        {
-        }
-
-        public DjvuDocumentException(string message) : base(message)
-        {
-        }
-
-        public DjvuDocumentException(string message, Exception inner) : base(message, inner)
-        {
-        }
-    }
-
     public class BookProvider : IBookProvider
     {
         public async Task<IList<Book>> GetBooksAsync()
@@ -108,7 +65,6 @@ namespace DjvuApp
                 Size = props.Size,
                 Title = title,
                 LastOpeningTime = DateTime.Now,
-                LastOpeningPageNumber = 1,
                 Path = djvuFile.Path
             };
             
@@ -133,19 +89,7 @@ namespace DjvuApp
             book.Title = title;
             await SaveBookDescriptionAsync(book);
         }
-
-        public async Task UpdateBookPositionAsync(Book book, uint pageNumber)
-        {
-            if (book == null)
-                throw new ArgumentNullException("book");
-            if (pageNumber < 1 || pageNumber > book.PageCount)
-                throw new ArgumentOutOfRangeException("pageNumber", string.Format("pageNumber should be in rage of 1 to {0}", book.PageCount));
-
-            book.LastOpeningPageNumber = pageNumber;
-            book.LastOpeningTime = DateTime.Now;
-            await SaveBookDescriptionAsync(book);
-        }
-
+        
         private async Task SaveBookDescriptionAsync(Book book)
         {
             if (book == null)

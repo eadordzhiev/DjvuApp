@@ -92,24 +92,28 @@
     <Compile Include="Common\IocContainer.cs" />
     <Compile Include="Common\ProgressBehavior.cs" />
     <Compile Include="Common\StatusBarBehavior.cs" />
-    <Compile Include="Model\Book.cs" />
+    <Compile Include="Model\Books\Book.cs" />
     <Compile Include="Common\BooleanNegationConverter.cs" />
     <Compile Include="Common\BooleanToVisibilityConverter.cs" />
     <Compile Include="Common\NavigationHelper.cs" />
     <Compile Include="Common\ObservableDictionary.cs" />
     <Compile Include="Common\SuspensionManager.cs" />
-    <Compile Include="Controls\DocumentViewer.cs" />
-    <Compile Include="Model\IBookProvider.cs" />
+    <Compile Include="Model\Books\BookProvider.cs" />
+    <Compile Include="Model\Books\DjvuDocumentException.cs" />
+    <Compile Include="Model\Books\DocumentTypeNotSupportedException.cs" />
+    <Compile Include="Model\Books\IBookProvider.cs" />
     <Compile Include="Dialogs\JumpToPageDialog.xaml.cs">
       <DependentUpon>JumpToPageDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Model\Outline\FakeOutlineItem.cs" />
+    <Compile Include="Model\Outline\IOutlineItem.cs" />
     <Compile Include="Pages\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\OutlineDialog.xaml.cs">
       <DependentUpon>OutlineDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Model\OutlineItem.cs" />
+    <Compile Include="Model\Outline\OutlineItem.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Dialogs\RenameDialog.xaml.cs">
@@ -118,8 +122,8 @@
     <Compile Include="Pages\ViewerPage.xaml.cs">
       <DependentUpon>ViewerPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ZoomablePagePresenter.cs" />
     <Compile Include="ViewModel\DjvuDocumentViewModel.cs" />
+    <Compile Include="ViewModel\DjvuPageViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewerViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
@@ -195,6 +199,9 @@
     <SDKReference Include="BehaviorsXamlSDKManaged, Version=12.0">
       <Name>Behaviors SDK %28XAML%29</Name>
     </SDKReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Controls\" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
     <VisualStudioVersion>12.0</VisualStudioVersion>

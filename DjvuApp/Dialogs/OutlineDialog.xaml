@@ -1,13 +1,13 @@
 <ContentDialog
-    x:Class="DjvuApp.OutlineDialog"
+    x:Class="DjvuApp.Dialogs.OutlineDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:DjvuApp"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:outline="using:DjvuApp.Model.Outline"
     mc:Ignorable="d"
     Title="{Binding Title}"
-    d:DataContext="{d:DesignInstance local:FakeOutlineItem}">
+    d:DataContext="{d:DesignInstance outline:FakeOutlineItem}">
 
     <ListView
         ItemsSource="{Binding Items}"

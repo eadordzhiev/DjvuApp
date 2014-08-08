@@ -1,23 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.Storage.Pickers.Provider;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+using DjvuApp.Model.Outline;
 
-// The Content Dialog item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
-
-namespace DjvuApp
+namespace DjvuApp.Dialogs
 {
     public sealed partial class OutlineDialog : ContentDialog
     {
@@ -25,9 +13,11 @@ namespace DjvuApp
 
         private OutlineDialog NextDialog { get; set; }
 
-        public OutlineDialog()
+        public OutlineDialog(IOutlineItem outline)
         {
             this.InitializeComponent();
+
+            DataContext = outline;
         }
 
         private void ItemClickHandler(object sender, ItemClickEventArgs e)
@@ -44,11 +34,9 @@ namespace DjvuApp
 
             if (item.HasItems)
             {
-                //DataContext = item;
                 Hide();
 
-                var outlineDialog = new OutlineDialog();
-                outlineDialog.DataContext = item;
+                var outlineDialog = new OutlineDialog(item);
                 NextDialog = outlineDialog;
             }
         }

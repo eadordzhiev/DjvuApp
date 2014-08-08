@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using DjvuApp.Annotations;
 
-namespace DjvuApp
+namespace DjvuApp.Model.Books
 {
     [DataContract]
     public sealed class Book : INotifyPropertyChanged, IEquatable<Book>
@@ -37,8 +33,6 @@ namespace DjvuApp
         public uint PageCount { get; set; }
         [DataMember]
         public ulong Size { get; set; }
-        [DataMember]
-        public uint LastOpeningPageNumber { get; set; }
         [DataMember]
         public string Path { get; set; }
 
