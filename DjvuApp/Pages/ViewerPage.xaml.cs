@@ -42,7 +42,7 @@ namespace DjvuApp.Pages
 
         public IBook CurrentBook { get; set; }
 
-        public IOutlineItem Outline { get; set; }
+        public Outline Outline { get; set; }
 
         public DjvuDocument CurrentDocument { get; set; }
 
@@ -55,7 +55,7 @@ namespace DjvuApp.Pages
             var djvuOutline = CurrentDocument.GetBookmarks();
             if (djvuOutline != null)
             {
-                Outline = OutlineItem.GetOutline(djvuOutline);
+                Outline = new Outline(djvuOutline);
                 outlineButton.Visibility = Visibility.Visible;
             }
 
@@ -68,9 +68,8 @@ namespace DjvuApp.Pages
         private async void OutlineButtonClickHandler(object sender, RoutedEventArgs e)
         {
             var dialog = new OutlineDialog(Outline);
-            await dialog.ShowAsync();
 
-            var pageNumber = dialog.TargetPageNumber;
+            var pageNumber = await dialog.ShowAsync();
             if (pageNumber.HasValue)
                 GoToPage(pageNumber.Value);
         }

@@ -6,28 +6,33 @@ using DjvuLibRT;
 
 namespace DjvuApp.Model.Outline
 {
-    [DebuggerDisplay("{Title} at {PageNumber}")]
-    public class OutlineItem : IOutlineItem
+    public sealed class Outline
     {
+        [DebuggerDisplay("{Title} at {PageNumber}")]
+        private sealed class OutlineItem : IOutlineItem
+        {
+            public string Title { get; set; }
+
+            public uint PageNumber { get; set; }
+
+            public bool HasItems { get { return Items.Count > 0; } }
+
+            public IReadOnlyList<IOutlineItem> Items { get; set; }
+
+            public IOutlineItem Parent { get; set; }
+        }
+
         public string Title { get; private set; }
-
-        public uint PageNumber { get; private set; }
-
-        public bool HasItems { get { return Items.Count > 0; } }
 
         public IReadOnlyList<IOutlineItem> Items { get; private set; }
 
-        public IOutlineItem Parent { get; private set; }
-
-        public static IOutlineItem GetOutline(IList<DjvuBookmark> djvuBookmarks)
+        public Outline(IList<DjvuBookmark> djvuBookmarks)
         {
-            var outline = new OutlineItem();
-            outline.Title = "Outline";
-            outline.Items = GetOutlineImpl(djvuBookmarks, null);
-            return outline;
+            Title = "Outline";
+            Items = GetOutline(djvuBookmarks, null);
         }
 
-        private static OutlineItem[] GetOutlineImpl(IList<DjvuBookmark> djvuBookmarks, OutlineItem parent)
+        private static OutlineItem[] GetOutline(IList<DjvuBookmark> djvuBookmarks, OutlineItem parent)
         {
             var result = new List<OutlineItem>();
 
@@ -44,9 +49,9 @@ namespace DjvuApp.Model.Outline
 
                 if (djvuBookmark.ChildrenCount > 0)
                 {
-                    var rawChildren = djvuBookmarks.Skip(i + 1).Take((int) djvuBookmark.ChildrenCount).ToArray();
-                    i += (int) djvuBookmark.ChildrenCount;
-                    item.Items = GetOutlineImpl(rawChildren, item);
+                    var rawChildren = djvuBookmarks.Skip(i + 1).Take((int)djvuBookmark.ChildrenCount).ToArray();
+                    i += (int)djvuBookmark.ChildrenCount;
+                    item.Items = GetOutline(rawChildren, item);
                 }
                 else
                 {

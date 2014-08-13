@@ -15,7 +15,7 @@ namespace DjvuApp.Common
         public static void Init()
         {
             if (ServiceLocator.IsLocationProviderSet)
-                return;
+                throw new Exception("IoC container has already been initialized.");
 
             IUnityContainer container = new UnityContainer();
 

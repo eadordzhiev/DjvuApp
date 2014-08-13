@@ -7,13 +7,20 @@ using DjvuApp.Model.Outline;
 
 namespace DjvuApp.Dialogs
 {
-    public sealed partial class OutlineDialog : ContentDialog
+    public sealed partial class OutlineDialogInternal : ContentDialog
     {
-        public uint? TargetPageNumber { get; set; }
+        public uint? TargetPageNumber { get; private set; }
 
-        private OutlineDialog NextDialog { get; set; }
+        private OutlineDialogInternal NextDialog { get; set; }
 
-        public OutlineDialog(IOutlineItem outline)
+        public OutlineDialogInternal(Outline outline)
+        {
+            this.InitializeComponent();
+
+            DataContext = outline;
+        }
+
+        private OutlineDialogInternal(IOutlineItem outline)
         {
             this.InitializeComponent();
 
@@ -36,7 +43,7 @@ namespace DjvuApp.Dialogs
             {
                 Hide();
 
-                var outlineDialog = new OutlineDialog(item);
+                var outlineDialog = new OutlineDialogInternal(item);
                 NextDialog = outlineDialog;
             }
         }

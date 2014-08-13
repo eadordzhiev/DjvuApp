@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Windows.Storage;
+using DjvuApp.Annotations;
 using DjvuLibRT;
 using SQLite;
 
@@ -12,7 +15,64 @@ namespace DjvuApp.Model.Books
 {
     public sealed class SqliteBookProvider : IBookProvider
     {
-        public SQLiteAsyncConnection _connection;
+        private sealed class SqliteBook : IBook
+        {
+            private string _title;
+
+            [PrimaryKey, AutoIncrement]
+            public int Id { get; set; }
+
+            public Guid Guid { get; set; }
+
+            [MaxLength(255)]
+            public string Title
+            {
+                get { return _title; }
+                set
+                {
+                    if (value == _title) return;
+                    _title = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            public DateTime LastOpeningTime { get; set; }
+
+            public DateTime CreationTime { get; set; }
+
+            public uint PageCount { get; set; }
+
+            public uint Size { get; set; }
+
+            [MaxLength(255)]
+            public string Path { get; set; }
+
+            public event PropertyChangedEventHandler PropertyChanged;
+
+            [NotifyPropertyChangedInvocator]
+            private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+            {
+                PropertyChangedEventHandler handler = PropertyChanged;
+                if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+            }
+
+            public bool Equals(IBook other)
+            {
+                return other != null && this.Guid == other.Guid;
+            }
+
+            public override bool Equals(object obj)
+            {
+                return Equals(obj as IBook);
+            }
+
+            public override int GetHashCode()
+            {
+                return Guid.GetHashCode();
+            }
+        }
+
+        private SQLiteAsyncConnection _connection;
 
         private SqliteBookProvider() { }
 
@@ -36,6 +96,9 @@ namespace DjvuApp.Model.Books
 
         public async Task<IBook> AddBookAsync(IStorageFile file)
         {
+            if (file == null)
+                throw new ArgumentNullException("file");
+
             DjvuDocument document;
 
             try
@@ -78,6 +141,9 @@ namespace DjvuApp.Model.Books
 
         public async Task RemoveBookAsync(IBook book)
         {
+            if (book == null)
+                throw new ArgumentNullException("book");
+
             await _connection.DeleteAsync(book);
         }
 
@@ -92,7 +158,7 @@ namespace DjvuApp.Model.Books
             await _connection.UpdateAsync(book);
         }
 
-        private async Task<IStorageFolder> GetBooksFolderAsync()
+        private static async Task<IStorageFolder> GetBooksFolderAsync()
         {
             return await ApplicationData.Current.LocalFolder.CreateFolderAsync("Books", CreationCollisionOption.OpenIfExists);
         }

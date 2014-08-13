@@ -92,12 +92,12 @@
     <Compile Include="Common\IocContainer.cs" />
     <Compile Include="Common\ProgressBehavior.cs" />
     <Compile Include="Common\StatusBarBehavior.cs" />
-    <Compile Include="Model\Books\DataContractBook.cs" />
     <Compile Include="Common\BooleanNegationConverter.cs" />
     <Compile Include="Common\BooleanToVisibilityConverter.cs" />
     <Compile Include="Common\NavigationHelper.cs" />
     <Compile Include="Common\ObservableDictionary.cs" />
     <Compile Include="Common\SuspensionManager.cs" />
+    <Compile Include="Dialogs\OutlineDialog.cs" />
     <Compile Include="Model\Books\DataContractBookProvider.cs" />
     <Compile Include="Model\Books\DjvuDocumentException.cs" />
     <Compile Include="Model\Books\DocumentTypeNotSupportedException.cs" />
@@ -106,15 +106,14 @@
     <Compile Include="Dialogs\JumpToPageDialog.xaml.cs">
       <DependentUpon>JumpToPageDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Model\Books\SqliteBook.cs" />
     <Compile Include="Model\Books\SqliteBookProvider.cs" />
     <Compile Include="Model\Outline\FakeOutlineItem.cs" />
     <Compile Include="Model\Outline\IOutlineItem.cs" />
     <Compile Include="Pages\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\OutlineDialog.xaml.cs">
-      <DependentUpon>OutlineDialog.xaml</DependentUpon>
+    <Compile Include="Dialogs\OutlineDialogInternal.xaml.cs">
+      <DependentUpon>OutlineDialogInternal.xaml</DependentUpon>
     </Compile>
     <Compile Include="Model\Outline\OutlineItem.cs" />
     <Compile Include="Properties\Annotations.cs" />
@@ -160,7 +159,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Dialogs\OutlineDialog.xaml">
+    <Page Include="Dialogs\OutlineDialogInternal.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
