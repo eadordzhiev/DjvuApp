@@ -22,7 +22,9 @@ using Windows.UI.Xaml.Navigation;
 
 // The Blank Application template is documented at http://go.microsoft.com/fwlink/?LinkId=391641
 using DjvuApp.Common;
+using DjvuApp.Model.Books;
 using DjvuApp.Pages;
+using Microsoft.Practices.ServiceLocation;
 
 namespace DjvuApp
 {
@@ -154,7 +156,7 @@ namespace DjvuApp
         {
             var tmpFile = await file.CopyAsync(ApplicationData.Current.TemporaryFolder);
 
-            var provider = new BookProvider();
+            var provider = new DataContractBookProvider();
             var book = await provider.AddBookAsync(tmpFile);
 
             await tmpFile.DeleteAsync();

@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DjvuApp.Model.Books;
 using DjvuApp.ViewModel;
-using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
+using Microsoft.Practices.Unity;
 
 namespace DjvuApp.Common
 {
@@ -14,14 +15,16 @@ namespace DjvuApp.Common
         public static void Init()
         {
             if (ServiceLocator.IsLocationProviderSet)
-                return;
+                throw new Exception("IoC container has already been initialized.");
 
-            var provider = new SimpleIoc();
-            ServiceLocator.SetLocatorProvider(() => provider);
+            IUnityContainer container = new UnityContainer();
 
-            provider.Register<IBookProvider, BookProvider>();
+            var locator = new UnityServiceLocator(container);
+            ServiceLocator.SetLocatorProvider(() => locator);
 
-            provider.Register<MainViewModel>();
+            container.RegisterInstance<IBookProvider>(SqliteBookProvider.CreateNewAsync().Result);
+
+            container.RegisterType<MainViewModel>();
         }
     }
 }

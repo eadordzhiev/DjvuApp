@@ -10,7 +10,7 @@
         <SolidColorBrush x:Key="ApplicationPageBackgroundThemeBrush" Color="#FFF4F4F4"/>
         <Color x:Key="PhoneAccentColor">#FF6A00FF</Color>
         
-        <viewModel:ViewModelLocator x:Key="ViewModelLocator"/>
+        <common:ViewModelLocator x:Key="ViewModelLocator"/>
         <common:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </Application.Resources>
 </Application>
