@@ -17,11 +17,11 @@ namespace DjvuApp.ViewModel
 {
     public sealed class MainViewModel : ViewModelBase
     {
-        private ObservableCollection<Book> _books = null;
+        private ObservableCollection<IBook> _books = null;
         private bool _isProgressVisible = false;
         private IBookProvider _bookProvider = null;
 
-        public ObservableCollection<Book> Books
+        public ObservableCollection<IBook> Books
         {
             get { return _books; }
 
@@ -63,8 +63,8 @@ namespace DjvuApp.ViewModel
         {
             _bookProvider = bookProvider;
 
-            RenameBookCommand = new RelayCommand<Book>(RenameBook);
-            RemoveBookCommand = new RelayCommand<Book>(RemoveBook);
+            RenameBookCommand = new RelayCommand<IBook>(RenameBook);
+            RemoveBookCommand = new RelayCommand<IBook>(RemoveBook);
             AddBookCommand = new RelayCommand(AddBook);
 
             RefreshBooks();
@@ -77,7 +77,7 @@ namespace DjvuApp.ViewModel
             picker.PickSingleFileAndContinue();
         }
 
-        private async void RenameBook(Book book)
+        private async void RenameBook(IBook book)
         {
             var dialog = new RenameDialog(book.Title);
             var newName = await dialog.ShowAsync();
@@ -88,7 +88,7 @@ namespace DjvuApp.ViewModel
             }
         }
 
-        private async void RemoveBook(Book book)
+        private async void RemoveBook(IBook book)
         {
             var dialog = new MessageDialog("If you delete this document, you won't be able to recover it later." +
                 " All the progress will also be deleted from your phone.", string.Format("Delete {0}?", book.Title));
@@ -106,9 +106,9 @@ namespace DjvuApp.ViewModel
         {
             IsProgressVisible = true;
 
-            IEnumerable<Book> books = await _bookProvider.GetBooksAsync();
+            IEnumerable<IBook> books = await _bookProvider.GetBooksAsync();
             books = books.OrderByDescending(book => book.CreationTime);
-            Books = new ObservableCollection<Book>(books);
+            Books = new ObservableCollection<IBook>(books);
 
             IsProgressVisible = false;
         }

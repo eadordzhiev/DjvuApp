@@ -24,6 +24,7 @@ using Windows.UI.Xaml.Navigation;
 using DjvuApp.Common;
 using DjvuApp.Model.Books;
 using DjvuApp.Pages;
+using Microsoft.Practices.ServiceLocation;
 
 namespace DjvuApp
 {
@@ -155,7 +156,7 @@ namespace DjvuApp
         {
             var tmpFile = await file.CopyAsync(ApplicationData.Current.TemporaryFolder);
 
-            var provider = new BookProvider();
+            var provider = new DataContractBookProvider();
             var book = await provider.AddBookAsync(tmpFile);
 
             await tmpFile.DeleteAsync();

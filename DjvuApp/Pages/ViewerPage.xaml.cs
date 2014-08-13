@@ -30,7 +30,7 @@ namespace DjvuApp.Pages
             ApplicationView.GetForCurrentView().SetDesiredBoundsMode(ApplicationViewBoundsMode.UseCoreWindow);
 
             if (CurrentBook == null)
-                CurrentBook = (Book)e.Parameter;
+                CurrentBook = (IBook)e.Parameter;
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -40,7 +40,7 @@ namespace DjvuApp.Pages
             ApplicationView.GetForCurrentView().SetDesiredBoundsMode(ApplicationViewBoundsMode.UseVisible);
         }
 
-        public Book CurrentBook { get; set; }
+        public IBook CurrentBook { get; set; }
 
         public IOutlineItem Outline { get; set; }
 
