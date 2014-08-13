@@ -1,13 +1,20 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30324.0
+VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DjvuApp.WindowsPhone", "DjvuApp\DjvuApp.WindowsPhone.csproj", "{1433696D-8528-4BDD-8479-5AD35DF8505D}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DjvuLibRT.Shared", "DjvuLibRT.Shared\DjvuLibRT.Shared.vcxitems", "{1C7D99F4-51B0-4694-A897-692D18834651}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DjvuLibRT.WindowsPhone", "DjvuLibRT.WindowsPhone\DjvuLibRT.WindowsPhone.vcxproj", "{BB92369C-A4FD-4220-80F9-32A894161D5C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{0E59AE51-7595-429B-B271-A754135B5931}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
