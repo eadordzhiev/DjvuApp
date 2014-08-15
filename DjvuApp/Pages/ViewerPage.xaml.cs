@@ -5,93 +5,34 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using DjvuApp.Common;
-using DjvuApp.Dialogs;
 using DjvuApp.Model.Books;
-using DjvuApp.Model.Outline;
-using DjvuApp.ViewModel;
-using DjvuLibRT;
+using GalaSoft.MvvmLight.Messaging;
 
 namespace DjvuApp.Pages
 {
     public sealed partial class ViewerPage : Page
     {
-        private NavigationHelper navigationHelper;
+        private readonly NavigationHelper _navigationHelper;
+        private IBook _book;
+
         public ViewerPage()
         {
             this.InitializeComponent();
-            
-            this.navigationHelper = new NavigationHelper(this);
+            this._navigationHelper = new NavigationHelper(this);
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            navigationHelper.OnNavigatedTo(e);
-
+            _navigationHelper.OnNavigatedTo(e);
             ApplicationView.GetForCurrentView().SetDesiredBoundsMode(ApplicationViewBoundsMode.UseCoreWindow);
 
-            if (CurrentBook == null)
-                CurrentBook = (IBook)e.Parameter;
+            _book = (IBook) e.Parameter;
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            navigationHelper.OnNavigatedFrom(e);
-
+            _navigationHelper.OnNavigatedFrom(e);
             ApplicationView.GetForCurrentView().SetDesiredBoundsMode(ApplicationViewBoundsMode.UseVisible);
-        }
-
-        public IBook CurrentBook { get; set; }
-
-        public Outline Outline { get; set; }
-
-        public DjvuDocument CurrentDocument { get; set; }
-
-        private DjvuDocumentViewModel _viewModel;
-
-        private async void LoadedHandler(object sender, RoutedEventArgs e)
-        {
-            CurrentDocument = new DjvuDocument(CurrentBook.Path);
-
-            var djvuOutline = CurrentDocument.GetBookmarks();
-            if (djvuOutline != null)
-            {
-                Outline = new Outline(djvuOutline);
-                outlineButton.Visibility = Visibility.Visible;
-            }
-
-            await Task.Delay(1);
-
-            _viewModel = new DjvuDocumentViewModel(CurrentDocument);
-            listView.ItemsSource = _viewModel;
-        }
-
-        private async void OutlineButtonClickHandler(object sender, RoutedEventArgs e)
-        {
-            var dialog = new OutlineDialog(Outline);
-
-            var pageNumber = await dialog.ShowAsync();
-            if (pageNumber.HasValue)
-                GoToPage(pageNumber.Value);
-        }
-
-        private async void JumpToPageButtonClickHandler(object sender, RoutedEventArgs e)
-        {
-            var dialog = new JumpToPageDialog(CurrentDocument.PageCount);
-            await dialog.ShowAsync();
-
-            var pageNumber = dialog.TargetPageNumber;
-            if (pageNumber.HasValue)
-                GoToPage(pageNumber.Value);
-        }
-
-        private void GoToPage(uint pageNumber)
-        {
-            if (_viewModel == null)
-                return;
-
-            int pageIndex = (int) (pageNumber - 1);
-            var page = _viewModel[pageIndex];
-            listView.ScrollIntoView(page, ScrollIntoViewAlignment.Leading);
         }
         
         private void AppBar_OnOpened(object sender, object e)
@@ -102,6 +43,11 @@ namespace DjvuApp.Pages
         private void AppBar_OnClosed(object sender, object e)
         {
             StatusBar.GetForCurrentView().HideAsync();
+        }
+
+        private void LoadedHandler(object sender, RoutedEventArgs e)
+        {
+            Messenger.Default.Send(new LoadedHandledMessage<IBook>(_book));
         }
     }
 }

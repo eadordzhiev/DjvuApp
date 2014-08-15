@@ -25,6 +25,7 @@ namespace DjvuApp.Common
             container.RegisterInstance<IBookProvider>(SqliteBookProvider.CreateNewAsync().Result);
 
             container.RegisterType<MainViewModel>();
+            container.RegisterType<ViewerViewModel>();
         }
     }
 }

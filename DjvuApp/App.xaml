@@ -12,5 +12,6 @@
         
         <common:ViewModelLocator x:Key="ViewModelLocator"/>
         <common:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <common:IsNotNullToVisibilityConverter x:Key="IsNotNullToVisibilityConverter"/>
     </Application.Resources>
 </Application>

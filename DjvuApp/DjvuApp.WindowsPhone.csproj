@@ -92,6 +92,8 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Common\IocContainer.cs" />
+    <Compile Include="Common\IsNullToVisibilityConverter.cs" />
+    <Compile Include="Common\LoadedHandledMessage.cs" />
     <Compile Include="Common\ProgressBehavior.cs" />
     <Compile Include="Common\StatusBarBehavior.cs" />
     <Compile Include="Common\BooleanNegationConverter.cs" />
@@ -99,6 +101,7 @@
     <Compile Include="Common\NavigationHelper.cs" />
     <Compile Include="Common\ObservableDictionary.cs" />
     <Compile Include="Common\SuspensionManager.cs" />
+    <Compile Include="Controls\DocumentViewer.cs" />
     <Compile Include="Dialogs\OutlineDialog.cs" />
     <Compile Include="Model\Books\DataContractBookProvider.cs" />
     <Compile Include="Model\Books\DjvuDocumentException.cs" />
@@ -118,6 +121,7 @@
       <DependentUpon>OutlineDialogInternal.xaml</DependentUpon>
     </Compile>
     <Compile Include="Model\Outline\OutlineItem.cs" />
+    <Compile Include="Common\OnNavigatedToMessage.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Dialogs\RenameDialog.xaml.cs">
@@ -195,9 +199,7 @@
       <Name>SQLite for Windows Phone 8.1</Name>
     </SDKReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Controls\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Reference Include="GalaSoft.MvvmLight, Version=4.4.32.18939, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

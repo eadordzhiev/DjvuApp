@@ -9,5 +9,10 @@ namespace DjvuApp.Common
         {
             get { return ServiceLocator.Current.GetInstance<MainViewModel>(); }
         }
+
+        public ViewerViewModel ViewerViewModel
+        {
+            get { return ServiceLocator.Current.GetInstance<ViewerViewModel>(); }
+        }
     }
 }
