@@ -15,6 +15,10 @@ namespace DjvuApp.ViewModel
 {
     public sealed class DjvuDocumentViewModel : ObservableCollection<DjvuPageViewModel>
     {
+        public double MaxWidth { get; private set; }
+
+        public double MaxHeight { get; private set; }
+
         public DjvuDocumentViewModel(DjvuDocument document, Size? size = null)
         {
             var pageInfos = document.GetPageInfos();
@@ -28,6 +32,9 @@ namespace DjvuApp.ViewModel
                 }
                 Add(new DjvuPageViewModel(document, i + 1, pageInfos[i]));
             }
+
+            MaxWidth = pageInfos.Max(info => info.Width);
+            MaxHeight = pageInfos.Max(info => info.Height);
         }
     }
 }

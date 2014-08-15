@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
@@ -35,15 +38,55 @@ namespace DjvuApp.Controls
 
         private ListView _listView;
         private DjvuDocumentViewModel _viewModel;
+        private ScrollViewer _scrollViewer;
 
         public DocumentViewer()
         {
             this.DefaultStyleKey = typeof(DocumentViewer);
         }
-
+        
         protected override void OnApplyTemplate()
         {
             _listView = (ListView) GetTemplateChild("listView");
+            _listView.Loaded += ListViewLoadedHandler;
+        }
+
+        private void ListViewLoadedHandler(object sender, RoutedEventArgs e)
+        {
+            _scrollViewer = (ScrollViewer) VisualTreeHelper.GetChild(_listView, 0);
+            SizeChanged += SizeChangedHandler;
+        }
+
+        private void SizeChangedHandler(object sender, SizeChangedEventArgs e)
+        {
+            if (Source == null)
+                return;
+
+            UpdateZoomConstraints();
+        }
+
+        private async void UpdateZoomConstraints()
+        {
+            var maxWidth = _viewModel.MaxWidth;
+            var viewportWidth = _scrollViewer.ViewportWidth;
+
+            var normalZoomFactor = (float) (viewportWidth / maxWidth);
+            if (normalZoomFactor < 0.1f)
+                normalZoomFactor = 0.1f;
+
+            var minZoomFactor = normalZoomFactor / 2;
+            if (minZoomFactor < 0.1f)
+                minZoomFactor = 0.1f;
+
+            const int maxZoomFactor = 1;
+
+            _scrollViewer.MinZoomFactor = minZoomFactor;
+            _scrollViewer.MaxZoomFactor = maxZoomFactor;
+
+            // Zooming bug workaround
+            await Task.Delay(20);
+
+            _scrollViewer.ChangeView(null, null, normalZoomFactor, true);
         }
 
         private void OnSourceChanged(DependencyPropertyChangedEventArgs e)
@@ -55,6 +98,7 @@ namespace DjvuApp.Controls
             }
 
             _listView.ItemsSource = _viewModel = new DjvuDocumentViewModel(Source);
+            UpdateZoomConstraints();
         }
 
         private void OnPageNumberChanged(DependencyPropertyChangedEventArgs e)

@@ -6,7 +6,10 @@
         <Grid>
             <Grid.Resources>
                 <ControlTemplate x:Key="DjvuViewControlTemplate" TargetType="ListView">
-                    <ScrollViewer x:Name="ScrollViewer"
+                    <!--Do NOT change x:Name="ScrollViewer",
+                        else ScrollIntoView won't work.-->
+                    <ScrollViewer
+                        x:Name="ScrollViewer"
                         TabNavigation="Local"
                         IsVerticalScrollChainingEnabled="False"
                         IsHorizontalScrollChainingEnabled="False"
@@ -19,6 +22,8 @@
                         VerticalScrollBarVisibility="Auto"
                         VerticalSnapPointsType="None"
                         ZoomMode="Enabled"
+                        IsZoomChainingEnabled="False"
+                        IsZoomInertiaEnabled="True" 
                         MinZoomFactor="0.1"
                         MaxZoomFactor="0.5">
                         <ItemsPresenter 
@@ -28,6 +33,7 @@
                 </ControlTemplate>
                 <DataTemplate x:Key="DjvuViewItemTemplate">
                     <Image 
+                        Margin="0,0,0,24"
                         Source="{Binding Source}" 
                         HorizontalAlignment="Center" 
                         Height="{Binding Height}" 
