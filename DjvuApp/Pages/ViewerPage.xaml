@@ -11,21 +11,17 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     DataContext="{Binding ViewerViewModel, Source={StaticResource ViewModelLocator}}"
     Loaded="LoadedHandler">
+    
+    <i:Interaction.Behaviors>
+        <common:ProgressIndicatorBehavior IsVisible="{Binding IsProgressVisible}"/>
+    </i:Interaction.Behaviors>
 
     <controls:DocumentViewer
         Source="{Binding CurrentDocument}"
         PageNumber="{Binding CurrentPageNumber}"/>
 
-    <i:Interaction.Behaviors>
-        <common:StatusBarBehavior
-            IsVisible="False"/>
-    </i:Interaction.Behaviors>
-
     <Page.BottomAppBar>
-        <CommandBar 
-            Opened="AppBar_OnOpened"
-            Closed="AppBar_OnClosed"
-            ClosedDisplayMode="Minimal">
+        <CommandBar ClosedDisplayMode="Minimal">
             <CommandBar.PrimaryCommands>
                 <AppBarButton
                     Label="bookmark"

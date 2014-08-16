@@ -102,7 +102,7 @@ namespace DjvuApp.Model.Books
             DjvuDocument document;
             try
             {
-                document = new DjvuDocument(file.Path);
+                document = await DjvuDocument.LoadAsync(file.Path);
             }
             catch (COMException exception)
             {

@@ -80,13 +80,21 @@ namespace DjvuApp.Controls
 
             const int maxZoomFactor = 1;
 
+            // Zooming bug workaround
+            // The intented code is in the else clause
+#if WINDOWS_PHONE_APP
+            _scrollViewer.MinZoomFactor = normalZoomFactor;
+            _scrollViewer.MaxZoomFactor = normalZoomFactor;
+
+            await Task.Delay(1);
+
             _scrollViewer.MinZoomFactor = minZoomFactor;
             _scrollViewer.MaxZoomFactor = maxZoomFactor;
-
-            // Zooming bug workaround
-            await Task.Delay(20);
-
+#else
+            _scrollViewer.MinZoomFactor = minZoomFactor;
+            _scrollViewer.MaxZoomFactor = maxZoomFactor;
             _scrollViewer.ChangeView(null, null, normalZoomFactor, true);
+#endif
         }
 
         private void OnSourceChanged(DependencyPropertyChangedEventArgs e)

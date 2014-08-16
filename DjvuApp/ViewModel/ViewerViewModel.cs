@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +17,22 @@ namespace DjvuApp.ViewModel
 {
     public sealed class ViewerViewModel : ViewModelBase
     {
+        public bool IsProgressVisible
+        {
+            get { return _isProgressVisible; }
+
+            set
+            {
+                if (_isProgressVisible == value)
+                {
+                    return;
+                }
+
+                _isProgressVisible = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public DjvuDocument CurrentDocument
         {
             get { return _currentDocument; }
@@ -63,10 +80,11 @@ namespace DjvuApp.ViewModel
                 RaisePropertyChanged();
             }
         }
-        
+
         public ICommand ShowOutlineCommand { get; private set; }
         public ICommand JumpToPageCommand { get; private set; }
 
+        private bool _isProgressVisible = false;
         private DjvuDocument _currentDocument = null;
         private uint _currentPageNumber = 0;
         private Outline _outline = null;
@@ -93,9 +111,8 @@ namespace DjvuApp.ViewModel
         private async void ShowJumpToPageDialog()
         {
             var dialog = new JumpToPageDialog(CurrentDocument.PageCount);
-            await dialog.ShowAsync();
-
-            var pageNumber = dialog.TargetPageNumber;
+            
+            var pageNumber = await dialog.ShowAsync();
             if (pageNumber.HasValue)
             {
                 CurrentPageNumber = pageNumber.Value;
@@ -104,17 +121,31 @@ namespace DjvuApp.ViewModel
 
         private async void LoadedHandler(IBook book)
         {
-            var document = new DjvuDocument(book.Path);
+            IsProgressVisible = true;
 
-            var djvuOutline = document.GetBookmarks();
+            DjvuDocument document;
+
+            try
+            {
+                document = await DjvuDocument.LoadAsync(book.Path);
+            }
+            catch (Exception ex)
+            {
+                // TODO: Добавить диалог удаления файла
+                throw;
+            }
+
+            var djvuOutline = await document.GetBookmarksAsync();
             if (djvuOutline != null)
             {
                 Outline = new Outline(djvuOutline);
             }
 
             await Task.Delay(1);
-
             CurrentDocument = document;
+
+            await Task.Delay(20);
+            IsProgressVisible = false;
         }
     }
 }

@@ -1,23 +1,38 @@
 ﻿// DjvuLibRT.cpp
 #include "pch.h"
 #include "DjvuLibRT.h"
+#include <collection.h>
+#include <ppltasks.h>
+
+using namespace concurrency;
+using namespace std;
 
 using namespace Microsoft::WRL;
 using namespace Platform;
 using namespace DjvuLibRT;
+using namespace Platform::Collections;
 using namespace Windows::Foundation;
+using namespace Windows::Foundation::Collections;
 using namespace Windows::Graphics::Imaging;
 using namespace Windows::Storage::Streams;
 
-DjvuDocument::DjvuDocument(Platform::String^ path)
+IAsyncOperation<DjvuDocument^>^ DjvuDocument::LoadAsync(String^ path)
 {
-	FILE* file;
-	auto error = _wfopen_s(&file, path->Data(), L"rb");
-	if (error != 0)
+	return create_async([path]() -> DjvuDocument^
 	{
-		throw ref new InvalidArgumentException("Can't open the path");
-	}
+		FILE* file;
+		auto error = _wfopen_s(&file, path->Data(), L"rb");
+		if (error != 0)
+		{
+			throw ref new InvalidArgumentException("Can't open the path");
+		}
 
+		return ref new DjvuDocument(file);
+	});
+}
+
+DjvuDocument::DjvuDocument(FILE* file)
+{
 	DBGPRINT(L"Creating format");
 	format = ddjvu_format_create(DDJVU_FORMAT_BGRA, 0, 0);
 	if (format == nullptr)
@@ -28,6 +43,11 @@ DjvuDocument::DjvuDocument(Platform::String^ path)
 
 	context = ddjvu_context_create(nullptr);
 	document = ddjvu_document_create_by_file_struct(context, file, 0);
+
+	if (document == nullptr)
+	{
+		throw ref new Exception(E_FAIL, "Can't open the document");
+	}
 
 #if THREADMODEL != 0
 	while (! ddjvu_document_decoding_done(document))
@@ -75,34 +95,45 @@ Platform::Array<PageInfo>^ DjvuDocument::GetPageInfos()
 	return result;
 }
 
-Platform::Array<DjvuBookmark>^ DjvuDocument::GetBookmarks()
+struct DjvuBookmarkComparator : public std::binary_function<const DjvuBookmark, const DjvuBookmark, bool>
 {
-	GP<DjVuDocument> djvuDoc = ddjvu_get_DjVuDocument(document);
-	GP<DjVmNav> navm = djvuDoc->get_djvm_nav();
-	
-	if (navm == nullptr)
-		return nullptr;
-	
-	int count = navm->getBookMarkCount();
-	auto result = ref new Platform::Array<DjvuBookmark>(count);
-	
-	for (int i = 0; i < count; i++)
+	bool operator()(const DjvuBookmark& _Left, const DjvuBookmark& _Right) const
 	{
-		GP<DjVmNav::DjVuBookMark> bookmark;
-		bool success = navm->getBookMark(bookmark, i);
-		
-		if (!success)
+		return _Left.Url == _Right.Url;
+	};
+};
+
+IAsyncOperation<IVector<DjvuBookmark>^>^ DjvuDocument::GetBookmarksAsync()
+{
+	return create_async([this]() -> IVector<DjvuBookmark>^
+	{
+		GP<DjVuDocument> djvuDoc = ddjvu_get_DjVuDocument(document);
+		GP<DjVmNav> navm = djvuDoc->get_djvm_nav();
+
+		if (navm == nullptr)
+			return nullptr;
+
+		int count = navm->getBookMarkCount();
+		auto result = ref new Platform::Array<DjvuBookmark>(count);
+
+		for (int i = 0; i < count; i++)
 		{
-			DBGPRINT(L"Can't get bookmark at index %d, getBookMark() returned false", i);
-			throw ref new Exception(E_FAIL, "getBookMark() failed");
+			GP<DjVmNav::DjVuBookMark> bookmark;
+			bool success = navm->getBookMark(bookmark, i);
+
+			if (!success)
+			{
+				DBGPRINT(L"Can't get bookmark at index %d, getBookMark() returned false", i);
+				throw ref new Exception(E_FAIL, "getBookMark() failed");
+			}
+
+			result[i].Name = utf8tows(bookmark->displayname.getbuf());
+			result[i].Url = utf8tows(bookmark->url.getbuf());
+			result[i].ChildrenCount = bookmark->count;
 		}
 
-		result[i].Name = utf8tows(bookmark->displayname.getbuf());
-		result[i].Url = utf8tows(bookmark->url.getbuf());
-		result[i].ChildrenCount = bookmark->count;
-	}
-
-	return result;
+		return ref new Vector<DjvuBookmark, DjvuBookmarkComparator>(result);
+	});
 }
 
 DjvuPage^ DjvuDocument::GetPage(unsigned int pageNumber)
@@ -242,4 +273,12 @@ void DjvuPage::RenderRegion(WriteableBitmap^ bitmap, Size rescaledPageSize, Rect
 		DBGPRINT(L"Cannot render page, no data");
 		memset(pDstPixels, UINT_MAX, rowsize * rrect.h);
 	}
+}
+
+IAsyncAction^ DjvuPage::RenderRegionAsync(WriteableBitmap^ bitmap, Size rescaledPageSize, Rect renderRegion)
+{
+	return create_async([this, bitmap, rescaledPageSize, renderRegion]
+	{
+		this->RenderRegion(bitmap, rescaledPageSize, renderRegion);
+	});
 }

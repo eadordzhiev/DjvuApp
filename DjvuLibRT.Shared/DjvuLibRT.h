@@ -2,6 +2,7 @@
 
 using namespace Platform;
 using namespace Windows::Foundation;
+using namespace Collections;
 using namespace Windows::UI::Xaml::Media::Imaging;
 
 namespace DjvuLibRT
@@ -49,6 +50,7 @@ namespace DjvuLibRT
 		{
 			unsigned int get() { return pageNumber; }
 		}
+		IAsyncAction^ RenderRegionAsync(WriteableBitmap^ bitmap, Size rescaledPageSize, Rect renderRegion);
 		void RenderRegion(WriteOnlyArray<byte>^ buffer, Size rescaledPageSize, Rect renderRegion);
 		void RenderRegion(WriteableBitmap^ bitmap, Size rescaledPageSize, Rect renderRegion);
 	internal:
@@ -62,7 +64,6 @@ namespace DjvuLibRT
 	public ref class DjvuDocument sealed
     {
     public:
-		DjvuDocument(String^ path);
 		virtual ~DjvuDocument();
 		property unsigned int PageCount
 		{
@@ -72,10 +73,12 @@ namespace DjvuLibRT
 		{
 			DocumentType get() { return doctype; }
 		}
-		Array<DjvuBookmark>^ GetBookmarks();
+		static IAsyncOperation<DjvuDocument^>^ LoadAsync(String^ path);
+		IAsyncOperation<IVector<DjvuBookmark>^>^ GetBookmarksAsync();
 		Array<PageInfo>^ GetPageInfos();
 		DjvuPage^ GetPage(unsigned int pageNumber);
 	private:
+		DjvuDocument(FILE* file);
 		ddjvu_context_t* context;
 		ddjvu_document_t* document;
 		unsigned int pageCount;

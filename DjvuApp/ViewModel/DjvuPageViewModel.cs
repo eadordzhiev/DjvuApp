@@ -1,7 +1,11 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using Windows.Foundation;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
+using DjvuApp.Annotations;
 using DjvuLibRT;
 
 namespace DjvuApp.ViewModel
