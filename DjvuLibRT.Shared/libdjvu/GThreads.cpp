@@ -193,7 +193,7 @@ GThread::create(void (*entry)(void*), void *arg)
 void 
 GThread::terminate()
 {
-  OutputDebugString("Terminating thread.\n");
+  OutputDebugString(TEXT("Terminating thread.\n"));
   if (hthr)
     TerminateThread(hthr,0);
 }

@@ -72,9 +72,7 @@
 #include "ByteStream.h"
 #include "GOS.h"
 #include "GURL.h"
-//EDITED
-//#include "DjVuMessage.h"
-#include "DjVuMessageLite.h"
+#include "DjVuMessage.h"
 #include <stddef.h>
 #include <fcntl.h>
 #if defined(WIN32) || defined(__CYGWIN32__)
@@ -1252,9 +1250,7 @@ void ByteStream::formatmessage( const char *fmt, ... )
 /** Looks up the message and writes it to the specified stream. */
 void ByteStream::writemessage( const char *message )
 {
-	//EDITED
-	writestring(DjVuMessageLite::LookUpUTF8(message));
-  //writestring( DjVuMessage::LookUpUTF8( message ) );
+  writestring( DjVuMessage::LookUpUTF8( message ) );
 }
 
 static void 

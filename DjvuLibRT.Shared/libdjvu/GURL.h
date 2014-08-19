@@ -304,18 +304,17 @@ public:
       See also: \Ref{encode_reserved}(). */
    static GUTF8String decode_reserved(const GUTF8String &url);
 
-   //EDITED
-  ///// Test if this url is an existing file, directory, or device.
-  //bool is_local_path(void) const;
+  /// Test if this url is an existing file, directory, or device.
+  bool is_local_path(void) const;
 
-  ///// Test if this url is an existing file.
-  //bool is_file(void) const;
+  /// Test if this url is an existing file.
+  bool is_file(void) const;
 
-  ///// Test if this url is an existing directory.
-  //bool is_dir(void) const;
+  /// Test if this url is an existing directory.
+  bool is_dir(void) const;
 
-  ///// Follows symbolic links.
-  //GURL follow_symlinks(void) const;
+  /// Follows symbolic links.
+  GURL follow_symlinks(void) const;
 
   /// Creates the specified directory.
   int mkdir(void) const;

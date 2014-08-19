@@ -2,7 +2,7 @@
 
 using namespace Platform;
 using namespace Windows::Foundation;
-using namespace Collections;
+using namespace Windows::Foundation::Collections;
 using namespace Windows::UI::Xaml::Media::Imaging;
 
 namespace DjvuLibRT
@@ -20,6 +20,7 @@ namespace DjvuLibRT
 	public value struct DjvuBookmark sealed
 	{
 		String^ Name;
+		int PageNumber;
 		String^ Url;
 		unsigned int ChildrenCount;
 	};
@@ -51,7 +52,6 @@ namespace DjvuLibRT
 			unsigned int get() { return pageNumber; }
 		}
 		IAsyncAction^ RenderRegionAsync(WriteableBitmap^ bitmap, Size rescaledPageSize, Rect renderRegion);
-		void RenderRegion(WriteOnlyArray<byte>^ buffer, Size rescaledPageSize, Rect renderRegion);
 		void RenderRegion(WriteableBitmap^ bitmap, Size rescaledPageSize, Rect renderRegion);
 	internal:
 		DjvuPage(ddjvu_page_t* page, DjvuDocument^ document, unsigned int pageNumber);
@@ -74,16 +74,21 @@ namespace DjvuLibRT
 			DocumentType get() { return doctype; }
 		}
 		static IAsyncOperation<DjvuDocument^>^ LoadAsync(String^ path);
+		void ReleaseContext();
 		IAsyncOperation<IVector<DjvuBookmark>^>^ GetBookmarksAsync();
 		Array<PageInfo>^ GetPageInfos();
 		DjvuPage^ GetPage(unsigned int pageNumber);
+		IAsyncOperation<DjvuPage^>^ GetPageAsync(unsigned int pageNumber);
 	private:
-		DjvuDocument(FILE* file);
-		ddjvu_context_t* context;
-		ddjvu_document_t* document;
-		unsigned int pageCount;
+		static ddjvu_context_t* context;
+		static ddjvu_format_t* format;
+
+		ddjvu_document_t* document = nullptr;
+		unsigned int pageCount = 0;
 		DocumentType doctype;
+
+		DjvuDocument(const char* path);
 	internal:
-		ddjvu_format_t* format;
+		ddjvu_format_t* GetFormat();
     };	
 }

@@ -11,3 +11,5 @@ std::string pstos(Platform::String^ ps);
 Platform::String ^atops(const char *text);
 
 Platform::String^ utf8tows(const char *text);
+
+std::string ConvertCxStringToUTF8(Platform::String^ stringToConvert);

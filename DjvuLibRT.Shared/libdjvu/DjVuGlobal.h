@@ -63,9 +63,8 @@
 #endif
 
 #include "ThreadEmulation.h"
-#define DEBUGLVL 0
-#define THREADMODEL 0
-#define MACTHREADS 1999
+//#define DEBUGLVL 0
+#define THREADMODEL NOTHREADS
 
 #if defined(UNDER_CE)
 # ifndef __WCEALT_H__

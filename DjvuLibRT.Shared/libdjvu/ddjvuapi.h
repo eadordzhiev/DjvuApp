@@ -531,12 +531,6 @@ ddjvu_document_create_by_filename_utf8(ddjvu_context_t *context,
                                        const char *filename,
                                        int cache);
 
-
-DDJVUAPI ddjvu_document_t *
-ddjvu_document_create_by_file_struct(ddjvu_context_t *ctx,
-                                      FILE* file,
-                                      int cache);
-
 /* ddjvu_document_job ---
    Access the job object in charge of decoding the document header. 
    In fact <ddjvu_document_t> is a subclass of <ddjvu_job_t>
@@ -1355,6 +1349,7 @@ union ddjvu_message_s {
   struct ddjvu_message_relayout_s   m_relayout;
   struct ddjvu_message_redisplay_s  m_redisplay;
   struct ddjvu_message_thumbnail_s  m_thumbnail;
+  //struct ddjvu_message_progress_s   m_progress;
 };
 
 

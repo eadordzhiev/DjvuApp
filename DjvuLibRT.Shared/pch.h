@@ -13,5 +13,6 @@
 #include "libdjvu\DjVuDocument.h"
 #include "libdjvu\DjVmNav.h"
 #include "libdjvu\ddjvuapi.h"
+#include "libdjvu\miniexp.h"
 #include "DebugHelper.h"
 #include "StringConversion.h"

@@ -106,8 +106,7 @@ using namespace DJVU;
 #include "DjVuDocument.h"
 //#include "DjVuDumpHelper.h"
 #include "DjVuMessageLite.h"
-//EDITED
-//#include "DjVuMessage.h"
+#include "DjVuMessage.h"
 #include "DjVmNav.h"
 #include "DjVuText.h"
 #include "DjVuAnno.h"
@@ -221,8 +220,6 @@ struct DJVUNS ddjvu_page_s : public ddjvu_job_s
   virtual void notify_chunk_done(const DjVuPort*, const GUTF8String &);
   void sendmessages();
 };
-
-
 
 
 // ----------------------------------------
@@ -367,10 +364,9 @@ ddjvu_context_create(const char *programname)
       setlocale(LC_NUMERIC, "C");
 # endif
 #endif
-      //if (programname)
-      //  djvu_programname(programname);
-      //EDITED
-	  //DjVuMessage::use_language();
+      if (programname)
+        djvu_programname(programname);
+      DjVuMessage::use_language();
       DjVuMessageLite::create();
       ctx = new ddjvu_context_s;
       ref(ctx);
@@ -1029,41 +1025,6 @@ ddjvu_document_create_by_filename_imp(ddjvu_context_t *ctx,
       d->mydoc = 0;
       d->doc = DjVuDocument::create_noinit();
       d->doc->start_init(gurl, d, xcache);
-    }
-  G_CATCH(ex)
-    {
-      if (d)
-        unref(d);
-      d = 0;
-      ERROR1(ctx, ex);
-    }
-  G_ENDCATCH;
-  return d;
-}
-
-ddjvu_document_t *
-ddjvu_document_create_by_file_struct(ddjvu_context_t *ctx,
-                                      FILE* file,
-                                      int cache)
-{
-  ddjvu_document_t *d = 0;
-  G_TRY
-    {
-      DjVuFileCache *xcache = ctx->cache;
-      if (! cache) xcache = 0;
-      d = new ddjvu_document_s;
-      ref(d);
-      GMonitorLock lock(&d->monitor);
-      d->streamid = -1;
-      d->fileflag = true;
-      d->pageinfoflag = false;
-      d->urlflag = false;
-      d->docinfoflag = false;
-      d->myctx = ctx;
-      d->mydoc = 0;
-	  GP<ByteStream> stream = ByteStream::create(file, "rb", true);
-	  GP<DjVuDocument> doc = DjVuDocument::create(stream);
-      d->doc = doc;
     }
   G_CATCH(ex)
     {
@@ -2618,6 +2579,766 @@ ddjvu_thumbnail_render(ddjvu_document_t *document, int pagenum,
   G_ENDCATCH;
   return FALSE;
 }
+
+
+// ----------------------------------------
+// Threaded jobs
+
+//struct DJVUNS ddjvu_runnablejob_s : public ddjvu_job_s
+//{
+//  bool mystop;
+//  int  myprogress;
+//  ddjvu_status_t mystatus;
+//  // methods
+//  ddjvu_runnablejob_s();
+//  ddjvu_status_t start();
+//  void progress(int p);
+//  // thread function
+//  virtual ddjvu_status_t run() = 0;
+//  // virtual port functions:
+//  virtual bool inherits(const GUTF8String&);
+//  virtual ddjvu_status_t status();
+//  virtual void stop();
+//private:
+//  static void cbstart(void*);
+//};
+//
+//ddjvu_runnablejob_s::ddjvu_runnablejob_s()
+//  : mystop(false), myprogress(-1),
+//    mystatus(DDJVU_JOB_NOTSTARTED) 
+//{
+//}
+//
+//void 
+//ddjvu_runnablejob_s::progress(int x)
+//{
+//  if ((mystatus>=DDJVU_JOB_OK) || (x>myprogress && x<100))
+//    {
+//      GMonitorLock lock(&monitor);
+//      GP<ddjvu_message_p> p = new ddjvu_message_p;
+//      p->p.m_progress.status = mystatus;
+//      p->p.m_progress.percent = myprogress = x;
+//      msg_push(xhead(DDJVU_PROGRESS,this),p);
+//    }
+//}
+//
+//ddjvu_status_t
+//ddjvu_runnablejob_s::start()
+//{
+//  GMonitorLock lock(&monitor);
+//  if (mystatus==DDJVU_JOB_NOTSTARTED && myctx)
+//    {
+//      GThread thr;
+//      thr.create(cbstart, (void*)this);
+//      monitor.wait();
+//    }
+//  return mystatus;
+//}
+//
+//void
+//ddjvu_runnablejob_s::cbstart(void *arg)
+//{
+//  GP<ddjvu_runnablejob_s> self = (ddjvu_runnablejob_s*)arg;
+//  {
+//    GMonitorLock lock(&self->monitor);
+//    self->mystatus = DDJVU_JOB_STARTED;
+//    self->monitor.signal();
+//  }
+//  ddjvu_status_t r;
+//  G_TRY
+//    {
+//      G_TRY
+//        {
+//          self->progress(0);
+//          r = self->run();
+//        }
+//      G_CATCH(ex)
+//        {
+//          ERROR1(self, ex);
+//          G_RETHROW;
+//        }
+//      G_ENDCATCH;
+//    }
+//  G_CATCH_ALL
+//    {
+//      r = DDJVU_JOB_FAILED;
+//      if (self && self->mystop)
+//        r = DDJVU_JOB_STOPPED;
+//    }
+//  G_ENDCATCH;
+//  {
+//    GMonitorLock lock(&self->monitor);
+//    self->mystatus = r;
+//  }
+//  if (self && self->mystatus> DDJVU_JOB_OK)
+//    self->progress(self->myprogress);
+//  else
+//    self->progress(100);
+//}
+//
+//bool 
+//ddjvu_runnablejob_s::inherits(const GUTF8String &classname)
+//{
+//  return (classname == "ddjvu_runnablejob_s") 
+//    || ddjvu_job_s::inherits(classname);
+//}
+//
+//ddjvu_status_t 
+//ddjvu_runnablejob_s::status()
+//{
+//  return mystatus;
+//}
+//
+//void
+//ddjvu_runnablejob_s::stop()
+//{
+//  mystop = true;
+//}
+//
+//
+//
+//
+//
+//// ----------------------------------------
+//// S-Expressions (generic)
+//
+//static miniexp_t
+//miniexp_status(ddjvu_status_t status)
+//{
+//  if (status < DDJVU_JOB_OK)
+//    return miniexp_dummy;
+//  else if (status == DDJVU_JOB_STOPPED)
+//    return miniexp_symbol("stopped");
+//  else if (status > DDJVU_JOB_OK)
+//    return miniexp_symbol("failed");    
+//  return miniexp_nil;
+//}
+//
+//static void
+//miniexp_protect(ddjvu_document_t *document, miniexp_t expr)
+//{
+//  { // extra nesting for windows
+//    for(miniexp_t p=document->protect; miniexp_consp(p); p=miniexp_cdr(p))
+//      if (miniexp_car(p) == expr)
+//        return;
+//  }
+//  if (miniexp_consp(expr) || miniexp_objectp(expr))
+//    document->protect = miniexp_cons(expr, document->protect);
+//}
+//
+//void
+//ddjvu_miniexp_release(ddjvu_document_t *document, miniexp_t expr)
+//{
+//  miniexp_t q = miniexp_nil;
+//  miniexp_t p = document->protect;
+//  while (miniexp_consp(p))
+//    {
+//      if (miniexp_car(p) != expr)
+//        q = p;
+//      else if (q)
+//        miniexp_rplacd(q, miniexp_cdr(p));
+//      else
+//        document->protect = miniexp_cdr(p);
+//      p = miniexp_cdr(p);
+//    }
+//}
+//
+//
+//
+//// ----------------------------------------
+//// S-Expressions (outline)
+//
+//static miniexp_t
+//outline_sub(const GP<DjVmNav> &nav, int &pos, int count)
+//{
+//  GP<DjVmNav::DjVuBookMark> entry;
+//  minivar_t p,q,s;
+//  while (count > 0 && pos < nav->getBookMarkCount())
+//    {
+//      nav->getBookMark(entry, pos++);
+//      q = outline_sub(nav, pos, entry->count);
+//      s = miniexp_string((const char*)(entry->url));
+//      q = miniexp_cons(s, q);
+//      s = miniexp_string((const char*)(entry->displayname));
+//      q = miniexp_cons(s, q);
+//      p = miniexp_cons(q, p);
+//      count--;
+//    }
+//  return miniexp_reverse(p);
+//}
+//
+//miniexp_t
+//ddjvu_document_get_outline(ddjvu_document_t *document)
+//{
+//  G_TRY
+//    {
+//      ddjvu_status_t status = document->status();
+//      if (status != DDJVU_JOB_OK)
+//        return miniexp_status(status);
+//      DjVuDocument *doc = document->doc;
+//      if (doc)
+//        {
+//          GP<DjVmNav> nav = doc->get_djvm_nav();
+//          if (! nav) 
+//            return miniexp_nil;
+//          minivar_t result;
+//          int pos = 0;
+//          result = outline_sub(nav, pos, nav->getBookMarkCount());
+//          result = miniexp_cons(miniexp_symbol("bookmarks"), result);
+//          miniexp_protect(document, result);
+//          return result;
+//        }
+//    }
+//  G_CATCH(ex)
+//    {
+//      ERROR1(document, ex);
+//    }
+//  G_ENDCATCH;
+//  return miniexp_status(DDJVU_JOB_FAILED);
+//}
+//
+//
+//
+//
+//// ----------------------------------------
+//// S-Expressions (text)
+//
+//static struct zone_names_s {
+//  const char *name;
+//  DjVuTXT::ZoneType ztype;
+//  char separator;
+//} zone_names[] = {
+//  { "page",   DjVuTXT::PAGE,      0 },
+//  { "column", DjVuTXT::COLUMN,    DjVuTXT::end_of_column },
+//  { "region", DjVuTXT::REGION,    DjVuTXT::end_of_region },
+//  { "para",   DjVuTXT::PARAGRAPH, DjVuTXT::end_of_paragraph },
+//  { "line",   DjVuTXT::LINE,      DjVuTXT::end_of_line },
+//  { "word",   DjVuTXT::WORD,      ' ' },
+//  { "char",   DjVuTXT::CHARACTER, 0 },
+//  { 0, (DjVuTXT::ZoneType)0 ,0 }
+//};
+//
+//static miniexp_t
+//pagetext_sub(const GP<DjVuTXT> &txt, DjVuTXT::Zone &zone, 
+//             DjVuTXT::ZoneType detail)
+//{
+//  int zinfo;
+//  for (zinfo=0; zone_names[zinfo].name; zinfo++)
+//    if (zone.ztype == zone_names[zinfo].ztype)
+//      break;
+//  minivar_t p;
+//  minivar_t a;
+//  bool gather = zone.children.isempty();
+//  { // extra nesting for windows
+//    for (GPosition pos=zone.children; pos; ++pos)
+//      if (zone.children[pos].ztype > detail)
+//        gather = true;
+//  }
+//  if (gather)
+//    {
+//      const char *data = (const char*)(txt->textUTF8) + zone.text_start;
+//      int length = zone.text_length;
+//      if (length>0 && data[length-1]==zone_names[zinfo].separator)
+//        length -= 1;
+//      a = miniexp_substring(data, length);
+//      p = miniexp_cons(a, p);
+//    }
+//  else
+//    {
+//      for (GPosition pos=zone.children; pos; ++pos)
+//        {
+//          a = pagetext_sub(txt, zone.children[pos], detail);
+//          p = miniexp_cons(a, p);
+//        }
+//    }
+//  p = miniexp_reverse(p);
+//  const char *s = zone_names[zinfo].name;
+//  if (s)
+//    {
+//      p = miniexp_cons(miniexp_number(zone.rect.ymax), p);
+//      p = miniexp_cons(miniexp_number(zone.rect.xmax), p);
+//      p = miniexp_cons(miniexp_number(zone.rect.ymin), p);
+//      p = miniexp_cons(miniexp_number(zone.rect.xmin), p);
+//      p = miniexp_cons(miniexp_symbol(s), p);
+//      return p;
+//    }
+//  return miniexp_nil;
+//}
+//
+//miniexp_t
+//ddjvu_document_get_pagetext(ddjvu_document_t *document, int pageno,
+//                            const char *maxdetail)
+//{
+//  G_TRY
+//    {
+//      ddjvu_status_t status = document->status();
+//      if (status != DDJVU_JOB_OK)
+//        return miniexp_status(status);
+//      DjVuDocument *doc = document->doc;
+//      if (doc)
+//        {
+//          document->pageinfoflag = true;
+//          GP<DjVuFile> file = doc->get_djvu_file(pageno);
+//          if (! file || ! file->is_data_present() )
+//            return miniexp_dummy;
+//          GP<ByteStream> bs = file->get_text();
+//          if (! bs)
+//            return miniexp_nil;
+//          GP<DjVuText> text = DjVuText::create();
+//          text->decode(bs);
+//          GP<DjVuTXT> txt = text->txt;
+//          if (! txt)
+//            return miniexp_nil;
+//          minivar_t result;
+//          DjVuTXT::ZoneType detail = DjVuTXT::CHARACTER;
+//          { // extra nesting for windows
+//            for (int i=0; zone_names[i].name; i++)
+//              if (maxdetail && !strcmp(maxdetail, zone_names[i].name))
+//                detail = zone_names[i].ztype;
+//          }
+//          result = pagetext_sub(txt, txt->page_zone, detail);
+//          miniexp_protect(document, result);
+//          return result;
+//        }
+//    }
+//  G_CATCH(ex)
+//    {
+//      ERROR1(document, ex);
+//    }
+//  G_ENDCATCH;
+//  return miniexp_status(DDJVU_JOB_FAILED);
+//}
+//
+//
+//// ----------------------------------------
+//// S-Expressions (annotations)
+//
+//// The difficulty here lies with the syntax of strings in annotation chunks.
+//// - Early versions of djvu only had one possible escape 
+////   sequence (\") in annotation strings. All other characters
+////   are accepted literally until reaching the closing double quote.
+//// - Current versions of djvu understand the usual backslash escapes.
+////   All non printable ascii characters must however be escaped.
+////   This is a subset of the miniexp syntax.
+//// We first check if strings in the annotation chunk obey the modern syntax.
+//// The compatibility mode is turned on if they contain non printable ascii 
+//// characters or illegal backslash sequences. Function <anno_getc()> then 
+//// creates the proper escapes on the fly.
+//
+//
+//struct anno_dat_s {
+//  const char *s;
+//  char buf[8];
+//  int  blen;
+//  int  state;
+//  bool compat;
+//  bool eof;
+//};
+//
+//
+//static bool
+//anno_compat(const char *s)
+//{
+//  int state = 0;
+//  bool compat = false;
+//  while (s && *s && !compat)
+//    {
+//      int i = (int)(unsigned char)*s++;
+//      switch(state)
+//        {
+//        case 0:
+//          if (i == '\"')
+//            state = '\"';
+//          break;
+//        case '\"':
+//          if (i == '\"')
+//            state = 0;
+//          else if (i == '\\')
+//            state = '\\';
+//          else if (isascii(i) && !isprint(i))
+//            compat = true;
+//          break;
+//        case '\\':
+//          if (!strchr("01234567abtnvfr\"\\",i))
+//            compat = true;
+//          state = '\"';
+//          break;
+//        }
+//    }
+//  return compat;
+//}
+//
+//
+//static int
+//anno_fgetc(miniexp_io_t *io)
+//{
+//  struct anno_dat_s *anno_dat_p = (struct anno_dat_s*)(io->data[0]);
+//  struct anno_dat_s &anno_dat = *anno_dat_p;
+//  if (anno_dat.blen>0)
+//    {
+//      anno_dat.blen--;
+//      char c = anno_dat.buf[0];
+//      for (int i=0; i<anno_dat.blen; i++)
+//        anno_dat.buf[i] = anno_dat.buf[i+1];
+//      return c;
+//    }
+//  if (! *anno_dat.s)
+//    return EOF;
+//  int c = (int)(unsigned char)*anno_dat.s++;
+//  if (anno_dat.compat)
+//    {
+//      switch (anno_dat.state)
+//        {
+//        case 0:
+//          if (c == '\"') 
+//            anno_dat.state = '\"';
+//          break;
+//        case '\"':
+//          if (c == '\"') 
+//            anno_dat.state = 0;
+//          else if (c == '\\')
+//            anno_dat.state = '\\';
+//          else if (isascii(c) && !isprint(c))
+//            {
+//              sprintf(anno_dat.buf,"%03o", c);
+//              anno_dat.blen = strlen(anno_dat.buf);
+//              c = '\\';
+//            }
+//          break;
+//        case '\\':
+//          anno_dat.state = '\"';
+//          if (c != '\"')
+//            {
+//              sprintf(anno_dat.buf,"\\%03o", c);
+//              anno_dat.blen = strlen(anno_dat.buf);
+//              c = '\\';
+//            }
+//          break;
+//        }
+//    }
+//  return c;
+//}
+//
+//
+//static int
+//anno_ungetc(miniexp_io_t *io, int c)
+//{
+//  if (c == EOF)
+//    return EOF;
+//  struct anno_dat_s *anno_dat_p = (struct anno_dat_s*)(io->data[0]);
+//  struct anno_dat_s &anno_dat = *anno_dat_p;
+//  if (anno_dat.blen>=(int)sizeof(anno_dat.buf))
+//    return EOF;
+//  for (int i=anno_dat.blen; i>0; i--)
+//    anno_dat.buf[i] = anno_dat.buf[i-1];
+//  anno_dat.blen += 1;
+//  anno_dat.buf[0] = c;
+//  return c;
+//}
+//
+//
+//static void
+//anno_sub(ByteStream *bs, miniexp_t &result)
+//{
+//  // Read bs
+//  GUTF8String raw;
+//  char buffer[1024];
+//  int length;
+//  while ((length=bs->read(buffer, sizeof(buffer))))
+//    raw += GUTF8String(buffer, length);
+//  // Prepare 
+//  miniexp_t a;
+//  struct anno_dat_s anno_dat;
+//  anno_dat.s = (const char*)raw;
+//  anno_dat.compat = anno_compat(anno_dat.s);
+//  anno_dat.blen = 0;
+//  anno_dat.state = 0;
+//  anno_dat.eof = false;
+//  miniexp_io_t io;
+//  miniexp_io_init(&io);
+//  io.data[0] = (void*)&anno_dat;
+//  io.fgetc = anno_fgetc;
+//  io.ungetc = anno_ungetc;
+//  io.p_macrochar = 0;
+//  io.p_diezechar = 0;
+//  io.p_macroqueue = 0;
+//  // Read
+//  while (* anno_dat.s )
+//    if ((a = miniexp_read_r(&io)) != miniexp_dummy)
+//      result = miniexp_cons(a, result);
+//}
+//
+//
+//static miniexp_t
+//get_bytestream_anno(GP<ByteStream> annobs)
+//{
+//  if (! (annobs && annobs->size()))
+//    return miniexp_nil;
+//  GP<IFFByteStream> iff = IFFByteStream::create(annobs);
+//  GUTF8String chkid;
+//  minivar_t result;
+//  while (iff->get_chunk(chkid))
+//    {
+//      GP<ByteStream> bs;
+//      if (chkid == "ANTa") 
+//        bs = iff->get_bytestream();
+//      else if (chkid == "ANTz")
+//        bs = BSByteStream::create(iff->get_bytestream());
+//      if (bs)
+//        anno_sub(bs, result);
+//      iff->close_chunk();
+//    }
+//  return miniexp_reverse(result);
+//}
+//
+//
+//static miniexp_t
+//get_file_anno(GP<DjVuFile> file)
+//{
+//  // Make sure all data is present
+//  if (! file || ! file->is_all_data_present())
+//    {
+//      if (file && file->is_data_present())
+//        {
+//          if (! file->are_incl_files_created())
+//            file->process_incl_chunks();
+//          if (! file->are_incl_files_created())
+//            {
+//              if (file->get_flags() & DjVuFile::STOPPED)
+//                return miniexp_status(DDJVU_JOB_STOPPED);
+//              return miniexp_status(DDJVU_JOB_FAILED);
+//            }
+//        }
+//      return miniexp_dummy;
+//    }
+//  // Access annotation data
+//  return get_bytestream_anno(file->get_merged_anno());
+//}
+//
+//
+//miniexp_t
+//ddjvu_document_get_pageanno(ddjvu_document_t *document, int pageno)
+//{
+//  G_TRY
+//    {
+//      ddjvu_status_t status = document->status();
+//      if (status != DDJVU_JOB_OK)
+//        return miniexp_status(status);
+//      DjVuDocument *doc = document->doc;
+//      if (doc)
+//        {
+//          document->pageinfoflag = true;
+//          minivar_t result = get_file_anno( doc->get_djvu_file(pageno) );
+//          if (miniexp_consp(result))
+//            miniexp_protect(document, result);
+//          return result;
+//        }
+//    }
+//  G_CATCH(ex)
+//    {
+//      ERROR1(document, ex);
+//    }
+//  G_ENDCATCH;
+//  return miniexp_status(DDJVU_JOB_FAILED);
+//}
+//
+//
+//miniexp_t
+//ddjvu_document_get_anno(ddjvu_document_t *document, int compat)
+//{
+//  G_TRY
+//    {
+//      ddjvu_status_t status = document->status();
+//      if (status != DDJVU_JOB_OK)
+//        return miniexp_status(status);
+//      DjVuDocument *doc = document->doc;
+//      if (doc)
+//        {
+//#if EXPERIMENTAL_DOCUMENT_ANNOTATIONS
+//          // not yet implemented
+//          GP<ByteStream> anno = doc->get_document_anno();
+//          if (anno)
+//            return get_bytestream_anno(anno);
+//#endif
+//          if (compat)
+//            {
+//              // look for shared annotations
+//              int doc_type = doc->get_doc_type();
+//              if (doc_type != DjVuDocument::BUNDLED &&
+//                  doc_type != DjVuDocument::INDIRECT )
+//                return miniexp_nil;
+//              GP<DjVmDir> dir = doc->get_djvm_dir();
+//              int filenum = dir->get_files_num();
+//              GP<DjVmDir::File> fdesc;
+//              for (int i=0; i<filenum; i++)
+//                {
+//                  GP<DjVmDir::File> f = dir->pos_to_file(i);
+//                  if (!f->is_shared_anno())
+//                    continue;
+//                  if (fdesc)
+//                    return miniexp_nil;
+//                  fdesc = f;
+//                }
+//              if (fdesc)
+//                {
+//                  GUTF8String id = fdesc->get_load_name();
+//                  return get_file_anno(doc->get_djvu_file(id));
+//                }
+//            }
+//          return miniexp_nil;
+//        }
+//    }
+//  G_CATCH(ex)
+//    {
+//      ERROR1(document, ex);
+//    }
+//  G_ENDCATCH;
+//  return miniexp_status(DDJVU_JOB_FAILED);
+//}
+//
+//
+//
+//
+///* ------ helpers for annotations ---- */
+//
+//static const char *
+//simple_anno_sub(miniexp_t p, miniexp_t s, int i)
+//{
+//  const char *result = 0;
+//  while (miniexp_consp(p))
+//    {
+//      miniexp_t a = miniexp_car(p);
+//      p = miniexp_cdr(p);
+//      if (miniexp_car(a) == s)
+//        {
+//          miniexp_t q = miniexp_nth(i, a);
+//          if (miniexp_symbolp(q))
+//            result = miniexp_to_name(q);
+//        }
+//    }
+//  return result;
+//}
+//
+//const char *
+//ddjvu_anno_get_bgcolor(miniexp_t p)
+//{
+//  return simple_anno_sub(p, miniexp_symbol("background"), 1);
+//}
+//
+//const char *
+//ddjvu_anno_get_zoom(miniexp_t p)
+//{
+//  return simple_anno_sub(p, miniexp_symbol("zoom"), 1);
+//}
+//
+//const char *
+//ddjvu_anno_get_mode(miniexp_t p)
+//{
+//  return simple_anno_sub(p, miniexp_symbol("mode"), 1);
+//}
+//
+//const char *
+//ddjvu_anno_get_horizalign(miniexp_t p)
+//{
+//  return simple_anno_sub(p, miniexp_symbol("align"), 1);
+//}
+//
+//const char *
+//ddjvu_anno_get_vertalign(miniexp_t p)
+//{
+//  return simple_anno_sub(p, miniexp_symbol("align"), 2);
+//}
+//
+//miniexp_t *
+//ddjvu_anno_get_hyperlinks(miniexp_t annotations)
+//{
+//  miniexp_t p;
+//  miniexp_t s_maparea = miniexp_symbol("maparea");
+//  int i = 0;
+//  for (p = annotations; miniexp_consp(p); p = miniexp_cdr(p))
+//    if (miniexp_caar(p) == s_maparea)
+//      i += 1;
+//  miniexp_t *k = (miniexp_t*)malloc((1+i)*sizeof(miniexp_t));
+//  if (! k) return 0;
+//  i = 0;
+//  for (p = annotations; miniexp_consp(p); p = miniexp_cdr(p))
+//    if (miniexp_caar(p) == s_maparea)
+//      k[i++] = miniexp_car(p);
+//  k[i] = 0;
+//  return k;
+//}
+//
+//static void
+//metadata_sub(miniexp_t p, GMap<miniexp_t,miniexp_t> &m)
+//{
+//  miniexp_t s_metadata = miniexp_symbol("metadata");
+//  while (miniexp_consp(p))
+//    {
+//      if (miniexp_caar(p) == s_metadata)
+//        {
+//          miniexp_t q = miniexp_cdar(p);
+//          while (miniexp_consp(q))
+//            {
+//              miniexp_t a = miniexp_car(q);
+//              q = miniexp_cdr(q);
+//              if (miniexp_consp(a) && 
+//                  miniexp_symbolp(miniexp_car(a)) &&
+//                  miniexp_stringp(miniexp_cadr(a)) )
+//                {
+//                  m[miniexp_car(a)] = miniexp_cadr(a);
+//                }
+//            }
+//        }
+//      p = miniexp_cdr(p);
+//    }
+//}
+//
+//miniexp_t *
+//ddjvu_anno_get_metadata_keys(miniexp_t p)
+//{
+//  minivar_t l;
+//  GMap<miniexp_t,miniexp_t> m;
+//  metadata_sub(p, m);
+//  int i = m.size();
+//  miniexp_t *k = (miniexp_t*)malloc((1+i)*sizeof(miniexp_t));
+//  if (! k) return 0;
+//  i = 0;
+//  { // extra nesting for windows
+//    for (GPosition p=m; p; ++p)
+//      k[i++] = m.key(p);
+//  }
+//  k[i] = 0;
+//  return k;
+//}
+//
+//const char *
+//ddjvu_anno_get_metadata(miniexp_t p, miniexp_t key)
+//{
+//  GMap<miniexp_t,miniexp_t> m;
+//  metadata_sub(p, m);
+//  if (m.contains(key))
+//    return miniexp_to_str(m[key]);
+//  return 0;
+//}
+//
+//const char *
+//ddjvu_anno_get_xmp(miniexp_t p)
+//{
+//  miniexp_t s = miniexp_symbol("xmp");
+//  while (miniexp_consp(p))
+//    {
+//      miniexp_t a = miniexp_car(p);
+//      p = miniexp_cdr(p);
+//      if (miniexp_car(a) == s)
+//        {
+//          miniexp_t q = miniexp_nth(1, a);
+//          if (miniexp_stringp(q))
+//            return miniexp_to_str(q);
+//        }
+//    }
+//  return 0;
+//}
+
 
 // ----------------------------------------
 // Backdoors

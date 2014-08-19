@@ -133,11 +133,6 @@ int
 MMXControl::enable_mmx()
 {
   int cpuflags = 0;
-  //EDITED
-  //const char *envvar = getenv("LIBDJVU_DISABLE_MMX");
-  const char *envvar = 0;
-  if (envvar && envvar[0] && envvar[0]!='0')
-    return ((mmxflag = 0));
   
 #if defined(MMX) && defined(__GNUC__) && defined(__i386__)
   // Detection of MMX for GCC

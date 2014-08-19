@@ -20,12 +20,14 @@ namespace DjvuApp.ViewModel
 
         public ImageSource Source
         {
-            get { return RenderImpl(); }
+            get
+            {
+                return RenderAtScale(1/16D);
+            }
         }
 
         private readonly DjvuDocument _document;
         private DjvuPage _page;
-        private const double _currentScale = 1/10D;
 
         public DjvuPageViewModel(DjvuDocument document, uint pageNumber, PageInfo pageInfo)
         {
@@ -36,15 +38,23 @@ namespace DjvuApp.ViewModel
             Height = pageInfo.Height;
         }
 
-        private ImageSource RenderImpl()
+        private ImageSource RenderAtScale(double scale)
         {
+            Debug.WriteLine("RenderAtScale(): page {0}", PageNumber);
+
             var s = Stopwatch.StartNew();
 
             if (_page == null)
+            {
                 _page = _document.GetPage(PageNumber);
+                
+                s.Stop();
+                Debug.WriteLine("RenderImpl(): GetPage({1}), {0}ms taken", s.ElapsedMilliseconds, PageNumber);
+                s.Restart();
+            }
 
-            var pixelWidth = (int)(Width * _currentScale);
-            var pixelHeight = (int)(Height * _currentScale);
+            var pixelWidth = (int)(Width * scale);
+            var pixelHeight = (int)(Height * scale);
             var size = new Size(pixelWidth, pixelHeight);
 
             var source = new WriteableBitmap(pixelWidth, pixelHeight);

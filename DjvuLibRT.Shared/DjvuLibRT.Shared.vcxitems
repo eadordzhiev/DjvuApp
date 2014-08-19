@@ -35,6 +35,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuGlobal.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuImage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuInfo.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjvuMessage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuMessageLite.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuNavDir.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuPalette.h" />
@@ -61,7 +62,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\MMRDecoder.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\MMX.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\UnicodeByteStream.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\XMLParser.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\XMLTags.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\ZPCodec.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)pch.h" />
@@ -179,6 +179,9 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuMessage.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuMessageLite.cpp">
       <SDLCheck>false</SDLCheck>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -193,6 +196,7 @@
       <SDLCheck>false</SDLCheck>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
+      <DisableLanguageExtensions>false</DisableLanguageExtensions>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuPort.cpp">
       <SDLCheck>false</SDLCheck>
@@ -315,16 +319,9 @@
       <CompileAsWinRT>false</CompileAsWinRT>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\MMX.cpp">
-      <SDLCheck>false</SDLCheck>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <CompileAsWinRT>false</CompileAsWinRT>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\UnicodeByteStream.cpp">
-      <SDLCheck>false</SDLCheck>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <CompileAsWinRT>false</CompileAsWinRT>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\XMLParser.cpp">
       <SDLCheck>false</SDLCheck>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>

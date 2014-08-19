@@ -138,16 +138,16 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\MMRDecoder.h">
       <Filter>djvulibre\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\MMX.h">
-      <Filter>djvulibre\Headers</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\UnicodeByteStream.h">
       <Filter>djvulibre\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\XMLParser.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\XMLTags.h">
       <Filter>djvulibre\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\XMLTags.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\MMX.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjvuMessage.h">
       <Filter>djvulibre\Headers</Filter>
     </ClInclude>
   </ItemGroup>
@@ -184,13 +184,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\MMRDecoder.cpp">
       <Filter>djvulibre\Source</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\MMX.cpp">
-      <Filter>djvulibre\Source</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\UnicodeByteStream.cpp">
-      <Filter>djvulibre\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\XMLParser.cpp">
       <Filter>djvulibre\Source</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\XMLTags.cpp">
@@ -314,6 +308,12 @@
       <Filter>djvulibre\Source</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\GUnicode.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\MMX.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuMessage.cpp">
       <Filter>djvulibre\Source</Filter>
     </ClCompile>
   </ItemGroup>

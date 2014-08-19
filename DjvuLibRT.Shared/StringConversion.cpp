@@ -1,6 +1,50 @@
 #include "pch.h"
 #include "StringConversion.h"
 
+std::string ConvertCxStringToUTF8(Platform::String^ stringToConvert)
+{
+	const wchar_t* data = stringToConvert->Data();
+
+	auto requiredBufferSize = WideCharToMultiByte(
+		CP_UTF8,
+		WC_ERR_INVALID_CHARS,
+		stringToConvert->Data(),
+		static_cast<int>(stringToConvert->Length()),
+		nullptr,
+		0,
+		nullptr,
+		nullptr
+		);
+
+	if (requiredBufferSize == 0)
+	{
+		auto error = GetLastError();
+		throw Platform::Exception::CreateException(HRESULT_FROM_WIN32(error));
+	}
+
+	requiredBufferSize++;
+
+	std::string buffer(requiredBufferSize, 0);
+
+	auto numBytesWritten = WideCharToMultiByte(
+		CP_UTF8,
+		WC_ERR_INVALID_CHARS,
+		stringToConvert->Data(),
+		static_cast<int>(stringToConvert->Length()),
+		const_cast<char *>(buffer.data()),
+		requiredBufferSize - 1,
+		nullptr,
+		nullptr
+		);
+
+	if (numBytesWritten != (requiredBufferSize - 1))
+	{
+		throw Platform::Exception::CreateException(E_UNEXPECTED, L"WideCharToMultiByte returned an unexpected number of bytes written.");
+	}
+
+	return buffer;
+}
+
 std::wstring utf16_from_utf8(const std::string & utf8)
 {
     // Special case of empty input string

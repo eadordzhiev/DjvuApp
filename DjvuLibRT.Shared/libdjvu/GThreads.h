@@ -107,6 +107,7 @@
 #define NOTHREADS     0
 #define POSIXTHREADS  10
 #define WINTHREADS    11
+#define MACTHREADS    12
 
 // Known platforms
 #ifndef THREADMODEL
