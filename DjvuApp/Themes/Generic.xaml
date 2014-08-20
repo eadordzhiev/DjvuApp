@@ -40,7 +40,7 @@
                         Width="{Binding Width}"/>
                 </DataTemplate>
                 <ItemsPanelTemplate x:Key="DjvuViewItemsPanelTemplate">
-                    <VirtualizingStackPanel Orientation="Vertical"/>
+                    <VirtualizingStackPanel x:Name="virtualizingStackPanel" Orientation="Vertical"/>
                 </ItemsPanelTemplate>
                 <ControlTemplate x:Key="DjvuViewItemContainerTemplate" TargetType="ListViewItem">
                     <ContentPresenter/>

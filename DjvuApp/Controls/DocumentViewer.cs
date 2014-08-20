@@ -39,6 +39,7 @@ namespace DjvuApp.Controls
         private ListView _listView;
         private DjvuDocumentViewModel _viewModel;
         private ScrollViewer _scrollViewer;
+        private VirtualizingStackPanel _virtualizingStackPanel;
 
         public DocumentViewer()
         {
@@ -51,9 +52,20 @@ namespace DjvuApp.Controls
             _listView.Loaded += ListViewLoadedHandler;
         }
 
+        void _virtualizingStackPanel_CleanUpVirtualizedItemEvent(object sender, CleanUpVirtualizedItemEventArgs e)
+        {
+            var item = e.Value as DjvuPageViewModel;
+            if (item != null)
+            {
+                item.cts.Cancel();
+            }
+        }
+
         private void ListViewLoadedHandler(object sender, RoutedEventArgs e)
         {
             _scrollViewer = (ScrollViewer) VisualTreeHelper.GetChild(_listView, 0);
+            _virtualizingStackPanel = (VirtualizingStackPanel)_listView.ItemsPanelRoot;
+            _virtualizingStackPanel.CleanUpVirtualizedItemEvent += _virtualizingStackPanel_CleanUpVirtualizedItemEvent;
             SizeChanged += SizeChangedHandler;
         }
 
