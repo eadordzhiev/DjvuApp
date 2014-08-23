@@ -74,7 +74,9 @@
 #include "GBitmap.h"
 #include "GThreads.h"
 #include "Arrays.h"
+#ifdef NEED_JPEG_DECODER
 #include "JPEGDecoder.h"
+#endif
 
 #include <stddef.h>
 #include <stdlib.h>

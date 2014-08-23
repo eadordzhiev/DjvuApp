@@ -48,9 +48,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuDocument.h">
       <Filter>djvulibre\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuErrorList.h">
-      <Filter>djvulibre\Headers</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuFile.h">
       <Filter>djvulibre\Headers</Filter>
     </ClInclude>
@@ -129,9 +126,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\JB2Image.h">
       <Filter>djvulibre\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\JPEGDecoder.h">
-      <Filter>djvulibre\Headers</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\miniexp.h">
       <Filter>djvulibre\Headers</Filter>
     </ClInclude>
@@ -163,19 +157,10 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\IFFByteStream.cpp">
       <Filter>djvulibre\Source</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\IW44EncodeCodec.cpp">
-      <Filter>djvulibre\Source</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\IW44Image.cpp">
       <Filter>djvulibre\Source</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\JB2EncodeCodec.cpp">
-      <Filter>djvulibre\Source</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\JB2Image.cpp">
-      <Filter>djvulibre\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\JPEGDecoder.cpp">
       <Filter>djvulibre\Source</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\miniexp.cpp">
@@ -200,9 +185,6 @@
       <Filter>djvulibre\Source</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\BSByteStream.cpp">
-      <Filter>djvulibre\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\BSEncodeByteStream.cpp">
       <Filter>djvulibre\Source</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\ByteStream.cpp">
@@ -235,9 +217,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuDocument.cpp">
       <Filter>djvulibre\Source</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuErrorList.cpp">
-      <Filter>djvulibre\Source</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuFile.cpp">
       <Filter>djvulibre\Source</Filter>
     </ClCompile>
@@ -245,9 +224,6 @@
       <Filter>djvulibre\Source</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuGlobal.cpp">
-      <Filter>djvulibre\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuGlobalMemory.cpp">
       <Filter>djvulibre\Source</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuImage.cpp">
@@ -314,6 +290,12 @@
       <Filter>djvulibre\Source</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuMessage.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\IW44EncodeCodec.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\BSEncodeByteStream.cpp">
       <Filter>djvulibre\Source</Filter>
     </ClCompile>
   </ItemGroup>

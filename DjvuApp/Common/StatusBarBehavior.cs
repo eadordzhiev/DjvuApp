@@ -1,4 +1,5 @@
-﻿using Microsoft.Xaml.Interactivity;
+﻿using System;
+using Microsoft.Xaml.Interactivity;
 using Windows.UI;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -64,17 +65,17 @@ namespace DjvuApp.Common
 
         public DependencyObject AssociatedObject { get; private set; }
 
-        private static void OnIsVisibleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static async void OnIsVisibleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var sender = (StatusBarBehavior) d;
 
             if (sender.IsVisible)
             {
-                StatusBar.GetForCurrentView().ShowAsync();
+                await StatusBar.GetForCurrentView().ShowAsync();
             }
             else
             {
-                StatusBar.GetForCurrentView().HideAsync();
+                await StatusBar.GetForCurrentView().HideAsync();
             }
         }
         private static void OnOpacityChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

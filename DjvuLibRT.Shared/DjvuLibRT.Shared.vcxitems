@@ -29,7 +29,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVmNav.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuAnno.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuDocument.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuErrorList.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuFile.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuFileCache.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjVuGlobal.h" />
@@ -57,7 +56,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\IFFByteStream.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\IW44Image.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\JB2Image.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\JPEGDecoder.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\miniexp.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\MMRDecoder.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\MMX.h" />
@@ -90,9 +88,7 @@
       <CompileAsWinRT>false</CompileAsWinRT>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\BSEncodeByteStream.cpp">
-      <SDLCheck>false</SDLCheck>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <CompileAsWinRT>false</CompileAsWinRT>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\ByteStream.cpp">
       <SDLCheck>false</SDLCheck>
@@ -144,11 +140,6 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuErrorList.cpp">
-      <SDLCheck>false</SDLCheck>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <CompileAsWinRT>false</CompileAsWinRT>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuFile.cpp">
       <SDLCheck>false</SDLCheck>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -160,11 +151,6 @@
       <CompileAsWinRT>false</CompileAsWinRT>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuGlobal.cpp">
-      <SDLCheck>false</SDLCheck>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <CompileAsWinRT>false</CompileAsWinRT>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuGlobalMemory.cpp">
       <SDLCheck>false</SDLCheck>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
@@ -284,26 +270,14 @@
       <CompileAsWinRT>false</CompileAsWinRT>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\IW44EncodeCodec.cpp">
-      <SDLCheck>false</SDLCheck>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <CompileAsWinRT>false</CompileAsWinRT>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\IW44Image.cpp">
       <SDLCheck>false</SDLCheck>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\JB2EncodeCodec.cpp">
-      <SDLCheck>false</SDLCheck>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <CompileAsWinRT>false</CompileAsWinRT>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\JB2Image.cpp">
-      <SDLCheck>false</SDLCheck>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <CompileAsWinRT>false</CompileAsWinRT>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\JPEGDecoder.cpp">
       <SDLCheck>false</SDLCheck>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>

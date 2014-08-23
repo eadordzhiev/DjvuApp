@@ -1,23 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Navigation;
 using DjvuApp.ViewModel;
 using DjvuLibRT;
 
 namespace DjvuApp.Controls
 {
-    public sealed class DocumentViewer : Control
+    public sealed partial class DocumentViewer : UserControl
     {
+        public DocumentViewer()
+        {
+            this.InitializeComponent();
+        }
+
         public DjvuDocument Source
         {
             get { return (DjvuDocument)GetValue(SourceProperty); }
@@ -36,39 +43,19 @@ namespace DjvuApp.Controls
         public static readonly DependencyProperty PageNumberProperty =
             DependencyProperty.Register("PageNumber", typeof(uint), typeof(DocumentViewer), new PropertyMetadata(0U, PageNumberChangedCallback));
 
-        private ListView _listView;
         private DjvuDocumentViewModel _viewModel;
         private ScrollViewer _scrollViewer;
         private VirtualizingStackPanel _virtualizingStackPanel;
-
-        public DocumentViewer()
-        {
-            this.DefaultStyleKey = typeof(DocumentViewer);
-        }
-        
-        protected override void OnApplyTemplate()
-        {
-            _listView = (ListView) GetTemplateChild("listView");
-            _listView.Loaded += ListViewLoadedHandler;
-        }
 
         void _virtualizingStackPanel_CleanUpVirtualizedItemEvent(object sender, CleanUpVirtualizedItemEventArgs e)
         {
             var item = e.Value as DjvuPageViewModel;
             if (item != null)
             {
-                item.cts.Cancel();
+                item.Dispose();
             }
         }
-
-        private void ListViewLoadedHandler(object sender, RoutedEventArgs e)
-        {
-            _scrollViewer = (ScrollViewer) VisualTreeHelper.GetChild(_listView, 0);
-            _virtualizingStackPanel = (VirtualizingStackPanel)_listView.ItemsPanelRoot;
-            _virtualizingStackPanel.CleanUpVirtualizedItemEvent += _virtualizingStackPanel_CleanUpVirtualizedItemEvent;
-            SizeChanged += SizeChangedHandler;
-        }
-
+        
         private void SizeChangedHandler(object sender, SizeChangedEventArgs e)
         {
             if (Source == null)
@@ -113,11 +100,12 @@ namespace DjvuApp.Controls
         {
             if (Source == null)
             {
-                _listView.ItemsSource = _viewModel = null;
+                listView.ItemsSource = _viewModel = null;
                 return;
             }
 
-            _listView.ItemsSource = _viewModel = new DjvuDocumentViewModel(Source);
+            listView.ItemsSource = _viewModel = new DjvuDocumentViewModel(Source);
+            
             UpdateZoomConstraints();
         }
 
@@ -135,7 +123,7 @@ namespace DjvuApp.Controls
         {
             var pageIndex = (int)(pageNumber - 1);
             var page = _viewModel[pageIndex];
-            _listView.ScrollIntoView(page, ScrollIntoViewAlignment.Leading);
+            listView.ScrollIntoView(page, ScrollIntoViewAlignment.Leading);
         }
 
         private static void SourceChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -148,6 +136,42 @@ namespace DjvuApp.Controls
         {
             var sender = (DocumentViewer) d;
             sender.OnPageNumberChanged(e);
+        }
+
+        private void LoadedHandler(object sender, RoutedEventArgs e)
+        {
+            SizeChanged += SizeChangedHandler;
+        }
+
+        public IEnumerable<FrameworkElement> AllChildren(DependencyObject parent)
+        {
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, 0);
+                if (child is FrameworkElement)
+                {
+                    yield return child as FrameworkElement;
+                    foreach (var item in AllChildren(child))
+                    {
+                        yield return item;
+                    }
+                }
+            }
+        }
+
+        private void LayoutUpdatedHandler(object sender, object e)
+        {
+            if (_scrollViewer == null)
+            {
+                _scrollViewer = AllChildren(listView).OfType<ScrollViewer>().FirstOrDefault(control => control.Name == "ScrollViewer");
+            }
+
+            if (_virtualizingStackPanel == null)
+            {
+                _virtualizingStackPanel = (VirtualizingStackPanel) listView.ItemsPanelRoot;
+                if (_virtualizingStackPanel != null)
+                _virtualizingStackPanel.CleanUpVirtualizedItemEvent += _virtualizingStackPanel_CleanUpVirtualizedItemEvent;
+            }
         }
     }
 }

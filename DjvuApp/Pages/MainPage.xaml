@@ -10,6 +10,16 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     DataContext="{Binding MainViewModel, Source={StaticResource ViewModelLocator}}">
 
+    <Page.Transitions>
+        <TransitionCollection>
+            <NavigationThemeTransition>
+                <NavigationThemeTransition.DefaultNavigationTransitionInfo>
+                    <CommonNavigationTransitionInfo IsStaggeringEnabled="True"/>
+                </NavigationThemeTransition.DefaultNavigationTransitionInfo>
+            </NavigationThemeTransition>
+        </TransitionCollection>
+    </Page.Transitions>
+
     <Page.Resources>
         <MenuFlyout x:Key="BookItemFlyout">
             <MenuFlyoutItem 
@@ -36,13 +46,7 @@
     </i:Interaction.Behaviors>
 
     <Grid x:Name="LayoutRoot">
-
-        <Grid.ChildrenTransitions>
-            <TransitionCollection>
-                <EntranceThemeTransition/>
-            </TransitionCollection>
-        </Grid.ChildrenTransitions>
-
+        
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -74,6 +78,7 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Grid
+                            CommonNavigationTransitionInfo.IsStaggerElement="True"
                             Margin="24,0,0,12"
                             Holding="UIElement_OnHolding"
                             FlyoutBase.AttachedFlyout="{StaticResource BookItemFlyout}">

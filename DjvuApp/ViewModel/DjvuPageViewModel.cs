@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.UI.Core;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using DjvuApp.Annotations;
@@ -13,20 +16,78 @@ using DjvuLibRT;
 
 namespace DjvuApp.ViewModel
 {
-    //class TasksQueue
-    //{
-    //    private ConcurrentQueue<Task> tasks = new ConcurrentQueue<Task>(); 
-
-    //    void Enqueue(Task task)
-    //    {
-    //        AsyncManualResetEvent 
-    //        tasks.Enqueue(task);
-
-    //    }
-    //}
-
-    public sealed class DjvuPageViewModel : INotifyPropertyChanged 
+    public sealed class DjvuPageViewModel : INotifyPropertyChanged
     {
+        class TaskToken
+        {
+            public CancellationToken CancellationToken { get; private set; }
+
+            public int Priority { get; private set; }
+
+            private readonly Func<Task> _function;
+
+            public TaskToken(Func<Task> function, int priority, CancellationToken cancellationToken)
+            {
+                _function = function;
+                Priority = priority;
+                CancellationToken = cancellationToken;
+            }
+
+            public async Task ExecuteAsync()
+            {
+                await _function();
+            }
+        }
+
+        class TasksQueue
+        {
+            private readonly List<TaskToken> _list = new List<TaskToken>();
+            private bool _isRunning = false;
+
+            private async Task LoopAsync()
+            {
+                _isRunning = true;
+
+                while (true)
+                {
+                    TaskToken task;
+                    lock (_list)
+                    {
+                        _list.RemoveAll(item => item.CancellationToken.IsCancellationRequested);
+
+                        if (_list.Count == 0)
+                        {
+                            _isRunning = false;
+                            return;
+                        }
+
+                        var maxPriority = _list.Max(item => item.Priority);
+                        task = _list.First(item => item.Priority == maxPriority);
+                    }
+
+                    await task.ExecuteAsync();
+
+                    lock (_list)
+                    {
+                        _list.Remove(task);
+                    }
+                }
+            }
+
+            public async void Enqueue(TaskToken token)
+            {
+                lock (_list)
+                {
+                    _list.Add(token);
+                }
+
+                if (!_isRunning)
+                {
+                    await LoopAsync();
+                }
+            }
+        }
+
         public uint PageNumber { get; set; }
 
         public double Width { get; set; }
@@ -64,73 +125,51 @@ namespace DjvuApp.ViewModel
 
             Width = pageInfo.Width;
             Height = pageInfo.Height;
-        }
-        
-        private async void Render()
-        {
-            Debug.WriteLine("Render(): page {0}", PageNumber);
 
-            cts = new CancellationTokenSource();
+            if (queue == null)
+            {
+                queue = new TasksQueue();
+            }
+        }
+
+        private static TasksQueue queue;
+
+        private void Render()
+        {
+            _cts.Cancel();
+            _cts = new CancellationTokenSource();
 
             if (_page == null)
             {
-                await LoadPageAsync();
+                queue.Enqueue(new TaskToken(LoadPageAsync, 2, _cts.Token));
             }
 
-            await RenderAtScaleAsync(1 / 16D);
-            await RenderAtScaleAsync(1 / 2D);
-
-            _source = null;
+            queue.Enqueue(new TaskToken(() => RenderAtScaleAsync(1 / 16D), 2, _cts.Token));
+            queue.Enqueue(new TaskToken(() => RenderAtScaleAsync(1 / 4D), 1, _cts.Token));
         }
 
-        static SemaphoreSlim semaphore = new SemaphoreSlim(1);
+        private CancellationTokenSource _cts = new CancellationTokenSource();
 
-        public CancellationTokenSource cts = new CancellationTokenSource();
+        public void Dispose()
+        {
+            _cts.Cancel();
+        }
 
         private async Task LoadPageAsync()
         {
-            Debug.WriteLine("LoadPageAsync({0}) wants to acquire lock", PageNumber);
-            try
-            {
-                await semaphore.WaitAsync(cts.Token);
-            }
-            catch (OperationCanceledException)
-            {
-                return;
-            }
-            Debug.WriteLine("LoadPageAsync({0}) has acquired lock", PageNumber);
-
             var s = Stopwatch.StartNew();
 
             _page = await _document.GetPageAsync(PageNumber);
 
             s.Stop();
             Debug.WriteLine("RenderImpl(): GetPage({1}), {0}ms taken", s.ElapsedMilliseconds, PageNumber);
-
-            Debug.WriteLine("LoadPageAsync({0}) is releasing lock", PageNumber);
-            semaphore.Release();
-
-            
         }
 
         private async Task RenderAtScaleAsync(double scale)
         {
-            
-
             var pixelWidth = (int)(Width * scale);
             var pixelHeight = (int)(Height * scale);
             var size = new Size(pixelWidth, pixelHeight);
-
-            Debug.WriteLine("RenderAtScale({0}, scale: {1}) wants to acquire lock", PageNumber, scale);
-            try
-            {
-                await semaphore.WaitAsync(cts.Token);
-            }
-            catch (OperationCanceledException)
-            {
-                return;
-            }
-            Debug.WriteLine("RenderAtScale({0}, scale: {1}) has acquired lock", PageNumber, scale);
 
             var s = Stopwatch.StartNew();
 
@@ -140,12 +179,8 @@ namespace DjvuApp.ViewModel
             s.Stop();
             Debug.WriteLine("RenderImpl(): page {1}, {0} ms taken", s.ElapsedMilliseconds, PageNumber);
 
-            Debug.WriteLine("RenderAtScale({0}, scale: {1}) is releasing lock", PageNumber, scale);
-            semaphore.Release();
-
-            
-
             Source = source;
+            _source = null;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

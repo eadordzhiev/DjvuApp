@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -73,24 +74,24 @@ namespace DjvuApp.Model.Books
         }
 
         private SQLiteAsyncConnection _connection;
-
-        private SqliteBookProvider() { }
-
-        public static async Task<SqliteBookProvider> CreateNewAsync()
+        
+        private async Task<SQLiteAsyncConnection> GetConnectionAsync()
         {
-            var provider = new SqliteBookProvider();
-            
-            var path = ApplicationData.Current.LocalFolder.Path + "\\books.sqlite";
-            provider._connection = new SQLiteAsyncConnection(path, true);
+            if (_connection == null)
+            {
+                var path = Path.Combine(ApplicationData.Current.LocalFolder.Path, "books.sqlite");
+                _connection = new SQLiteAsyncConnection(path, true);
 
-            await provider._connection.CreateTableAsync<SqliteBook>();
+                await _connection.CreateTableAsync<SqliteBook>();
+            }
 
-            return provider;
+            return _connection;
         }
 
         public async Task<IList<IBook>> GetBooksAsync()
         {
-            var items = await _connection.Table<SqliteBook>().ToListAsync();
+            var connection = await GetConnectionAsync();
+            var items = await connection.Table<SqliteBook>().ToListAsync();
             return new List<IBook>(items);
         }
 
@@ -105,9 +106,9 @@ namespace DjvuApp.Model.Books
             {
                 document = await DjvuDocument.LoadAsync(file.Path);
             }
-            catch (COMException exception)
+            catch (Exception ex)
             {
-                throw new DjvuDocumentException("Cannot open document.", exception);
+                throw new DjvuDocumentException("Cannot open document.", ex);
             }
 
             if (document.Type == DocumentType.Indirect || document.Type == DocumentType.OldIndexed)
@@ -134,7 +135,10 @@ namespace DjvuApp.Model.Books
                 Path = djvuFile.Path
             };
 
-            await _connection.InsertAsync(book);
+            var connection = await GetConnectionAsync();
+            await connection.InsertAsync(book);
+            
+            //_connection.Close();
 
             return book;
         }
@@ -144,7 +148,8 @@ namespace DjvuApp.Model.Books
             if (book == null)
                 throw new ArgumentNullException("book");
 
-            await _connection.DeleteAsync(book);
+            var connection = await GetConnectionAsync();
+            await connection.DeleteAsync(book);
         }
 
         public async Task ChangeTitleAsync(IBook book, string title)
@@ -153,9 +158,11 @@ namespace DjvuApp.Model.Books
                 throw new ArgumentNullException("book");
             if (string.IsNullOrWhiteSpace(title))
                 throw new ArgumentException("title can't be empty", "title");
-
+            
             book.Title = title;
-            await _connection.UpdateAsync(book);
+
+            var connection = await GetConnectionAsync();
+            await connection.UpdateAsync(book);
         }
 
         private static async Task<IStorageFolder> GetBooksFolderAsync()

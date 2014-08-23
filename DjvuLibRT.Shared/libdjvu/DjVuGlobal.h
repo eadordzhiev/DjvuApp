@@ -63,7 +63,7 @@
 #endif
 
 #include "ThreadEmulation.h"
-//#define DEBUGLVL 0
+#define DEBUGLVL 0
 #define THREADMODEL NOTHREADS
 
 #if defined(UNDER_CE)

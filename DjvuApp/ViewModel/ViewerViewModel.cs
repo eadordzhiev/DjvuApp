@@ -135,16 +135,14 @@ namespace DjvuApp.ViewModel
                 throw;
             }
 
-            var djvuOutline = await document.GetBookmarksAsync();
+            var djvuOutline = document.GetBookmarks();
             if (djvuOutline != null)
             {
                 Outline = new Outline(djvuOutline);
             }
 
-            await Task.Delay(1);
             CurrentDocument = document;
 
-            await Task.Delay(20);
             IsProgressVisible = false;
         }
     }

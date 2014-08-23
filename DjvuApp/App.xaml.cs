@@ -19,8 +19,6 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
-
-// The Blank Application template is documented at http://go.microsoft.com/fwlink/?LinkId=391641
 using DjvuApp.Common;
 using DjvuApp.Model.Books;
 using DjvuApp.Pages;
@@ -56,13 +54,12 @@ namespace DjvuApp
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
             Debug.WriteLine("OnLaunched");
-#if DEBUG
+
             if (System.Diagnostics.Debugger.IsAttached)
             {
                 this.DebugSettings.EnableFrameRateCounter = true;
             }
-#endif
-
+            
             Frame rootFrame = Window.Current.Content as Frame;
 
             // Do not repeat app initialization when the Window already has content,
@@ -154,15 +151,23 @@ namespace DjvuApp
 
         private async void OpenFile(IStorageFile file)
         {
-            var tmpFile = await file.CopyAsync(ApplicationData.Current.TemporaryFolder);
+            var tmpFile = await file.CopyAsync(
+                destinationFolder: ApplicationData.Current.TemporaryFolder, 
+                desiredNewName: file.Name, 
+                option: NameCollisionOption.ReplaceExisting);
 
-            var provider = new DataContractBookProvider();
+            var provider = ServiceLocator.Current.GetInstance<IBookProvider>();
             var book = await provider.AddBookAsync(tmpFile);
 
-            await tmpFile.DeleteAsync();
-
-
-
+            try
+            {
+                await tmpFile.DeleteAsync();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                
+            }
+            
 #if DEBUG
             if (System.Diagnostics.Debugger.IsAttached)
             {

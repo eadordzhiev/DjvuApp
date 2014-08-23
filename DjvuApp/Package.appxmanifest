@@ -17,6 +17,7 @@
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="DjvuApp.App">
       <m3:VisualElements DisplayName="Djvu Reader" Square150x150Logo="Assets\Logo.png" Square44x44Logo="Assets\SmallLogo.png" Description="DjvuApp" ForegroundText="light" BackgroundColor="transparent">
+        <m3:SplashScreen BackgroundColor="#6A00FF" Image="Assets\SplashScreen.png" />
         <m3:DefaultTile Wide310x150Logo="Assets\WideLogo.png" Square71x71Logo="Assets\Square71x71Logo.png" DefaultSize="square150x150Logo">
         </m3:DefaultTile>
         <m3:ApplicationView MinWidth="width320" />
@@ -37,7 +38,4 @@
       </Extensions>
     </Application>
   </Applications>
-  <Capabilities>
-    <Capability Name="internetClientServer" />
-  </Capabilities>
 </Package>
