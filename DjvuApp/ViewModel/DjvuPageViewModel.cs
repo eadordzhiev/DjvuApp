@@ -16,7 +16,7 @@ using DjvuLibRT;
 
 namespace DjvuApp.ViewModel
 {
-    public sealed class DjvuPageViewModel : INotifyPropertyChanged
+    public sealed class DjvuPageViewModel : INotifyPropertyChanged, IDisposable
     {
         class TaskToken
         {

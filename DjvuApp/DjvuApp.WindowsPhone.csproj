@@ -88,6 +88,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Common\FrameworkElementExtensions.cs" />
     <Compile Include="Common\IocContainer.cs" />
     <Compile Include="Common\IsNullToVisibilityConverter.cs" />
     <Compile Include="Common\LoadedHandledMessage.cs" />

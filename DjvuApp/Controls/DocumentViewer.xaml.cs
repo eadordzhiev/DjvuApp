@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using DjvuApp.Common;
 using DjvuApp.ViewModel;
 using DjvuLibRT;
 
@@ -46,16 +47,8 @@ namespace DjvuApp.Controls
         private DjvuDocumentViewModel _viewModel;
         private ScrollViewer _scrollViewer;
         private VirtualizingStackPanel _virtualizingStackPanel;
+        private bool _isPageNumberChangedCallbackSuppressed = false;
 
-        void _virtualizingStackPanel_CleanUpVirtualizedItemEvent(object sender, CleanUpVirtualizedItemEventArgs e)
-        {
-            var item = e.Value as DjvuPageViewModel;
-            if (item != null)
-            {
-                item.Dispose();
-            }
-        }
-        
         private void SizeChangedHandler(object sender, SizeChangedEventArgs e)
         {
             if (Source == null)
@@ -86,14 +79,10 @@ namespace DjvuApp.Controls
             _scrollViewer.MaxZoomFactor = normalZoomFactor;
 
             await Task.Delay(1);
-
-            _scrollViewer.MinZoomFactor = minZoomFactor;
-            _scrollViewer.MaxZoomFactor = maxZoomFactor;
-#else
+#endif
             _scrollViewer.MinZoomFactor = minZoomFactor;
             _scrollViewer.MaxZoomFactor = maxZoomFactor;
             _scrollViewer.ChangeView(null, null, normalZoomFactor, true);
-#endif
         }
 
         private void OnSourceChanged(DependencyPropertyChangedEventArgs e)
@@ -115,6 +104,9 @@ namespace DjvuApp.Controls
                 throw new InvalidOperationException("Source is null.");
             if (PageNumber == 0 || PageNumber > Source.PageCount)
                 throw new InvalidOperationException("PageNumber is out of range.");
+
+            if (_isPageNumberChangedCallbackSuppressed)
+                return;
 
             GoToPage(PageNumber);
         }
@@ -143,34 +135,47 @@ namespace DjvuApp.Controls
             SizeChanged += SizeChangedHandler;
         }
 
-        public IEnumerable<FrameworkElement> AllChildren(DependencyObject parent)
-        {
-            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
-            {
-                var child = VisualTreeHelper.GetChild(parent, 0);
-                if (child is FrameworkElement)
-                {
-                    yield return child as FrameworkElement;
-                    foreach (var item in AllChildren(child))
-                    {
-                        yield return item;
-                    }
-                }
-            }
-        }
-
         private void LayoutUpdatedHandler(object sender, object e)
         {
             if (_scrollViewer == null)
             {
-                _scrollViewer = AllChildren(listView).OfType<ScrollViewer>().FirstOrDefault(control => control.Name == "ScrollViewer");
+                _scrollViewer = listView.GetVisualTreeChildren<ScrollViewer>().FirstOrDefault(control => control.Name == "ScrollViewer");
+                if (_scrollViewer != null)
+                {
+                    _scrollViewer.ViewChanged += ViewChangedHandler;
+                }
             }
 
             if (_virtualizingStackPanel == null)
             {
                 _virtualizingStackPanel = (VirtualizingStackPanel) listView.ItemsPanelRoot;
                 if (_virtualizingStackPanel != null)
-                _virtualizingStackPanel.CleanUpVirtualizedItemEvent += _virtualizingStackPanel_CleanUpVirtualizedItemEvent;
+                {
+                    _virtualizingStackPanel.CleanUpVirtualizedItemEvent += CleanUpVirtualizedItemEventHandler;
+                }
+            }
+        }
+
+        private void ViewChangedHandler(object sender, ScrollViewerViewChangedEventArgs e)
+        {
+            // For some reason, VerticalOffset == top item index + 2.
+            var topPageNumber = _scrollViewer.VerticalOffset - 1;
+            var visiblePagesCount = _scrollViewer.ViewportHeight;
+            var middlePageNumber = topPageNumber + visiblePagesCount / 2;
+
+            // Suppress PageNumberChangedCallback
+            // to prevet accidental changing of the page
+            _isPageNumberChangedCallbackSuppressed = true;
+            PageNumber = (uint) Math.Floor(middlePageNumber);
+            _isPageNumberChangedCallbackSuppressed = false;
+        }
+
+        private void CleanUpVirtualizedItemEventHandler(object sender, CleanUpVirtualizedItemEventArgs e)
+        {
+            var item = e.Value as IDisposable;
+            if (item != null)
+            {
+                item.Dispose();
             }
         }
     }

@@ -13,7 +13,7 @@
     <UserControl.Resources>
         <ControlTemplate x:Key="DjvuViewControlTemplate" TargetType="ListView">
             <!--Do NOT change x:Name="ScrollViewer",
-                        else ScrollIntoView won't work.-->
+                else ScrollIntoView won't work.-->
             <ScrollViewer
                 x:Name="ScrollViewer"
                 TabNavigation="Local"
@@ -40,13 +40,12 @@
         <DataTemplate x:Key="DjvuViewItemTemplate">
             <Grid Margin="0,0,0,24" Background="Tan">
                 <Image 
-                
-                Source="{Binding Source}" 
-                HorizontalAlignment="Center" 
-                Height="{Binding Height}" 
-                Width="{Binding Width}"/>
+                    Source="{Binding Source}" 
+                    HorizontalAlignment="Center" 
+                    Height="{Binding Height}" 
+                    Width="{Binding Width}"/>
+                <TextBlock Text="{Binding PageNumber}" FontSize="120"/>
             </Grid>
-            
         </DataTemplate>
         <ItemsPanelTemplate x:Key="DjvuViewItemsPanelTemplate">
             <VirtualizingStackPanel Orientation="Vertical"/>

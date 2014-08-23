@@ -15,10 +15,15 @@
     <i:Interaction.Behaviors>
         <common:ProgressIndicatorBehavior IsVisible="{Binding IsProgressVisible}"/>
     </i:Interaction.Behaviors>
-
-    <controls:DocumentViewer
+    
+    <Grid>
+        <controls:DocumentViewer
         Source="{Binding CurrentDocument}"
-        PageNumber="{Binding CurrentPageNumber}"/>
+        PageNumber="{Binding CurrentPageNumber, Mode=TwoWay}"/>
+
+        <TextBlock VerticalAlignment="Top" HorizontalAlignment="Left" Text="{Binding CurrentPageNumber}"/>
+    </Grid>
+   
 
     <Page.BottomAppBar>
         <CommandBar ClosedDisplayMode="Minimal">
