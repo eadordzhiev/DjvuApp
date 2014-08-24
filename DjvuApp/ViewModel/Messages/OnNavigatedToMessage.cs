@@ -1,4 +1,4 @@
-﻿namespace DjvuApp.Common
+﻿namespace DjvuApp.ViewModel.Messages
 {
     public class OnNavigatedToMessage
     {

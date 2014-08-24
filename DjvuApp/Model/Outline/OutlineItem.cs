@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using DjvuLibRT;
+using JetBrains.Annotations;
 
 namespace DjvuApp.Model.Outline
 {
@@ -22,8 +23,10 @@ namespace DjvuApp.Model.Outline
             public IOutlineItem Parent { get; set; }
         }
 
+        [UsedImplicitly]
         public string Title { get; private set; }
 
+        [UsedImplicitly] 
         public IReadOnlyList<IOutlineItem> Items { get; private set; }
 
         public Outline(IList<DjvuBookmark> djvuBookmarks)
@@ -32,7 +35,7 @@ namespace DjvuApp.Model.Outline
             Items = GetOutline(djvuBookmarks, null);
         }
 
-        private static OutlineItem[] GetOutline(IList<DjvuBookmark> djvuBookmarks, OutlineItem parent)
+        private static IReadOnlyList<IOutlineItem> GetOutline(IList<DjvuBookmark> djvuBookmarks, OutlineItem parent)
         {
             var result = new List<OutlineItem>();
 
@@ -55,13 +58,13 @@ namespace DjvuApp.Model.Outline
                 }
                 else
                 {
-                    item.Items = new OutlineItem[0];
+                    item.Items = new List<IOutlineItem>();
                 }
 
                 result.Add(item);
             }
 
-            return result.ToArray();
+            return new List<IOutlineItem>(result);
         }
     }
 }

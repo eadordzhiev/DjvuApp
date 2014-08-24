@@ -13,6 +13,7 @@
     Loaded="LoadedHandler">
     
     <i:Interaction.Behaviors>
+        <common:StatusBarBehavior IsVisible="{Binding IsProgressVisible}"/>
         <common:ProgressIndicatorBehavior IsVisible="{Binding IsProgressVisible}"/>
     </i:Interaction.Behaviors>
     
@@ -21,7 +22,9 @@
         PageNumber="{Binding CurrentPageNumber, Mode=TwoWay}"/>
    
     <Page.BottomAppBar>
-        <CommandBar ClosedDisplayMode="Minimal">
+        <CommandBar 
+            ClosedDisplayMode="Minimal" 
+            Opacity="0.5">
             <CommandBar.PrimaryCommands>
                 <AppBarButton
                     Command="{Binding AddBookmarkCommand}"

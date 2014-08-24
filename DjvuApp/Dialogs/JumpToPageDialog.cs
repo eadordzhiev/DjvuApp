@@ -3,21 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DjvuApp.Dialogs.Internal;
 
 namespace DjvuApp.Dialogs
 {
-    public sealed class JumpToPageDialog
+    public static class JumpToPageDialog
     {
-        private readonly uint _pageCount;
-
-        public JumpToPageDialog(uint pageCount)
+        public static async Task<uint?> ShowAsync(uint pageCount)
         {
-            _pageCount = pageCount;
-        }
-
-        public async Task<uint?> ShowAsync()
-        {
-            var dialog = new JumpToPageDialogInternal {PageCount = _pageCount};
+            var dialog = new JumpToPageDialogInternal {PageCount = pageCount};
             await dialog.ShowAsync();
             return dialog.PageNumber;
         }

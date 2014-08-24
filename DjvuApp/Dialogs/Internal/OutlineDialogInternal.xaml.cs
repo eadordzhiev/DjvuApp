@@ -5,13 +5,13 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using DjvuApp.Model.Outline;
 
-namespace DjvuApp.Dialogs
+namespace DjvuApp.Dialogs.Internal
 {
     public sealed partial class OutlineDialogInternal : ContentDialog
     {
         public uint? TargetPageNumber { get; private set; }
 
-        private OutlineDialogInternal NextDialog { get; set; }
+        public OutlineDialogInternal NextDialog { get; set; }
 
         public OutlineDialogInternal(Outline outline)
         {
@@ -45,17 +45,6 @@ namespace DjvuApp.Dialogs
 
                 var outlineDialog = new OutlineDialogInternal(item);
                 NextDialog = outlineDialog;
-            }
-        }
-
-        public new async Task ShowAsync()
-        {
-            var dialog = this;
-            while (dialog != null)
-            {
-                await ((ContentDialog) dialog).ShowAsync();
-                TargetPageNumber = dialog.TargetPageNumber;
-                dialog = dialog.NextDialog;
             }
         }
     }

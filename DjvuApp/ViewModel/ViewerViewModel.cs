@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using JetBrains.Annotations;
+using DjvuApp.ViewModel.Messages;
 using DjvuApp.Common;
 using DjvuApp.Dialogs;
 using DjvuApp.Model.Books;
@@ -169,9 +170,7 @@ namespace DjvuApp.ViewModel
 
         private async void ShowOutline()
         {
-            var dialog = new OutlineDialog(Outline);
-
-            var pageNumber = await dialog.ShowAsync();
+            var pageNumber = await OutlineDialog.ShowAsync(Outline);
             if (pageNumber.HasValue)
             {
                 CurrentPageNumber = pageNumber.Value;
@@ -180,9 +179,7 @@ namespace DjvuApp.ViewModel
 
         private async void ShowJumpToPageDialog()
         {
-            var dialog = new JumpToPageDialog(CurrentDocument.PageCount);
-            
-            var pageNumber = await dialog.ShowAsync();
+            var pageNumber = await JumpToPageDialog.ShowAsync(CurrentDocument.PageCount);
             if (pageNumber.HasValue)
             {
                 CurrentPageNumber = pageNumber.Value;

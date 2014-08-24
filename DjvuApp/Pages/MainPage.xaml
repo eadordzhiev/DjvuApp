@@ -6,9 +6,11 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:i="using:Microsoft.Xaml.Interactivity"
     xmlns:common="using:DjvuApp.Common"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    DataContext="{Binding MainViewModel, Source={StaticResource ViewModelLocator}}">
+    DataContext="{Binding MainViewModel, Source={StaticResource ViewModelLocator}}"
+    x:Name="page">
 
     <Page.Transitions>
         <TransitionCollection>
@@ -19,19 +21,6 @@
             </NavigationThemeTransition>
         </TransitionCollection>
     </Page.Transitions>
-
-    <Page.Resources>
-        <MenuFlyout x:Key="BookItemFlyout">
-            <MenuFlyoutItem 
-                Command="{Binding MainViewModel.RenameBookCommand, Source={StaticResource ViewModelLocator}}"
-                CommandParameter="{Binding}"
-                Text="rename"/>
-            <MenuFlyoutItem
-                Command="{Binding MainViewModel.RemoveBookCommand, Source={StaticResource ViewModelLocator}}"
-                CommandParameter="{Binding}"
-                Text="remove"/>
-        </MenuFlyout>
-    </Page.Resources>
 
     <i:Interaction.Behaviors>
         <common:StatusBarBehavior
@@ -45,8 +34,7 @@
             Value="{x:Null}"/>
     </i:Interaction.Behaviors>
 
-    <Grid x:Name="LayoutRoot">
-        
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -58,10 +46,10 @@
             <TextBlock Text="my library" Margin="0,12,0,0" Style="{ThemeResource HeaderTextBlockStyle}"/>
         </StackPanel>
 
-        <Grid Grid.Row="1" x:Name="ContentRoot">
+        <Grid Grid.Row="1">
             <ListView
                 ItemsSource="{Binding Books}"
-                ItemClick="ListView_OnItemClick"
+                ItemClick="ItemClickHandler"
                 IsItemClickEnabled="True">
                 <ItemsControl.ItemContainerTransitions>
                     <TransitionCollection>
@@ -79,9 +67,24 @@
                     <DataTemplate>
                         <Grid
                             CommonNavigationTransitionInfo.IsStaggerElement="True"
-                            Margin="24,0,0,12"
-                            Holding="UIElement_OnHolding"
-                            FlyoutBase.AttachedFlyout="{StaticResource BookItemFlyout}">
+                            Margin="24,0,0,12">
+                            <FlyoutBase.AttachedFlyout>
+                                <MenuFlyout>
+                                    <MenuFlyoutItem 
+                                        Command="{Binding DataContext.RenameBookCommand, ElementName=page}"
+                                        CommandParameter="{Binding}"
+                                        Text="rename"/>
+                                    <MenuFlyoutItem
+                                        Command="{Binding DataContext.RemoveBookCommand, ElementName=page}"
+                                        CommandParameter="{Binding}"
+                                        Text="remove"/>
+                                </MenuFlyout>
+                            </FlyoutBase.AttachedFlyout>
+                            <i:Interaction.Behaviors>
+                                <core:EventTriggerBehavior EventName="Holding">
+                                    <common:OpenMenuFlyoutAction />
+                                </core:EventTriggerBehavior>
+                            </i:Interaction.Behaviors>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
@@ -99,7 +102,7 @@
             </ListView>
         </Grid>
     </Grid>
-    
+
     <Page.BottomAppBar>
         <CommandBar>
             <CommandBar.PrimaryCommands>

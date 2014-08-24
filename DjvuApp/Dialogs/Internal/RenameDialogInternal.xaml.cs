@@ -1,10 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
-using Windows.UI.Xaml;
+﻿using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using DjvuApp.Common;
 
-namespace DjvuApp.Dialogs
+namespace DjvuApp.Dialogs.Internal
 {
     public sealed partial class RenameDialogInternal : ContentDialog
     {   

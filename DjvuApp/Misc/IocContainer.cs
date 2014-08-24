@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using DjvuApp.Model.Books;
 using DjvuApp.ViewModel;
-using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
 using Microsoft.Practices.Unity;
 
-namespace DjvuApp.Common
+namespace DjvuApp.Misc
 {
     public static class IocContainer
     {

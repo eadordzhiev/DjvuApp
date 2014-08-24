@@ -1,5 +1,5 @@
 ﻿<ContentDialog
-    x:Class="DjvuApp.Dialogs.SelectBookmarkDialogInternal"
+    x:Class="DjvuApp.Dialogs.Internal.SelectBookmarkDialogInternal"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,9 +7,10 @@
     mc:Ignorable="d"
     Title="BOOKMARKS"
     FullSizeDesired="True"
+    Style="{StaticResource FullScreenContentDialogStyle}"
     DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
-    <ListView Height="500"
+    <ListView
         ItemsSource="{Binding Items}"
         ItemClick="ItemClickHandler"
         IsItemClickEnabled="True">

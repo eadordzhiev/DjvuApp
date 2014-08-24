@@ -102,11 +102,11 @@ namespace DjvuApp.Model.Books
             return _connection;
         }
 
-        public async Task<IList<IBook>> GetBooksAsync()
+        public async Task<IEnumerable<IBook>> GetBooksAsync()
         {
             var connection = await GetConnectionAsync();
             var items = await connection.Table<SqliteBook>().ToListAsync();
-            return new List<IBook>(items);
+            return items;
         }
 
         public async Task<IBook> AddBookAsync(IStorageFile file)
@@ -179,7 +179,7 @@ namespace DjvuApp.Model.Books
             await connection.UpdateAsync(book);
         }
 
-        public async Task<IList<IBookmark>> GetBookmarksAsync([JetBrains.Annotations.NotNull] IBook book)
+        public async Task<IEnumerable<IBookmark>> GetBookmarksAsync(IBook book)
         {
             if (book == null) 
                 throw new ArgumentNullException("book");
@@ -188,7 +188,7 @@ namespace DjvuApp.Model.Books
 
             var connection = await GetConnectionAsync();
             var bookmarks = connection.Table<SqliteBookmark>().Where(bookmark => bookmark.BookId == sqliteBook.Id);
-            return new List<IBookmark>(await bookmarks.ToListAsync());
+            return await bookmarks.ToListAsync();
         }
 
         public async Task<IBookmark> CreateBookmarkAsync(IBook book, string title, uint pageNumber)

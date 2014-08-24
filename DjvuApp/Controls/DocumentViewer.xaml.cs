@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -13,8 +14,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using DjvuApp.Common;
-using DjvuApp.ViewModel;
+using DjvuApp.Misc;
 using DjvuLibRT;
 
 namespace DjvuApp.Controls
@@ -23,7 +23,7 @@ namespace DjvuApp.Controls
     {
         public DocumentViewer()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
 
         public DjvuDocument Source
@@ -44,10 +44,10 @@ namespace DjvuApp.Controls
         public static readonly DependencyProperty PageNumberProperty =
             DependencyProperty.Register("PageNumber", typeof(uint), typeof(DocumentViewer), new PropertyMetadata(0U, PageNumberChangedCallback));
 
-        private DjvuDocumentViewModel _viewModel;
+        private DjvuDocumentSource _viewModel;
         private ScrollViewer _scrollViewer;
         private VirtualizingStackPanel _virtualizingStackPanel;
-        private bool _isPageNumberChangedCallbackSuppressed = false;
+        private bool _isPageNumberChangedCallbackSuppressed;
 
         private void SizeChangedHandler(object sender, SizeChangedEventArgs e)
         {
@@ -57,29 +57,36 @@ namespace DjvuApp.Controls
             UpdateZoomConstraints();
         }
 
-        private async void UpdateZoomConstraints()
+        private DjvuPageSource GetPage(uint pageNumber)
         {
-            var maxWidth = _viewModel.MaxWidth;
-            var viewportWidth = _scrollViewer.ViewportWidth;
+            var index = (int)(pageNumber - 1);
+            return _viewModel[index];
+        }
 
-            var normalZoomFactor = (float) (viewportWidth / maxWidth);
-            if (normalZoomFactor < 0.1f)
-                normalZoomFactor = 0.1f;
+        private float GetNormalZoomFactor(float width)
+        {
+            var viewportWidth = (float)_scrollViewer.ViewportWidth;
+            var zoomFactor = viewportWidth / width;
 
+            if (zoomFactor < 0.1f)
+                zoomFactor = 0.1f;
+
+            return zoomFactor;
+        }
+
+        private void UpdateZoomConstraints()
+        {
+            var normalZoomFactor = GetNormalZoomFactor(_viewModel.MaxWidth);
             var minZoomFactor = normalZoomFactor / 2;
+            var maxZoomFactor = 1;
+
+            // ScrollViewer throws an exception
+            // if MinZoomFactor is less than 0.1
             if (minZoomFactor < 0.1f)
                 minZoomFactor = 0.1f;
-
-            const int maxZoomFactor = 1;
-
-            // Zooming bug workaround
-            // The intented code is in the else clause
-#if WINDOWS_PHONE_APP
-            _scrollViewer.MinZoomFactor = normalZoomFactor;
-            _scrollViewer.MaxZoomFactor = normalZoomFactor;
-
-            await Task.Delay(1);
-#endif
+            
+            // Zooming bug,
+            // I have no idea how to deal with it
             _scrollViewer.MinZoomFactor = minZoomFactor;
             _scrollViewer.MaxZoomFactor = maxZoomFactor;
             _scrollViewer.ChangeView(null, null, normalZoomFactor, true);
@@ -93,8 +100,8 @@ namespace DjvuApp.Controls
                 return;
             }
 
-            listView.ItemsSource = _viewModel = new DjvuDocumentViewModel(Source);
-            
+            listView.ItemsSource = _viewModel = new DjvuDocumentSource(Source);
+
             UpdateZoomConstraints();
         }
 
@@ -113,20 +120,36 @@ namespace DjvuApp.Controls
 
         private void GoToPage(uint pageNumber)
         {
-            var pageIndex = (int)(pageNumber - 1);
-            var page = _viewModel[pageIndex];
-            listView.ScrollIntoView(page, ScrollIntoViewAlignment.Leading);
+            // Due to unknown behavior of ListView,
+            // more at ViewChangedHandler
+            double offset = pageNumber + 1;
+            
+            // We need to switch page first
+            // in order to get right ViewportHeight
+            // if it differs from the current
+            _scrollViewer.ChangeView(0, offset, null, true);
+
+            var pageOffset = (_scrollViewer.ViewportHeight - 1) / 2;
+            if (pageOffset > 0)
+                offset -= pageOffset;
+
+            var page = GetPage(pageNumber);
+            var zoomFactor = GetNormalZoomFactor(page.Width);
+
+            // Now we have centered offset and right zoomFactor
+            // so we can finally change view
+            _scrollViewer.ChangeView(0, offset, zoomFactor, true);
         }
 
         private static void SourceChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var sender = (DocumentViewer) d;
+            var sender = (DocumentViewer)d;
             sender.OnSourceChanged(e);
         }
 
         private static void PageNumberChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var sender = (DocumentViewer) d;
+            var sender = (DocumentViewer)d;
             sender.OnPageNumberChanged(e);
         }
 
@@ -148,7 +171,7 @@ namespace DjvuApp.Controls
 
             if (_virtualizingStackPanel == null)
             {
-                _virtualizingStackPanel = (VirtualizingStackPanel) listView.ItemsPanelRoot;
+                _virtualizingStackPanel = (VirtualizingStackPanel)listView.ItemsPanelRoot;
                 if (_virtualizingStackPanel != null)
                 {
                     _virtualizingStackPanel.CleanUpVirtualizedItemEvent += CleanUpVirtualizedItemEventHandler;
@@ -166,7 +189,7 @@ namespace DjvuApp.Controls
             // Suppress PageNumberChangedCallback
             // to prevet accidental changing of the page
             _isPageNumberChangedCallbackSuppressed = true;
-            PageNumber = (uint) Math.Floor(middlePageNumber);
+            PageNumber = (uint)Math.Floor(middlePageNumber);
             _isPageNumberChangedCallbackSuppressed = false;
         }
 

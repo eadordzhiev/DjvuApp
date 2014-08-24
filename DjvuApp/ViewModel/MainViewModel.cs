@@ -12,20 +12,21 @@ using DjvuApp.Dialogs;
 using DjvuApp.Model.Books;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using JetBrains.Annotations;
 
 namespace DjvuApp.ViewModel
 {
     public sealed class MainViewModel : ViewModelBase
     {
-        private ObservableCollection<IBook> _books = null;
-        private bool _isProgressVisible = false;
-        private IBookProvider _bookProvider = null;
+        private ObservableCollection<IBook> _books;
+        private bool _isProgressVisible;
+        private readonly IBookProvider _bookProvider;
 
         public ObservableCollection<IBook> Books
         {
             get { return _books; }
 
-            set
+            private set
             {
                 if (_books == value)
                 {
@@ -41,7 +42,7 @@ namespace DjvuApp.ViewModel
         {
             get { return _isProgressVisible; }
 
-            set
+            private set
             {
                 if (_isProgressVisible == value)
                 {
@@ -59,6 +60,7 @@ namespace DjvuApp.ViewModel
 
         public ICommand AddBookCommand { get; private set; }
 
+        [UsedImplicitly]
         public MainViewModel(IBookProvider bookProvider)
         {
             _bookProvider = bookProvider;
@@ -79,12 +81,11 @@ namespace DjvuApp.ViewModel
 
         private async void RenameBook(IBook book)
         {
-            var dialog = new RenameDialog(book.Title);
-            var newName = await dialog.ShowAsync();
+            var name = await RenameDialog.ShowAsync(book.Title);
 
-            if (newName != book.Title)
+            if (name != book.Title)
             {
-                await _bookProvider.ChangeTitleAsync(book, newName);
+                await _bookProvider.ChangeTitleAsync(book, name);
             }
         }
 
@@ -94,8 +95,8 @@ namespace DjvuApp.ViewModel
                 " All the progress will also be deleted from your phone.", string.Format("Delete {0}?", book.Title));
             dialog.Commands.Add(new UICommand("delete", async command =>
             {
-                await _bookProvider.RemoveBookAsync(book);
                 Books.Remove(book);
+                await _bookProvider.RemoveBookAsync(book);
             }));
             dialog.Commands.Add(new UICommand("cancel"));
 
@@ -106,8 +107,11 @@ namespace DjvuApp.ViewModel
         {
             IsProgressVisible = true;
 
-            IEnumerable<IBook> books = await _bookProvider.GetBooksAsync();
-            books = books.OrderByDescending(book => book.CreationTime);
+            var books = 
+                from book in await _bookProvider.GetBooksAsync()
+                orderby book.CreationTime descending 
+                select book;
+
             Books = new ObservableCollection<IBook>(books);
 
             IsProgressVisible = false;

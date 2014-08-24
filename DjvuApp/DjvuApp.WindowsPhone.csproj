@@ -88,10 +88,11 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Common\FrameworkElementExtensions.cs" />
-    <Compile Include="Common\IocContainer.cs" />
+    <Compile Include="Common\OpenMenuFlyoutAction.cs" />
+    <Compile Include="Misc\FrameworkElementExtensions.cs" />
+    <Compile Include="Misc\IocContainer.cs" />
     <Compile Include="Common\IsNullToVisibilityConverter.cs" />
-    <Compile Include="Common\LoadedHandledMessage.cs" />
+    <Compile Include="ViewModel\Messages\LoadedHandledMessage.cs" />
     <Compile Include="Common\ProgressBehavior.cs" />
     <Compile Include="Common\StatusBarBehavior.cs" />
     <Compile Include="Common\BooleanNegationConverter.cs" />
@@ -99,18 +100,19 @@
     <Compile Include="Common\NavigationHelper.cs" />
     <Compile Include="Common\ObservableDictionary.cs" />
     <Compile Include="Common\SuspensionManager.cs" />
+    <Compile Include="Misc\TasksQueue.cs" />
     <Compile Include="Controls\DocumentViewer.xaml.cs">
       <DependentUpon>DocumentViewer.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\CreateBookmarkDialog.cs" />
-    <Compile Include="Dialogs\CreateBookmarkDialogInternal.xaml.cs">
+    <Compile Include="Dialogs\Internal\CreateBookmarkDialogInternal.xaml.cs">
       <DependentUpon>CreateBookmarkDialogInternal.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\JumpToPageDialog.cs" />
     <Compile Include="Dialogs\OutlineDialog.cs" />
     <Compile Include="Dialogs\RenameDialog.cs" />
     <Compile Include="Dialogs\SelectBookmarkDialog.cs" />
-    <Compile Include="Dialogs\SelectBookmarkDialogInternal.xaml.cs">
+    <Compile Include="Dialogs\Internal\SelectBookmarkDialogInternal.xaml.cs">
       <DependentUpon>SelectBookmarkDialogInternal.xaml</DependentUpon>
     </Compile>
     <Compile Include="Model\Books\DataContractBookProvider.cs" />
@@ -118,7 +120,7 @@
     <Compile Include="Model\Books\DocumentTypeNotSupportedException.cs" />
     <Compile Include="Model\Books\IBook.cs" />
     <Compile Include="Model\Books\IBookProvider.cs" />
-    <Compile Include="Dialogs\JumpToPageDialogInternal.xaml.cs">
+    <Compile Include="Dialogs\Internal\JumpToPageDialogInternal.xaml.cs">
       <DependentUpon>JumpToPageDialogInternal.xaml</DependentUpon>
     </Compile>
     <Compile Include="Model\Books\SqliteBookProvider.cs" />
@@ -127,14 +129,14 @@
     <Compile Include="Pages\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\OutlineDialogInternal.xaml.cs">
+    <Compile Include="Dialogs\Internal\OutlineDialogInternal.xaml.cs">
       <DependentUpon>OutlineDialogInternal.xaml</DependentUpon>
     </Compile>
     <Compile Include="Model\Outline\OutlineItem.cs" />
-    <Compile Include="Common\OnNavigatedToMessage.cs" />
+    <Compile Include="ViewModel\Messages\OnNavigatedToMessage.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Dialogs\RenameDialogInternal.xaml.cs">
+    <Compile Include="Dialogs\Internal\RenameDialogInternal.xaml.cs">
       <DependentUpon>RenameDialogInternal.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\ViewerPage.xaml.cs">
@@ -143,11 +145,11 @@
     <Compile Include="SQLite.cs" />
     <Compile Include="SQLiteAsync.cs" />
     <Compile Include="Model\Books\IBookmark.cs" />
-    <Compile Include="ViewModel\DjvuDocumentViewModel.cs" />
-    <Compile Include="ViewModel\DjvuPageViewModel.cs" />
+    <Compile Include="Controls\DjvuDocumentViewModel.cs" />
+    <Compile Include="Controls\DjvuPageViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewerViewModel.cs" />
-    <Compile Include="Common\ViewModelLocator.cs" />
+    <Compile Include="Misc\ViewModelLocator.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -171,15 +173,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Dialogs\CreateBookmarkDialogInternal.xaml">
+    <Page Include="Dialogs\Internal\CreateBookmarkDialogInternal.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Dialogs\JumpToPageDialogInternal.xaml">
+    <Page Include="Dialogs\Internal\JumpToPageDialogInternal.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Dialogs\SelectBookmarkDialogInternal.xaml">
+    <Page Include="Dialogs\Internal\SelectBookmarkDialogInternal.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -187,11 +189,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Dialogs\OutlineDialogInternal.xaml">
+    <Page Include="Dialogs\Internal\OutlineDialogInternal.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialogs\RenameDialogInternal.xaml">
+    <Page Include="Dialogs\Internal\RenameDialogInternal.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -213,7 +215,7 @@
     <SDKReference Include="Microsoft.VCLibs, version=12.0">
       <Name>Microsoft Visual C++ 2013 Runtime Package for Windows Phone</Name>
     </SDKReference>
-    <SDKReference Include="SQLite.WP81, Version=3.8.5">
+    <SDKReference Include="SQLite.WP81, Version=3.8.6">
       <Name>SQLite for Windows Phone 8.1</Name>
     </SDKReference>
   </ItemGroup>

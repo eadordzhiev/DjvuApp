@@ -18,38 +18,29 @@ namespace DjvuApp.Pages
 {
     public sealed partial class MainPage : Page
     {
-        private NavigationHelper navigationHelper;
+        private readonly NavigationHelper _navigationHelper;
 
         public MainPage()
         {
-            this.InitializeComponent();
-            
-            this.navigationHelper = new NavigationHelper(this);
-            //this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
-            //this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
+            InitializeComponent();
+            _navigationHelper = new NavigationHelper(this);
+
+            ApplicationView.GetForCurrentView().SetDesiredBoundsMode(ApplicationViewBoundsMode.UseCoreWindow);
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            navigationHelper.OnNavigatedTo(e);
+            _navigationHelper.OnNavigatedTo(e);
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            navigationHelper.OnNavigatedFrom(e);
+            _navigationHelper.OnNavigatedFrom(e);
         }
 
-        private void ListView_OnItemClick(object sender, ItemClickEventArgs e)
+        private void ItemClickHandler(object sender, ItemClickEventArgs e)
         {
             Frame.Navigate(typeof(ViewerPage), e.ClickedItem);
-        }
-
-        private void UIElement_OnHolding(object sender, HoldingRoutedEventArgs e)
-        {
-            if (e.HoldingState == HoldingState.Started)
-            {
-                FlyoutBase.ShowAttachedFlyout(sender as FrameworkElement);
-            }
         }
     }
 }

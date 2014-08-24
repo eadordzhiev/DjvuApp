@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using JetBrains.Annotations;
 
 namespace DjvuApp.Model.Books
 {
@@ -8,6 +9,7 @@ namespace DjvuApp.Model.Books
     {
         Guid Guid { get; }
 
+        [NotNull]
         string Title { get; set; }
 
         DateTime LastOpeningTime { get; }
@@ -18,6 +20,7 @@ namespace DjvuApp.Model.Books
 
         uint Size { get; }
 
+        [NotNull]
         string Path { get; }
     }
 }

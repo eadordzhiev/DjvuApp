@@ -1,8 +1,7 @@
-﻿using Windows.ApplicationModel;
-using DjvuApp.ViewModel;
+﻿using DjvuApp.ViewModel;
 using Microsoft.Practices.ServiceLocation;
 
-namespace DjvuApp.Common
+namespace DjvuApp.Misc
 {
     public class ViewModelLocator
     {

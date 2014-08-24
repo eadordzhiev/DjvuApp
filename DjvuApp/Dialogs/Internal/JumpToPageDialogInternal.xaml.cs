@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Globalization;
-using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
-namespace DjvuApp.Dialogs
+namespace DjvuApp.Dialogs.Internal
 {
     public sealed partial class JumpToPageDialogInternal : ContentDialog
     {

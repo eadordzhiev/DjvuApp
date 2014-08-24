@@ -1,14 +1,15 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace DjvuApp.Model.Outline
 {
     class FakeOutlineItem : IOutlineItem
     {
-        public string Title { get; set; }
-        public uint PageNumber { get; set; }
+        public string Title { get; private set; }
+        public uint PageNumber { get; private set; }
         public bool HasItems { get { return Items.Count > 0; } }
-        public IReadOnlyList<IOutlineItem> Items { get; set; }
-        public IOutlineItem Parent { get; set; }
+        public IReadOnlyList<IOutlineItem> Items { get; private set; }
+        public IOutlineItem Parent { get; private set; }
 
         public FakeOutlineItem()
         {
@@ -17,15 +18,15 @@ namespace DjvuApp.Model.Outline
             
             for (int i = 0; i < 10; i++)
             {
-                var item = new FakeOutlineItem(true);
-                item.Title = "Глава 1 : проверка";
-                item.PageNumber = 25;
-                item.Parent = this;
+                var item = new FakeOutlineItem(true) {Title = "Глава 1 : проверка", PageNumber = 25, Parent = this};
                 items.Add(item);
-                item = new FakeOutlineItem(true);
-                item.Title = "Глава 2 : вапвапр вапрварвар ывпаываывавыа";
-                item.PageNumber = 64;
-                item.Parent = this;
+                item = new FakeOutlineItem(true)
+                {
+                    Title = "Глава 2 : вапвапр вапрварвар ывпаываывавыа",
+                    PageNumber = 64,
+                    Parent = this,
+                    Items = items
+                };
                 items.Add(item);
             }
 

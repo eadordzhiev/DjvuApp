@@ -61,7 +61,7 @@ namespace DjvuApp.Model.Books
 
             public bool Equals(IBook other)
             {
-                return other != null && this.Guid == other.Guid;
+                return other != null && Guid == other.Guid;
             }
 
             public override bool Equals(object obj)
@@ -75,7 +75,7 @@ namespace DjvuApp.Model.Books
             }
         }
 
-        public async Task<IList<IBook>> GetBooksAsync()
+        public async Task<IEnumerable<IBook>> GetBooksAsync()
         {
             var serializer = new DataContractJsonSerializer(typeof(DataContractBook));
             
@@ -147,7 +147,7 @@ namespace DjvuApp.Model.Books
             await file.DeleteAsync();
         }
         
-        public async Task ChangeTitleAsync(IBook book, [NotNull] string title)
+        public async Task ChangeTitleAsync(IBook book, string title)
         {
             if (book == null)
                 throw new ArgumentNullException("book");
@@ -158,9 +158,9 @@ namespace DjvuApp.Model.Books
             await SaveBookDescriptionAsync(book);
         }
 
-        public Task<IList<IBookmark>> GetBookmarksAsync(IBook book)
+        public Task<IEnumerable<IBookmark>> GetBookmarksAsync(IBook book)
         {
-            return Task.FromResult<IList<IBookmark>>(null);
+            return Task.FromResult<IEnumerable<IBookmark>>(null);
         }
 
         public Task<IBookmark> CreateBookmarkAsync(IBook book, string title, uint pageNumber)

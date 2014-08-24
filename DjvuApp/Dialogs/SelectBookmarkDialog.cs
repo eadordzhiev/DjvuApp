@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DjvuApp.Dialogs.Internal;
 using DjvuApp.Model.Books;
 
 namespace DjvuApp.Dialogs

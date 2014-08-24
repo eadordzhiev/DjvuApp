@@ -6,6 +6,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using DjvuApp.Common;
 using DjvuApp.Model.Books;
+using DjvuApp.ViewModel.Messages;
 using GalaSoft.MvvmLight.Messaging;
 
 namespace DjvuApp.Pages
@@ -17,8 +18,8 @@ namespace DjvuApp.Pages
 
         public ViewerPage()
         {
-            this.InitializeComponent();
-            this._navigationHelper = new NavigationHelper(this);
+            InitializeComponent();
+            _navigationHelper = new NavigationHelper(this);
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
