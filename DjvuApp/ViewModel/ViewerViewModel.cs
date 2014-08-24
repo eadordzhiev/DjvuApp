@@ -113,6 +113,10 @@ namespace DjvuApp.ViewModel
 
         public ICommand ShowBookmarksCommand { get; private set; }
 
+        public RelayCommand GoToNextPageCommand { get; private set; }
+
+        public RelayCommand GoToPreviousPageCommand { get; private set; }
+
         private bool _isProgressVisible;
         private bool _isCurrentPageBookmarked;
         private DjvuDocument _currentDocument;
@@ -132,8 +136,16 @@ namespace DjvuApp.ViewModel
             RemoveBookmarkCommand = new RelayCommand(RemoveBookmark);
             ShowBookmarksCommand = new RelayCommand(ShowBookmarks);
 
+            GoToNextPageCommand = new RelayCommand(
+                () => CurrentPageNumber++, 
+                () => CurrentPageNumber < CurrentDocument.PageCount);
+            GoToPreviousPageCommand = new RelayCommand(
+                () => CurrentPageNumber--, 
+                () => CurrentPageNumber > 1);
+
             MessengerInstance.Register<LoadedHandledMessage<IBook>>(this, message => LoadedHandler(message.Parameter));
         }
+
 
         private async void RemoveBookmark()
         {
@@ -220,6 +232,8 @@ namespace DjvuApp.ViewModel
         private void OnCurrentPageNumberChanged()
         {
             UpdateIsCurrentPageBookmarked();
+            GoToNextPageCommand.RaiseCanExecuteChanged();
+            GoToPreviousPageCommand.RaiseCanExecuteChanged();
         }
 
         private void UpdateIsCurrentPageBookmarked()

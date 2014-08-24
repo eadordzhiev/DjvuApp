@@ -29,9 +29,10 @@
                 VerticalSnapPointsType="None"
                 ZoomMode="Enabled"
                 IsZoomChainingEnabled="False"
-                IsZoomInertiaEnabled="True" 
+                IsZoomInertiaEnabled="False" 
                 MinZoomFactor="0.1"
-                MaxZoomFactor="0.5">
+                MaxZoomFactor="0.5"
+                HorizontalContentAlignment="Center">
                 <ItemsPresenter 
                     HorizontalAlignment="Center" 
                     VerticalAlignment="Center"/>

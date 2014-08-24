@@ -57,7 +57,7 @@ namespace DjvuApp
         {
             Debug.WriteLine("OnLaunched");
 
-            if (System.Diagnostics.Debugger.IsAttached)
+            if (Debugger.IsAttached)
             {
                 this.DebugSettings.EnableFrameRateCounter = true;
             }
@@ -73,12 +73,7 @@ namespace DjvuApp
 
                 // TODO: change this value to a cache size that is appropriate for your application
                 rootFrame.CacheSize = 1;
-
-                if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
-                {
-                    // TODO: Load state from previously suspended application
-                }
-
+                
                 // Place the frame in the current Window
                 Window.Current.Content = rootFrame;
             }
@@ -101,7 +96,7 @@ namespace DjvuApp
                 // When the navigation stack isn't restored navigate to the first page,
                 // configuring the new page by passing required information as a navigation
                 // parameter
-                if (!rootFrame.Navigate(typeof(MainPage), e.Arguments))
+                if (!rootFrame.Navigate(typeof(MainPage), e != null ? e.Arguments : null))
                 {
                     throw new Exception("Failed to create initial page");
                 }
@@ -169,50 +164,11 @@ namespace DjvuApp
             {
                 
             }
-            
-#if DEBUG
-            if (System.Diagnostics.Debugger.IsAttached)
-            {
-                this.DebugSettings.EnableFrameRateCounter = true;
-            }
-#endif
 
-            Frame rootFrame = Window.Current.Content as Frame;
+            OnLaunched(null);
 
-            // Do not repeat app initialization when the Window already has content,
-            // just ensure that the window is active
-            if (rootFrame == null)
-            {
-                // Create a Frame to act as the navigation context and navigate to the first page
-                rootFrame = new Frame();
-
-                // TODO: change this value to a cache size that is appropriate for your application
-                rootFrame.CacheSize = 1;
-
-                //if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
-                //{
-                //    // TODO: Load state from previously suspended application
-                //}
-
-                // Place the frame in the current Window
-                Window.Current.Content = rootFrame;
-            }
-
-            if (rootFrame.Content == null)
-            {
-                // When the navigation stack isn't restored navigate to the first page,
-                // configuring the new page by passing required information as a navigation
-                // parameter
-                if (!rootFrame.Navigate(typeof(MainPage))) //, e.Arguments))
-                {
-                    //throw new Exception("Failed to create initial page");
-                }
-            }
-
-            rootFrame.Navigate(typeof(ViewerPage), book);
-
-            // Ensure the current window is active
-            Window.Current.Activate();
+            var frame = (Frame)Window.Current.Content;
+            frame.Navigate(typeof(ViewerPage), book);
         }
 
         protected override void OnActivated(IActivatedEventArgs args)

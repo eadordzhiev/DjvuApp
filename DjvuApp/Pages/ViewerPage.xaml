@@ -10,7 +10,8 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     DataContext="{Binding ViewerViewModel, Source={StaticResource ViewModelLocator}}"
-    Loaded="LoadedHandler">
+    Loaded="LoadedHandler"
+    Tapped="UIElement_OnTapped">
     
     <i:Interaction.Behaviors>
         <common:StatusBarBehavior IsVisible="{Binding IsProgressVisible}"/>
@@ -23,8 +24,11 @@
    
     <Page.BottomAppBar>
         <CommandBar 
-            ClosedDisplayMode="Minimal" 
-            Opacity="0.5">
+            x:Name="appBar"
+            Visibility="Collapsed"
+            Opacity="0.7"
+            Opened="AppBar_OnOpened"
+            Closed="AppBar_OnClosed">
             <CommandBar.PrimaryCommands>
                 <AppBarButton
                     Command="{Binding AddBookmarkCommand}"
@@ -43,6 +47,14 @@
                     Label="outline"
                     Icon="Bookmarks"
                     Command="{Binding ShowOutlineCommand}"/>
+                <AppBarButton
+                    Label="previous"
+                    Icon="Back"
+                    Command="{Binding GoToPreviousPageCommand}"/>
+                <AppBarButton
+                    Label="next"
+                    Icon="Forward"
+                    Command="{Binding GoToNextPageCommand}"/>
             </CommandBar.PrimaryCommands>
             <CommandBar.SecondaryCommands>
                 <AppBarButton

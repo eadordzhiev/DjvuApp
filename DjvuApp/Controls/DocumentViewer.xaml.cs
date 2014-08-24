@@ -85,11 +85,13 @@ namespace DjvuApp.Controls
             if (minZoomFactor < 0.1f)
                 minZoomFactor = 0.1f;
             
-            // Zooming bug,
-            // I have no idea how to deal with it
             _scrollViewer.MinZoomFactor = minZoomFactor;
             _scrollViewer.MaxZoomFactor = maxZoomFactor;
-            _scrollViewer.ChangeView(null, null, normalZoomFactor, true);
+
+            // Zooming bug workaround
+            // Any offset greater than 2
+            // fixes that issue
+            _scrollViewer.ChangeView(null, 2.000001D, normalZoomFactor, true);
         }
 
         private void OnSourceChanged(DependencyPropertyChangedEventArgs e)

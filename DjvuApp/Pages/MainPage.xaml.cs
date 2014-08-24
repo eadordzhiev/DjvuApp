@@ -24,8 +24,6 @@ namespace DjvuApp.Pages
         {
             InitializeComponent();
             _navigationHelper = new NavigationHelper(this);
-
-            ApplicationView.GetForCurrentView().SetDesiredBoundsMode(ApplicationViewBoundsMode.UseCoreWindow);
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
