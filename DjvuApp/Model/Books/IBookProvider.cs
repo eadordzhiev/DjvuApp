@@ -10,5 +10,8 @@ namespace DjvuApp.Model.Books
         Task<IBook> AddBookAsync(IStorageFile file);
         Task RemoveBookAsync(IBook book);
         Task ChangeTitleAsync(IBook book, string title);
+        Task<IList<IBookmark>> GetBookmarksAsync(IBook book);
+        Task<IBookmark> CreateBookmarkAsync(IBook book, string title, uint pageNumber);
+        Task RemoveBookmarkAsync(IBookmark bookmark);
     }
 }

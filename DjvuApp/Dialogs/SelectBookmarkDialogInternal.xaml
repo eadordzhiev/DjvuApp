@@ -1,0 +1,32 @@
+﻿<ContentDialog
+    x:Class="DjvuApp.Dialogs.SelectBookmarkDialogInternal"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="BOOKMARKS"
+    FullSizeDesired="True"
+    DataContext="{Binding RelativeSource={RelativeSource Self}}">
+
+    <ListView Height="500"
+        ItemsSource="{Binding Items}"
+        ItemClick="ItemClickHandler"
+        IsItemClickEnabled="True">
+        <ItemsControl.ItemContainerStyle>
+            <Style TargetType="ContentControl">
+                <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+            </Style>
+        </ItemsControl.ItemContainerStyle>
+        <ItemsControl.ItemTemplate>
+            <DataTemplate>
+                <TextBlock
+                    Margin="0,12"
+                    Text="{Binding Title}"
+                    TextWrapping="Wrap"
+                    Style="{StaticResource ListViewItemTextBlockStyle}"/>
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+    </ListView>
+
+</ContentDialog>

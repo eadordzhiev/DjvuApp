@@ -8,7 +8,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Threading.Tasks;
 using Windows.Storage;
-using DjvuApp.Annotations;
+using JetBrains.Annotations;
 using DjvuLibRT;
 
 namespace DjvuApp.Model.Books
@@ -157,7 +157,22 @@ namespace DjvuApp.Model.Books
             book.Title = title;
             await SaveBookDescriptionAsync(book);
         }
-        
+
+        public Task<IList<IBookmark>> GetBookmarksAsync(IBook book)
+        {
+            return Task.FromResult<IList<IBookmark>>(null);
+        }
+
+        public Task<IBookmark> CreateBookmarkAsync(IBook book, string title, uint pageNumber)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task RemoveBookmarkAsync(IBookmark bookmark)
+        {
+            throw new NotImplementedException();
+        }
+
         private async Task SaveBookDescriptionAsync(IBook book)
         {
             if (book == null)

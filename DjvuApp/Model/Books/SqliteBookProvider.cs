@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Windows.Storage;
-using DjvuApp.Annotations;
+using JetBrains.Annotations;
 using DjvuLibRT;
 using SQLite;
 
@@ -59,7 +59,7 @@ namespace DjvuApp.Model.Books
 
             public bool Equals(IBook other)
             {
-                return other != null && this.Guid == other.Guid;
+                return other != null && Guid == other.Guid;
             }
 
             public override bool Equals(object obj)
@@ -73,6 +73,19 @@ namespace DjvuApp.Model.Books
             }
         }
 
+        private sealed class SqliteBookmark : IBookmark
+        {
+            [PrimaryKey, AutoIncrement]
+            public int Id { get; set; }
+            
+            public int BookId { get; set; }
+
+            [MaxLength(255)]
+            public string Title { get; set; }
+
+            public uint PageNumber { get; set; }
+        }
+
         private SQLiteAsyncConnection _connection;
         
         private async Task<SQLiteAsyncConnection> GetConnectionAsync()
@@ -83,6 +96,7 @@ namespace DjvuApp.Model.Books
                 _connection = new SQLiteAsyncConnection(path, true);
 
                 await _connection.CreateTableAsync<SqliteBook>();
+                await _connection.CreateTableAsync<SqliteBookmark>();
             }
 
             return _connection;
@@ -163,6 +177,45 @@ namespace DjvuApp.Model.Books
 
             var connection = await GetConnectionAsync();
             await connection.UpdateAsync(book);
+        }
+
+        public async Task<IList<IBookmark>> GetBookmarksAsync([JetBrains.Annotations.NotNull] IBook book)
+        {
+            if (book == null) 
+                throw new ArgumentNullException("book");
+
+            var sqliteBook = (SqliteBook)book;
+
+            var connection = await GetConnectionAsync();
+            var bookmarks = connection.Table<SqliteBookmark>().Where(bookmark => bookmark.BookId == sqliteBook.Id);
+            return new List<IBookmark>(await bookmarks.ToListAsync());
+        }
+
+        public async Task<IBookmark> CreateBookmarkAsync(IBook book, string title, uint pageNumber)
+        {
+            if (book == null)
+                throw new ArgumentNullException("book");
+            if (string.IsNullOrWhiteSpace(title))
+                throw new ArgumentException("Title is empty", "title");
+            if (pageNumber < 1 || pageNumber > book.PageCount)
+                throw new ArgumentOutOfRangeException("pageNumber");
+
+            var sqliteBook = (SqliteBook) book;
+            var bookmark = new SqliteBookmark { BookId = sqliteBook.Id, Title = title, PageNumber = pageNumber };
+
+            var connection = await GetConnectionAsync();
+            await connection.InsertAsync(bookmark);
+
+            return bookmark;
+        }
+
+        public async Task RemoveBookmarkAsync(IBookmark bookmark)
+        {
+            if (bookmark == null)
+                throw new ArgumentNullException("bookmark");
+
+            var connection = await GetConnectionAsync();
+            await connection.DeleteAsync(bookmark);
         }
 
         private static async Task<IStorageFolder> GetBooksFolderAsync()

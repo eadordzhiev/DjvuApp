@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using JetBrains.Annotations;
 using DjvuApp.Common;
 using DjvuApp.Dialogs;
 using DjvuApp.Model.Books;
@@ -15,13 +18,14 @@ using GalaSoft.MvvmLight.Command;
 
 namespace DjvuApp.ViewModel
 {
+    [UsedImplicitly]
     public sealed class ViewerViewModel : ViewModelBase
     {
         public bool IsProgressVisible
         {
             get { return _isProgressVisible; }
 
-            set
+            private set
             {
                 if (_isProgressVisible == value)
                 {
@@ -33,11 +37,27 @@ namespace DjvuApp.ViewModel
             }
         }
 
+        public bool IsCurrentPageBookmarked
+        {
+            get { return _isCurrentPageBookmarked; }
+
+            private set
+            {
+                if (_isCurrentPageBookmarked == value)
+                {
+                    return;
+                }
+
+                _isCurrentPageBookmarked = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public DjvuDocument CurrentDocument
         {
             get { return _currentDocument; }
 
-            set
+            private set
             {
                 if (_currentDocument == value)
                 {
@@ -61,6 +81,7 @@ namespace DjvuApp.ViewModel
                 }
 
                 _currentPageNumber = value;
+                OnCurrentPageNumberChanged();
                 RaisePropertyChanged();
             }
         }
@@ -69,7 +90,7 @@ namespace DjvuApp.ViewModel
         {
             get { return _outline; }
 
-            set
+            private set
             {
                 if (_outline == value)
                 {
@@ -82,19 +103,68 @@ namespace DjvuApp.ViewModel
         }
 
         public ICommand ShowOutlineCommand { get; private set; }
+
         public ICommand JumpToPageCommand { get; private set; }
 
-        private bool _isProgressVisible = false;
-        private DjvuDocument _currentDocument = null;
-        private uint _currentPageNumber = 0;
-        private Outline _outline = null;
+        public ICommand AddBookmarkCommand { get; private set; }
 
-        public ViewerViewModel()
+        public ICommand RemoveBookmarkCommand { get; private set; }
+
+        public ICommand ShowBookmarksCommand { get; private set; }
+
+        private bool _isProgressVisible;
+        private bool _isCurrentPageBookmarked;
+        private DjvuDocument _currentDocument;
+        private uint _currentPageNumber;
+        private Outline _outline;
+
+        private readonly IBookProvider _provider;
+        private ObservableCollection<IBookmark> _bookmarks;
+        private IBook _book;
+
+        public ViewerViewModel(IBookProvider provider)
         {
+            _provider = provider;
             ShowOutlineCommand = new RelayCommand(ShowOutline);
             JumpToPageCommand = new RelayCommand(ShowJumpToPageDialog);
+            AddBookmarkCommand = new RelayCommand(AddBookmark);
+            RemoveBookmarkCommand = new RelayCommand(RemoveBookmark);
+            ShowBookmarksCommand = new RelayCommand(ShowBookmarks);
 
             MessengerInstance.Register<LoadedHandledMessage<IBook>>(this, message => LoadedHandler(message.Parameter));
+        }
+
+        private async void RemoveBookmark()
+        {
+            if (!IsCurrentPageBookmarked)
+                return;
+
+            var bookmark = _bookmarks.First(item => item.PageNumber == CurrentPageNumber);
+            await _provider.RemoveBookmarkAsync(bookmark);
+            _bookmarks.Remove(bookmark);
+            IsCurrentPageBookmarked = false;
+        }
+
+        private async void AddBookmark()
+        {
+            if (IsCurrentPageBookmarked) 
+                return;
+
+            var title = await CreateBookmarkDialog.ShowAsync();
+            if (title == null)
+                return;
+            var bookmark = await _provider.CreateBookmarkAsync(_book, title, CurrentPageNumber);
+            _bookmarks.Add(bookmark);
+            IsCurrentPageBookmarked = true;
+        }
+
+        private async void ShowBookmarks()
+        {
+            var bookmark = await SelectBookmarkDialog.ShowAsync(_bookmarks);
+            if (bookmark == null)
+                return;
+
+            CurrentPageNumber = bookmark.PageNumber;
         }
 
         private async void ShowOutline()
@@ -123,6 +193,7 @@ namespace DjvuApp.ViewModel
         {
             IsProgressVisible = true;
 
+            _book = book;
             DjvuDocument document;
 
             try
@@ -141,9 +212,22 @@ namespace DjvuApp.ViewModel
                 Outline = new Outline(djvuOutline);
             }
 
+            _bookmarks = new ObservableCollection<IBookmark>(await _provider.GetBookmarksAsync(book));
+            _bookmarks.CollectionChanged += (sender, e) => UpdateIsCurrentPageBookmarked();
+
             CurrentDocument = document;
 
             IsProgressVisible = false;
+        }
+        
+        private void OnCurrentPageNumberChanged()
+        {
+            UpdateIsCurrentPageBookmarked();
+        }
+
+        private void UpdateIsCurrentPageBookmarked()
+        {
+            IsCurrentPageBookmarked = _bookmarks.Any(bookmark => bookmark.PageNumber == CurrentPageNumber);
         }
     }
 }

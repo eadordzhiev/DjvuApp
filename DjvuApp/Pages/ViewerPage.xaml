@@ -16,21 +16,25 @@
         <common:ProgressIndicatorBehavior IsVisible="{Binding IsProgressVisible}"/>
     </i:Interaction.Behaviors>
     
-    <Grid>
-        <controls:DocumentViewer
+    <controls:DocumentViewer
         Source="{Binding CurrentDocument}"
         PageNumber="{Binding CurrentPageNumber, Mode=TwoWay}"/>
-
-        <TextBlock VerticalAlignment="Top" HorizontalAlignment="Left" Text="{Binding CurrentPageNumber}"/>
-    </Grid>
    
-
     <Page.BottomAppBar>
         <CommandBar ClosedDisplayMode="Minimal">
             <CommandBar.PrimaryCommands>
                 <AppBarButton
-                    Label="bookmark"
-                    Icon="Favorite"/>
+                    Command="{Binding AddBookmarkCommand}"
+                    Visibility="{Binding IsCurrentPageBookmarked, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Invert}"
+                    Label="add bookmark">
+                    <FontIcon Glyph="&#xE1CF;"/>
+                </AppBarButton>
+                <AppBarButton
+                    Command="{Binding RemoveBookmarkCommand}"
+                    Visibility="{Binding IsCurrentPageBookmarked, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Label="remove bookmark">
+                    <FontIcon Glyph="&#xE1CE;"/>
+                </AppBarButton>
                 <AppBarButton
                     Visibility="{Binding Outline, Converter={StaticResource IsNotNullToVisibilityConverter}}"
                     Label="outline"
@@ -42,7 +46,8 @@
                     Label="jump to page"
                     Command="{Binding JumpToPageCommand}"/>
                 <AppBarButton
-                    Label="bookmarks"/>
+                    Label="bookmarks"
+                    Command="{Binding ShowBookmarksCommand}"/>
             </CommandBar.SecondaryCommands>
         </CommandBar>
     </Page.BottomAppBar>

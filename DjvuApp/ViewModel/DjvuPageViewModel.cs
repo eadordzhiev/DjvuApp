@@ -11,7 +11,7 @@ using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
-using DjvuApp.Annotations;
+using JetBrains.Annotations;
 using DjvuLibRT;
 
 namespace DjvuApp.ViewModel

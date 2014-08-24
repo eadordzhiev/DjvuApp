@@ -102,9 +102,17 @@
     <Compile Include="Controls\DocumentViewer.xaml.cs">
       <DependentUpon>DocumentViewer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\CreateBookmarkDialog.cs" />
+    <Compile Include="Dialogs\CreateBookmarkDialogInternal.xaml.cs">
+      <DependentUpon>CreateBookmarkDialogInternal.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\JumpToPageDialog.cs" />
     <Compile Include="Dialogs\OutlineDialog.cs" />
     <Compile Include="Dialogs\RenameDialog.cs" />
+    <Compile Include="Dialogs\SelectBookmarkDialog.cs" />
+    <Compile Include="Dialogs\SelectBookmarkDialogInternal.xaml.cs">
+      <DependentUpon>SelectBookmarkDialogInternal.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Model\Books\DataContractBookProvider.cs" />
     <Compile Include="Model\Books\DjvuDocumentException.cs" />
     <Compile Include="Model\Books\DocumentTypeNotSupportedException.cs" />
@@ -134,6 +142,7 @@
     </Compile>
     <Compile Include="SQLite.cs" />
     <Compile Include="SQLiteAsync.cs" />
+    <Compile Include="Model\Books\IBookmark.cs" />
     <Compile Include="ViewModel\DjvuDocumentViewModel.cs" />
     <Compile Include="ViewModel\DjvuPageViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
@@ -162,7 +171,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Dialogs\CreateBookmarkDialogInternal.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Dialogs\JumpToPageDialogInternal.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\SelectBookmarkDialogInternal.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
