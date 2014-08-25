@@ -27,6 +27,8 @@ namespace DjvuApp.Pages
         {
             _navigationHelper.OnNavigatedFrom(e);
             ApplicationView.GetForCurrentView().SetDesiredBoundsMode(ApplicationViewBoundsMode.UseVisible);
+
+            Messenger.Default.Send(new OnNavigatedFromMessage(null));
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -34,6 +36,8 @@ namespace DjvuApp.Pages
             _navigationHelper.OnNavigatedTo(e);
             ApplicationView.GetForCurrentView().SetDesiredBoundsMode(ApplicationViewBoundsMode.UseCoreWindow);
             _book = (IBook) e.Parameter;
+
+            Messenger.Default.Send(new OnNavigatedToMessage(null));
         }
 
         private void LoadedHandler(object sender, RoutedEventArgs e)

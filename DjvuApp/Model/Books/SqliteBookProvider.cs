@@ -77,7 +77,7 @@ namespace DjvuApp.Model.Books
         {
             [PrimaryKey, AutoIncrement]
             public int Id { get; set; }
-            
+
             public int BookId { get; set; }
 
             [MaxLength(255)]
@@ -87,7 +87,7 @@ namespace DjvuApp.Model.Books
         }
 
         private SQLiteAsyncConnection _connection;
-        
+
         private async Task<SQLiteAsyncConnection> GetConnectionAsync()
         {
             if (_connection == null)
@@ -151,8 +151,6 @@ namespace DjvuApp.Model.Books
 
             var connection = await GetConnectionAsync();
             await connection.InsertAsync(book);
-            
-            //_connection.Close();
 
             return book;
         }
@@ -172,7 +170,7 @@ namespace DjvuApp.Model.Books
                 throw new ArgumentNullException("book");
             if (string.IsNullOrWhiteSpace(title))
                 throw new ArgumentException("title can't be empty", "title");
-            
+
             book.Title = title;
 
             var connection = await GetConnectionAsync();
@@ -181,7 +179,7 @@ namespace DjvuApp.Model.Books
 
         public async Task<IEnumerable<IBookmark>> GetBookmarksAsync(IBook book)
         {
-            if (book == null) 
+            if (book == null)
                 throw new ArgumentNullException("book");
 
             var sqliteBook = (SqliteBook)book;

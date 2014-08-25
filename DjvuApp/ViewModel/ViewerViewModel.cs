@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.Storage;
 using JetBrains.Annotations;
 using DjvuApp.ViewModel.Messages;
 using DjvuApp.Common;
@@ -117,24 +119,29 @@ namespace DjvuApp.ViewModel
 
         public RelayCommand GoToPreviousPageCommand { get; private set; }
 
+        public ICommand ShareCommand { get; private set; }
+
         private bool _isProgressVisible;
         private bool _isCurrentPageBookmarked;
         private DjvuDocument _currentDocument;
         private uint _currentPageNumber;
         private Outline _outline;
 
+        private readonly DataTransferManager _dataTransferManager;
         private readonly IBookProvider _provider;
         private ObservableCollection<IBookmark> _bookmarks;
         private IBook _book;
 
         public ViewerViewModel(IBookProvider provider)
         {
+            _dataTransferManager = DataTransferManager.GetForCurrentView();
             _provider = provider;
             ShowOutlineCommand = new RelayCommand(ShowOutline);
             JumpToPageCommand = new RelayCommand(ShowJumpToPageDialog);
             AddBookmarkCommand = new RelayCommand(AddBookmark);
             RemoveBookmarkCommand = new RelayCommand(RemoveBookmark);
             ShowBookmarksCommand = new RelayCommand(ShowBookmarks);
+            ShareCommand = new RelayCommand(DataTransferManager.ShowShareUI);
 
             GoToNextPageCommand = new RelayCommand(
                 () => CurrentPageNumber++, 
@@ -144,9 +151,24 @@ namespace DjvuApp.ViewModel
                 () => CurrentPageNumber > 1);
 
             MessengerInstance.Register<LoadedHandledMessage<IBook>>(this, message => LoadedHandler(message.Parameter));
+
+            MessengerInstance.Register<OnNavigatedFromMessage>(this,
+                message => _dataTransferManager.DataRequested -= DataRequestedHandler);
+            MessengerInstance.Register<OnNavigatedToMessage>(this,
+                message => _dataTransferManager.DataRequested += DataRequestedHandler);
         }
 
+        private async void DataRequestedHandler(DataTransferManager sender, DataRequestedEventArgs e)
+        {
+            var deferral = e.Request.GetDeferral();
 
+            e.Request.Data.Properties.Title = _book.Title;
+            var file = await StorageFile.GetFileFromPathAsync(_book.Path);
+            e.Request.Data.SetStorageItems(new IStorageItem[] {file}, true);
+
+            deferral.Complete();
+        }
+        
         private async void RemoveBookmark()
         {
             if (!IsCurrentPageBookmarked)

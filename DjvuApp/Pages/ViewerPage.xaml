@@ -14,8 +14,15 @@
     Tapped="UIElement_OnTapped">
     
     <i:Interaction.Behaviors>
-        <common:StatusBarBehavior IsVisible="{Binding IsProgressVisible}"/>
-        <common:ProgressIndicatorBehavior IsVisible="{Binding IsProgressVisible}"/>
+        <common:StatusBarBehavior
+            IsVisible="{Binding IsProgressVisible}"
+            BackgroundColor="{StaticResource PhoneAccentColor}"
+            ForegroundColor="White"
+            BackgroundOpacity="1"/>
+        <common:ProgressIndicatorBehavior
+            IsVisible="{Binding IsProgressVisible}"
+            Text="Loading..."
+            Value="{x:Null}"/>
     </i:Interaction.Behaviors>
     
     <controls:DocumentViewer
@@ -26,7 +33,7 @@
         <CommandBar 
             x:Name="appBar"
             Visibility="Collapsed"
-            Opacity="0.7"
+            Opacity="0.8"
             Opened="AppBar_OnOpened"
             Closed="AppBar_OnClosed">
             <CommandBar.PrimaryCommands>
@@ -63,6 +70,9 @@
                 <AppBarButton
                     Label="bookmarks"
                     Command="{Binding ShowBookmarksCommand}"/>
+                <AppBarButton
+                    Label="share"
+                    Command="{Binding ShareCommand}"/>
             </CommandBar.SecondaryCommands>
         </CommandBar>
     </Page.BottomAppBar>

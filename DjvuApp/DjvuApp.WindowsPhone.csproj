@@ -94,11 +94,14 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Common\OpenMenuFlyoutAction.cs" />
+    <Compile Include="Common\MenuFlyoutService.cs" />
     <Compile Include="Common\StringFormatConverter.cs" />
     <Compile Include="Misc\FrameworkElementExtensions.cs" />
     <Compile Include="Misc\IocContainer.cs" />
     <Compile Include="Common\IsNullToVisibilityConverter.cs" />
+    <Compile Include="Pages\AboutPage.xaml.cs">
+      <DependentUpon>AboutPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModel\Messages\LoadedHandledMessage.cs" />
     <Compile Include="Common\ProgressBehavior.cs" />
     <Compile Include="Common\StatusBarBehavior.cs" />
@@ -140,6 +143,7 @@
       <DependentUpon>OutlineDialogInternal.xaml</DependentUpon>
     </Compile>
     <Compile Include="Model\Outline\OutlineItem.cs" />
+    <Compile Include="ViewModel\Messages\OnNavigatedFromMessage.cs" />
     <Compile Include="ViewModel\Messages\OnNavigatedToMessage.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -196,6 +200,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dialogs\Internal\SelectBookmarkDialogInternal.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\AboutPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

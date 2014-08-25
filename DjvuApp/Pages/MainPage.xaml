@@ -41,9 +41,9 @@
         </Grid.RowDefinitions>
 
         <!-- TitlePanel -->
-        <StackPanel Grid.Row="0" Margin="24,17,0,28">
-            <TextBlock Text="DJVU READER" Style="{ThemeResource TitleTextBlockStyle}" Typography.Capitals="SmallCaps"/>
-            <TextBlock Text="my library" Margin="0,12,0,0" Style="{ThemeResource HeaderTextBlockStyle}"/>
+        <StackPanel Grid.Row="0" Margin="19,0,0,0">
+            <TextBlock Text="DJVU READER" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0"/>
+            <TextBlock Text="my library" Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
         </StackPanel>
 
         <Grid Grid.Row="1">
@@ -67,8 +67,8 @@
                     <DataTemplate>
                         <Grid
                             CommonNavigationTransitionInfo.IsStaggerElement="True"
-                            Margin="24,0,0,12">
-                            <FlyoutBase.AttachedFlyout>
+                            Margin="19,0,0,12">
+                            <common:MenuFlyoutService.MenuFlyout>
                                 <MenuFlyout>
                                     <MenuFlyoutItem 
                                         Command="{Binding DataContext.RenameBookCommand, ElementName=page}"
@@ -78,13 +78,12 @@
                                         Command="{Binding DataContext.RemoveBookCommand, ElementName=page}"
                                         CommandParameter="{Binding}"
                                         Text="remove"/>
+                                    <MenuFlyoutItem
+                                        Command="{Binding DataContext.ShareBookCommand, ElementName=page}"
+                                        CommandParameter="{Binding}"
+                                        Text="share"/>
                                 </MenuFlyout>
-                            </FlyoutBase.AttachedFlyout>
-                            <i:Interaction.Behaviors>
-                                <core:EventTriggerBehavior EventName="Holding">
-                                    <common:OpenMenuFlyoutAction />
-                                </core:EventTriggerBehavior>
-                            </i:Interaction.Behaviors>
+                            </common:MenuFlyoutService.MenuFlyout>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
@@ -111,6 +110,11 @@
                     Label="add"
                     Command="{Binding AddBookCommand}"/>
             </CommandBar.PrimaryCommands>
+            <CommandBar.SecondaryCommands>
+                <AppBarButton
+                    Label="about"
+                    Click="AboutButtonClickHandler"/>
+            </CommandBar.SecondaryCommands>
         </CommandBar>
     </Page.BottomAppBar>
 </Page>

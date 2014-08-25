@@ -6,10 +6,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.Foundation;
+using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.UI.Popups;
+using Windows.UI.Xaml.Input;
 using DjvuApp.Dialogs;
 using DjvuApp.Model.Books;
+using DjvuApp.ViewModel.Messages;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using JetBrains.Annotations;
@@ -18,10 +23,6 @@ namespace DjvuApp.ViewModel
 {
     public sealed class MainViewModel : ViewModelBase
     {
-        private ObservableCollection<IBook> _books;
-        private bool _isProgressVisible;
-        private readonly IBookProvider _bookProvider;
-
         public ObservableCollection<IBook> Books
         {
             get { return _books; }
@@ -60,6 +61,13 @@ namespace DjvuApp.ViewModel
 
         public ICommand AddBookCommand { get; private set; }
 
+        public ICommand ShareBookCommand { get; private set; }
+
+        private ObservableCollection<IBook> _books;
+        private bool _isProgressVisible;
+
+        private readonly IBookProvider _bookProvider;
+
         [UsedImplicitly]
         public MainViewModel(IBookProvider bookProvider)
         {
@@ -68,10 +76,33 @@ namespace DjvuApp.ViewModel
             RenameBookCommand = new RelayCommand<IBook>(RenameBook);
             RemoveBookCommand = new RelayCommand<IBook>(RemoveBook);
             AddBookCommand = new RelayCommand(AddBook);
-
+            ShareBookCommand = new RelayCommand<IBook>(ShareBook);
+            
             RefreshBooks();
         }
 
+        private void ShareBook(IBook book)
+        {
+            var dataTransferManager = DataTransferManager.GetForCurrentView();
+            TypedEventHandler<DataTransferManager, DataRequestedEventArgs> dataRequestedHandler = null;
+
+            dataRequestedHandler = async (sender, e) =>
+            {
+                dataTransferManager.DataRequested -= dataRequestedHandler;
+
+                var deferral = e.Request.GetDeferral();
+
+                e.Request.Data.Properties.Title = book.Title;
+                var file = await StorageFile.GetFileFromPathAsync(book.Path);
+                e.Request.Data.SetStorageItems(new IStorageItem[] { file }, true);
+
+                deferral.Complete();
+            };
+            
+            dataTransferManager.DataRequested += dataRequestedHandler;
+            DataTransferManager.ShowShareUI();
+        }
+        
         private void AddBook()
         {
             var picker = new FileOpenPicker();

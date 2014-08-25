@@ -54,7 +54,7 @@ namespace DjvuApp.Controls
             if (Source == null)
                 return;
 
-            UpdateZoomConstraints();
+            UpdateZoomConstraints(false);
         }
 
         private DjvuPageSource GetPage(uint pageNumber)
@@ -74,7 +74,7 @@ namespace DjvuApp.Controls
             return zoomFactor;
         }
 
-        private void UpdateZoomConstraints()
+        private void UpdateZoomConstraints(bool afterSourceChanged)
         {
             var normalZoomFactor = GetNormalZoomFactor(_viewModel.MaxWidth);
             var minZoomFactor = normalZoomFactor / 2;
@@ -91,7 +91,13 @@ namespace DjvuApp.Controls
             // Zooming bug workaround
             // Any offset greater than 2
             // fixes that issue
-            _scrollViewer.ChangeView(null, 2.000001D, normalZoomFactor, true);
+            _scrollViewer.ChangeView(
+                horizontalOffset: null, 
+                verticalOffset: afterSourceChanged 
+                    ? 2.000001D 
+                    : _scrollViewer.VerticalOffset, 
+                zoomFactor: normalZoomFactor, 
+                disableAnimation: true);
         }
 
         private void OnSourceChanged(DependencyPropertyChangedEventArgs e)
@@ -104,7 +110,7 @@ namespace DjvuApp.Controls
 
             listView.ItemsSource = _viewModel = new DjvuDocumentSource(Source);
 
-            UpdateZoomConstraints();
+            UpdateZoomConstraints(true);
         }
 
         private void OnPageNumberChanged(DependencyPropertyChangedEventArgs e)

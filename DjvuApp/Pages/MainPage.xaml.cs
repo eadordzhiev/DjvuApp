@@ -38,7 +38,12 @@ namespace DjvuApp.Pages
 
         private void ItemClickHandler(object sender, ItemClickEventArgs e)
         {
-            Frame.Navigate(typeof(ViewerPage), e.ClickedItem);
+            Frame.Navigate(typeof (ViewerPage), e.ClickedItem);
+        }
+
+        private void AboutButtonClickHandler(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof (AboutPage));
         }
     }
 }
