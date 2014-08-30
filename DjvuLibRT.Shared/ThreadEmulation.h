@@ -34,10 +34,6 @@
 
 #define GetTickCount() GetTickCount64()
 #define WaitForSingleObject(a, b)	WaitForSingleObjectEx(a, b, false);
-#define CreateEvent(lpEventAttributes, bManualReset, bInitialState, lpName) CreateEventEx(lpEventAttributes, lpName, (bManualReset ? CREATE_EVENT_MANUAL_RESET : 0) | (bInitialState ? CREATE_EVENT_INITIAL_SET : 0), EVENT_ALL_ACCESS)
-#define _beginthreadex(a,b,c,d,e,f) ThreadEmulation::CreateThread(a, b, (LPTHREAD_START_ROUTINE)c, d, e, nullptr)
-#define TerminateThread(a,b)
-#define InitializeCriticalSection(a) InitializeCriticalSectionEx(a, 0, 0);
 
 namespace ThreadEmulation
 {
@@ -62,4 +58,46 @@ namespace ThreadEmulation
 inline VOID WINAPI Sleep(_In_ DWORD dwMilliseconds)
 {
 	ThreadEmulation::Sleep(dwMilliseconds);
+}
+
+inline HANDLE WINAPI CreateEvent(
+	_In_opt_  LPSECURITY_ATTRIBUTES lpEventAttributes,
+	_In_      BOOL bManualReset,
+	_In_      BOOL bInitialState,
+	_In_opt_  LPCTSTR lpName
+	)
+{
+	DWORD dwFlags = 0;
+	if (bManualReset)
+		dwFlags |= CREATE_EVENT_MANUAL_RESET;
+	if (bInitialState)
+		dwFlags |= CREATE_EVENT_INITIAL_SET;
+	return CreateEventEx(lpEventAttributes, lpName, dwFlags, EVENT_ALL_ACCESS);
+}
+
+inline BOOL WINAPI TerminateThread(
+	_Inout_  HANDLE hThread,
+	_In_     DWORD dwExitCode
+	)
+{
+
+}
+
+inline void WINAPI InitializeCriticalSection(
+	_Out_  LPCRITICAL_SECTION lpCriticalSection
+	)
+{
+	InitializeCriticalSectionEx(lpCriticalSection, 4000, 0);
+}
+
+inline uintptr_t _beginthreadex( // NATIVE CODE
+	void *security,
+	unsigned stack_size,
+	unsigned(__stdcall *start_address)(void *),
+	void *arglist,
+	unsigned initflag,
+	unsigned *thrdaddr
+	)
+{
+	return (uintptr_t) ThreadEmulation::CreateThread(0, 0, (LPTHREAD_START_ROUTINE) start_address, arglist, 0, nullptr);
 }

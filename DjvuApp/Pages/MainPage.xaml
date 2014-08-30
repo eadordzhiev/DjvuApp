@@ -6,7 +6,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:i="using:Microsoft.Xaml.Interactivity"
     xmlns:common="using:DjvuApp.Common"
-    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     DataContext="{Binding MainViewModel, Source={StaticResource ViewModelLocator}}"
@@ -88,10 +87,23 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Image
+                                Width="33"
+                                Margin="0,0,18,5"
+                                Grid.RowSpan="2"
+                                VerticalAlignment="Bottom"
+                                Source="/Assets/page.png"/>
                             <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="1"
                                 Style="{StaticResource ListViewItemTextBlockStyle}"
                                 Text="{Binding Title}"/>
                             <TextBlock
+                                Grid.Column="1"
                                 Grid.Row="1"
                                 Style="{StaticResource ListViewItemSubheaderTextBlockStyle}"
                                 Text="{Binding LastOpeningTime}"/>

@@ -1,4 +1,5 @@
 ﻿using System;
+using Windows.ApplicationModel;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Microsoft.Xaml.Interactivity;
@@ -55,6 +56,9 @@ namespace DjvuApp.Common
 
         private static async void OnIsVisibleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
+            if (DesignMode.DesignModeEnabled)
+                return;
+
             bool isvisible = (bool)e.NewValue;
             if (isvisible)
             {
@@ -68,6 +72,9 @@ namespace DjvuApp.Common
 
         private static void OnTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
+            if (DesignMode.DesignModeEnabled)
+                return;
+
             string text = null;
             if (e.NewValue != null)
             {
@@ -78,6 +85,9 @@ namespace DjvuApp.Common
 
         private static void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
+            if (DesignMode.DesignModeEnabled)
+                return;
+
             double? val = (double?)e.NewValue;
             StatusBar.GetForCurrentView().ProgressIndicator.ProgressValue = val;
         }

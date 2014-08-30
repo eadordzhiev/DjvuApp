@@ -10,8 +10,13 @@ namespace DjvuApp.Dialogs
 {
     public static class OutlineDialog
     {
-        public static async Task<uint?> ShowAsync(Outline outline)
+        public static async Task<uint?> ShowAsync(IEnumerable<IOutlineItem> outlineItems)
         {
+            var outline = new
+            {
+                Title = "Outline",
+                Items = outlineItems
+            };
             var dialog = new OutlineDialogInternal(outline);
             var history = new Stack<OutlineDialogInternal>();
 

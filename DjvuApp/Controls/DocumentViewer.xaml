@@ -8,6 +8,7 @@
     d:DesignHeight="300"
     d:DesignWidth="400"
     Loaded="LoadedHandler"
+    Unloaded="UnloadedHandler"
     LayoutUpdated="LayoutUpdatedHandler">
 
     <UserControl.Resources>

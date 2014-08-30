@@ -83,6 +83,11 @@
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <Content Include="Assets\FileTypeLogo.png" />
+    <Content Include="Assets\page.png" />
+    <Content Include="Assets\PicoLyrics\1.png" />
+    <Content Include="Assets\PicoLyrics\2.png" />
+    <Content Include="Assets\PicoLyrics\3.png" />
+    <Content Include="Assets\PicoLyrics\Background300.png" />
     <Content Include="Assets\SplashScreen.scale-100.png" />
     <Content Include="Assets\SplashScreen.scale-140.png" />
     <Content Include="Assets\WideLogo.scale-100.png" />
@@ -94,8 +99,12 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Common\INavigationService.cs" />
     <Compile Include="Common\MenuFlyoutService.cs" />
+    <Compile Include="Common\NavigationService.cs" />
     <Compile Include="Common\StringFormatConverter.cs" />
+    <Compile Include="Djvu\DjvuAsyncDocument.cs" />
+    <Compile Include="Djvu\DjvuAsyncPage.cs" />
     <Compile Include="Misc\FrameworkElementExtensions.cs" />
     <Compile Include="Misc\IocContainer.cs" />
     <Compile Include="Common\IsNullToVisibilityConverter.cs" />
@@ -142,7 +151,6 @@
     <Compile Include="Dialogs\Internal\OutlineDialogInternal.xaml.cs">
       <DependentUpon>OutlineDialogInternal.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Model\Outline\OutlineItem.cs" />
     <Compile Include="ViewModel\Messages\OnNavigatedFromMessage.cs" />
     <Compile Include="ViewModel\Messages\OnNavigatedToMessage.cs" />
     <Compile Include="Properties\Annotations.cs" />

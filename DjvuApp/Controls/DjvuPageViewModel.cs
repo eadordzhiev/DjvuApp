@@ -3,11 +3,9 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.Foundation;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
+using DjvuApp.Djvu;
 using DjvuApp.Misc;
-using DjvuLibRT;
 using JetBrains.Annotations;
 
 namespace DjvuApp.Controls
@@ -44,19 +42,19 @@ namespace DjvuApp.Controls
             }
         }
 
-        private readonly DjvuDocument _document;
-        private readonly TasksQueue _queue;
-        private CancellationTokenSource _cts = new CancellationTokenSource();
-        private DjvuPage _page;
-        private ImageSource _source;
+        private static readonly TasksQueue _queue = new TasksQueue();
 
-        public DjvuPageSource(DjvuDocument document, PageInfo pageInfo, TasksQueue queue)
+        private readonly DjvuAsyncDocument _document;
+        private CancellationTokenSource _cts = new CancellationTokenSource();
+        private DjvuAsyncPage _page;
+        private ImageSource _source;
+        
+        public DjvuPageSource(DjvuAsyncDocument document, uint pageNumber, uint width, uint height)
         {
+            PageNumber = pageNumber;
+            Width = width;
+            Height = height;
             _document = document;
-            _queue = queue;
-            PageNumber = pageInfo.PageNumber;
-            Width = pageInfo.Width;
-            Height = pageInfo.Height;
         }
 
         private void Render()
@@ -85,14 +83,8 @@ namespace DjvuApp.Controls
 
         private async Task RenderAtScaleAsync(double scale)
         {
-            var pixelWidth = (int)(Width * scale);
-            var pixelHeight = (int)(Height * scale);
-            var size = new Size(pixelWidth, pixelHeight);
-            
-            var source = new WriteableBitmap(pixelWidth, pixelHeight);
-            await _page.RenderRegionAsync(source, size, new Rect(new Point(), size));
-
-            Source = source;
+            var bitmap = await _page.RenderPageAtScaleAsync(scale);
+            Source = bitmap;
             _source = null;
         }
 

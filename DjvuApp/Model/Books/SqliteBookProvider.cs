@@ -5,11 +5,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Windows.Storage;
+using DjvuApp.Djvu;
 using JetBrains.Annotations;
-using DjvuLibRT;
 using SQLite;
 
 namespace DjvuApp.Model.Books
@@ -114,21 +113,7 @@ namespace DjvuApp.Model.Books
             if (file == null)
                 throw new ArgumentNullException("file");
 
-            DjvuDocument document;
-
-            try
-            {
-                document = await DjvuDocument.LoadAsync(file.Path);
-            }
-            catch (Exception ex)
-            {
-                throw new DjvuDocumentException("Cannot open document.", ex);
-            }
-
-            if (document.Type == DocumentType.Indirect || document.Type == DocumentType.OldIndexed)
-            {
-                throw new DocumentTypeNotSupportedException("Indirect and old indexed documents are not supported.");
-            }
+            var document = await DjvuAsyncDocument.LoadFileAsync(file.Path);
 
             var guid = Guid.NewGuid();
             var properties = await file.GetBasicPropertiesAsync();
@@ -162,6 +147,13 @@ namespace DjvuApp.Model.Books
 
             var connection = await GetConnectionAsync();
             await connection.DeleteAsync(book);
+
+            var sqliteBook = (SqliteBook)book;
+            var bookmarksToRemove = await connection.Table<SqliteBookmark>().Where(bookmark => bookmark.BookId == sqliteBook.Id).ToListAsync();
+            foreach (var bookmark in bookmarksToRemove)
+            {
+                await connection.DeleteAsync(bookmark);
+            }
         }
 
         public async Task ChangeTitleAsync(IBook book, string title)

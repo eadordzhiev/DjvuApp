@@ -101,7 +101,7 @@ static void mutex_enter()
 {
   if (!InterlockedExchange(&ini, 1))
     {
-      InitializeCriticalSection(&cs);
+      InitializeCriticalSectionEx(&cs, 0, 0);
       ev = CreateEvent(NULL, TRUE, FALSE, NULL);
       assert(ev);
     }

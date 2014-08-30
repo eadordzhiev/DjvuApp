@@ -4,18 +4,21 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
+using Windows.UI.Popups;
+using Windows.UI.Xaml.Controls;
+using DjvuApp.Djvu;
 using JetBrains.Annotations;
 using DjvuApp.ViewModel.Messages;
 using DjvuApp.Common;
 using DjvuApp.Dialogs;
 using DjvuApp.Model.Books;
 using DjvuApp.Model.Outline;
-using DjvuLibRT;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 
@@ -56,7 +59,7 @@ namespace DjvuApp.ViewModel
             }
         }
 
-        public DjvuDocument CurrentDocument
+        public DjvuAsyncDocument CurrentDocument
         {
             get { return _currentDocument; }
 
@@ -89,7 +92,7 @@ namespace DjvuApp.ViewModel
             }
         }
 
-        public Outline Outline
+        public IEnumerable<IOutlineItem> Outline
         {
             get { return _outline; }
 
@@ -123,19 +126,21 @@ namespace DjvuApp.ViewModel
 
         private bool _isProgressVisible;
         private bool _isCurrentPageBookmarked;
-        private DjvuDocument _currentDocument;
+        private DjvuAsyncDocument _currentDocument;
         private uint _currentPageNumber;
-        private Outline _outline;
+        private IEnumerable<IOutlineItem> _outline;
 
         private readonly DataTransferManager _dataTransferManager;
         private readonly IBookProvider _provider;
+        private readonly INavigationService _navigationService;
         private ObservableCollection<IBookmark> _bookmarks;
         private IBook _book;
 
-        public ViewerViewModel(IBookProvider provider)
+        public ViewerViewModel(IBookProvider provider, INavigationService navigationService)
         {
             _dataTransferManager = DataTransferManager.GetForCurrentView();
             _provider = provider;
+            _navigationService = navigationService;
             ShowOutlineCommand = new RelayCommand(ShowOutline);
             JumpToPageCommand = new RelayCommand(ShowJumpToPageDialog);
             AddBookmarkCommand = new RelayCommand(AddBookmark);
@@ -220,28 +225,34 @@ namespace DjvuApp.ViewModel
             }
         }
 
+        private async void ShowFileOpeningError(IBook book)
+        {
+            var dialog = new MessageDialog("This file cannot be opened because it is damaged. You should remove this file.", "Can't open file");
+            dialog.Commands.Add(new UICommand("remove"));
+            await dialog.ShowAsync();
+            await _provider.RemoveBookAsync(book);
+            _navigationService.GoBack();
+        }
+
         private async void LoadedHandler(IBook book)
         {
             IsProgressVisible = true;
 
             _book = book;
-            DjvuDocument document;
+            DjvuAsyncDocument document;
 
             try
             {
-                document = await DjvuDocument.LoadAsync(book.Path);
+                document = await DjvuAsyncDocument.LoadFileAsync(book.Path);
             }
-            catch (Exception ex)
+            catch (DjvuDocumentException ex)
             {
-                // TODO: Добавить диалог удаления файла
-                throw;
+                IsProgressVisible = false;
+                ShowFileOpeningError(book);
+                return;
             }
 
-            var djvuOutline = document.GetBookmarks();
-            if (djvuOutline != null)
-            {
-                Outline = new Outline(djvuOutline);
-            }
+            Outline = document.GetOutline();
 
             _bookmarks = new ObservableCollection<IBookmark>(await _provider.GetBookmarksAsync(book));
             _bookmarks.CollectionChanged += (sender, e) => UpdateIsCurrentPageBookmarked();

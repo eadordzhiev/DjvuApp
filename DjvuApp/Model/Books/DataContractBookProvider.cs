@@ -8,8 +8,8 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Threading.Tasks;
 using Windows.Storage;
+using DjvuApp.Djvu;
 using JetBrains.Annotations;
-using DjvuLibRT;
 
 namespace DjvuApp.Model.Books
 {
@@ -99,20 +99,7 @@ namespace DjvuApp.Model.Books
             if (file == null)
                 throw new ArgumentNullException("file");
 
-            DjvuDocument document;
-            try
-            {
-                document = await DjvuDocument.LoadAsync(file.Path);
-            }
-            catch (COMException exception)
-            {
-                throw new DjvuDocumentException("Cannot open document.", exception);
-            }
-            
-            if (document.Type == DocumentType.Indirect || document.Type == DocumentType.OldIndexed)
-            {
-                throw new DocumentTypeNotSupportedException("Indirect and old indexed documents are not supported.");
-            }
+            var document = await DjvuAsyncDocument.LoadFileAsync(file.Path);
 
             var guid = Guid.NewGuid();
             var props = await file.GetBasicPropertiesAsync();

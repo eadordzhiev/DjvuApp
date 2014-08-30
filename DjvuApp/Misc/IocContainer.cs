@@ -1,5 +1,6 @@
 ﻿using System;
 using Windows.ApplicationModel;
+using DjvuApp.Common;
 using DjvuApp.Model.Books;
 using DjvuApp.ViewModel;
 using Microsoft.Practices.ServiceLocation;
@@ -26,12 +27,14 @@ namespace DjvuApp.Misc
         {
             if (DesignMode.DesignModeEnabled)
             {
-                container.RegisterInstance<IBookProvider>(new DataContractBookProvider());
+                container.RegisterInstance<IBookProvider>(new DataContractBookProvider(), new ContainerControlledLifetimeManager());
             }
             else
             {
-                container.RegisterInstance<IBookProvider>(new SqliteBookProvider());
+                container.RegisterInstance<IBookProvider>(new SqliteBookProvider(), new ContainerControlledLifetimeManager());
             }
+
+            container.RegisterInstance<INavigationService>(new NavigationService());
             
             container.RegisterType<MainViewModel>();
             container.RegisterType<ViewerViewModel>();

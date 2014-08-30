@@ -337,7 +337,7 @@ GPEnabled::ref()
 #if PARANOID_DEBUG
   assert (count >= 0);
 #endif
-  atomicIncrement(&count);
+  InterlockedIncrement((PLONG) &count);
 }
 
 inline void 
@@ -346,7 +346,7 @@ GPEnabled::unref()
 #if PARANOID_DEBUG
   assert (count > 0);
 #endif
-  if (! atomicDecrement(&count))
+  if (!InterlockedDecrement((PLONG) &count))
     destroy();
 }
 

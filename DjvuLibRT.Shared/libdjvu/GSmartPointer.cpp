@@ -108,6 +108,78 @@ GPEnabled::destroy()
 
 // ------ GPBASE
 
+#define CRITSEC
+#ifdef CRITSEC
+class CriticalSection
+{
+public:
+	CriticalSection()
+	{
+		::InitializeCriticalSectionEx(&m_rep, 4000, 0);
+	}
+	~CriticalSection()
+	{
+		::DeleteCriticalSection(&m_rep);
+	}
+
+	void Enter()
+	{
+		::EnterCriticalSection(&m_rep);
+	}
+	void Leave()
+	{
+		::LeaveCriticalSection(&m_rep);
+	}
+
+private:
+	// copy ops are private to prevent copying
+	CriticalSection(const CriticalSection&);
+	CriticalSection& operator=(const CriticalSection&);
+
+	CRITICAL_SECTION m_rep;
+};
+
+
+#define LOCKMASK 0x3f
+#define LOCKIDX(addr) ((((size_t)(addr))/sizeof(void*))&LOCKMASK)
+static CriticalSection locks[LOCKMASK+1];
+
+
+GPBase&
+GPBase::assign (const GPBase &sptr)
+{
+  CriticalSection *lockb = locks + LOCKIDX(&sptr);
+  lockb->Enter();
+  GPEnabled *nptr = sptr.ptr;
+  if (nptr)
+    nptr->ref();
+  lockb->Leave();
+  CriticalSection *locka = locks + LOCKIDX(this);
+  locka->Enter();
+  GPEnabled *old = ptr;
+  ptr = nptr;
+  locka->Leave();
+  if (old)
+    old->unref();
+  return *this;
+}
+
+GPBase&
+GPBase::assign (GPEnabled *nptr)
+{
+  if (nptr)
+    nptr->ref();
+  CriticalSection *locka = locks + LOCKIDX(this);
+  locka->Enter();
+  GPEnabled *old = ptr;
+  ptr = nptr;
+  locka->Leave();
+  if (old)
+    old->unref();
+  return *this;
+}
+
+#else
 
 #define LOCKMASK 0x3f
 #define LOCKIDX(addr) ((((size_t)(addr))/sizeof(void*))&LOCKMASK)
@@ -148,7 +220,7 @@ GPBase::assign (GPEnabled *nptr)
   return *this;
 }
 
-
+#endif
 
 
 // ------ GPBUFFERBASE

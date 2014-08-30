@@ -1,18 +1,11 @@
 ﻿using System;
-using Windows.ApplicationModel.DataTransfer;
-using Windows.Graphics.Display;
-using Windows.Storage;
-using Windows.Storage.Pickers;
 using Windows.UI;
 using Windows.UI.Input;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Navigation;
 using DjvuApp.Common;
-using DjvuApp.ViewModel;
 
 namespace DjvuApp.Pages
 {

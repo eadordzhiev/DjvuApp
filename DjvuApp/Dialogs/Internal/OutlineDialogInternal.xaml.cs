@@ -13,7 +13,7 @@ namespace DjvuApp.Dialogs.Internal
 
         public OutlineDialogInternal NextDialog { get; set; }
 
-        public OutlineDialogInternal(Outline outline)
+        public OutlineDialogInternal(object outline)
         {
             this.InitializeComponent();
 

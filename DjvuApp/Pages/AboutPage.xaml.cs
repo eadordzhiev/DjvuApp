@@ -1,4 +1,7 @@
-﻿using DjvuApp.Common;
+﻿using Windows.ApplicationModel.Email;
+using Windows.Storage;
+using Windows.System;
+using DjvuApp.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -107,5 +110,47 @@ namespace DjvuApp.Pages
         }
 
         #endregion
+
+        private async void ContactMeButtonClickHandler(object sender, RoutedEventArgs e)
+        {
+            var recipient = new EmailRecipient("useless_guy@mail.ru", "Useless guy");
+            var message = new EmailMessage();
+            message.To.Add(recipient);
+            message.Subject = "DjVu Reader";
+            await EmailManager.ShowComposeNewEmailAsync(message);
+        }
+
+        private async void ShowMyAppsButtonClickHandler(object sender, RoutedEventArgs e)
+        {
+            await Launcher.LaunchUriAsync(new Uri("zune:search?publisher=Useless guy"));
+        }
+
+        private async void ShowPicoLyricsButtonClickHandler(object sender, RoutedEventArgs e)
+        {
+            await Launcher.LaunchUriAsync(new Uri("zune:navigate?appid=75e3bd8f-3eee-df11-9264-00237de2db9e"));
+        }
+
+        private async void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/PicoLyrics/1.png"));
+            await Launcher.LaunchFileAsync(file);
+        }
+
+        private async void ButtonBase_OnClick1(object sender, RoutedEventArgs e)
+        {
+            var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/PicoLyrics/2.png"));
+            await Launcher.LaunchFileAsync(file);
+        }
+
+        private async void ButtonBase_OnClick2(object sender, RoutedEventArgs e)
+        {
+            var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/PicoLyrics/3.png"));
+            await Launcher.LaunchFileAsync(file);
+        }
+
+        private async void RateButtonClickHandler(object sender, RoutedEventArgs e)
+        {
+            await Launcher.LaunchUriAsync(new Uri("ms-windows-store:reviewapp"));
+        }
     }
 }

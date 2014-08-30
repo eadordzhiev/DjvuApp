@@ -7,6 +7,47 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
+    <Page.Resources>
+        <Style x:Key="ContentWrapperButtonStyle" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <ContentPresenter x:Name="Grid">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualStateGroup.Transitions>
+                                        <VisualTransition From="Pressed" To="PointerOver">
+                                            <Storyboard>
+                                                <PointerUpThemeAnimation Storyboard.TargetName="Grid"/>
+                                            </Storyboard>
+                                        </VisualTransition>
+                                        <VisualTransition From="PointerOver" To="Normal">
+                                            <Storyboard>
+                                                <PointerUpThemeAnimation Storyboard.TargetName="Grid"/>
+                                            </Storyboard>
+                                        </VisualTransition>
+                                        <VisualTransition From="Pressed" To="Normal">
+                                            <Storyboard>
+                                                <PointerUpThemeAnimation Storyboard.TargetName="Grid"/>
+                                            </Storyboard>
+                                        </VisualTransition>
+                                    </VisualStateGroup.Transitions>
+                                    <VisualState x:Name="Normal"/>
+                                    <VisualState x:Name="PointerOver"/>
+                                    <VisualState x:Name="Pressed">
+                                        <Storyboard>
+                                            <PointerDownThemeAnimation Storyboard.TargetName="Grid"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                        </ContentPresenter>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+
     <Page.Transitions>
         <TransitionCollection>
             <NavigationThemeTransition>
@@ -16,23 +57,85 @@
             </NavigationThemeTransition>
         </TransitionCollection>
     </Page.Transitions>
-    
-    <Grid x:Name="LayoutRoot">
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-
-        <!-- Title Panel -->
-        <StackPanel Grid.Row="0" Margin="19,0,0,0">
-            <TextBlock Text="DJVU READER" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0"/>
-            <TextBlock Text="about" Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
-        </StackPanel>
-
-        <!--TODO: Content should be placed within the following grid-->
-        <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
-
-        </Grid>
-    </Grid>
+    <Pivot Title="DJVU READER">
+        <PivotItem Header="about">
+            <StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border
+                        Width="150"
+                        Height="150"
+                        HorizontalAlignment="Left" 
+                        VerticalAlignment="Top" 
+                        Background="{StaticResource PhoneAccentBrush}">
+                        <Image Source="/Assets/Logo.png"/>
+                    </Border>
+                    <TextBlock Grid.Column="1" Margin="20,0,0,0" Style="{StaticResource BodyTextBlockStyle}">
+                        Version 1.0
+                        <LineBreak/>By Useless guy
+                        <LineBreak/>From Russia with love :)
+                    </TextBlock>
+                </Grid>
+                <Button 
+                    Margin="0,20,0,0"
+					Content="rate and review" Click="RateButtonClickHandler"/>
+                <Button 
+                    Margin="0,20,0,0"
+					Content="contact the author" Click="ContactMeButtonClickHandler"/>
+                <TextBlock 
+                	Margin="0,10"
+                	Text="Any comments and suggestions are welcome! I'll try to answer every your letter."
+                    Style="{StaticResource BodyTextBlockStyle}"/>
+                <Button Margin="0,20" Click="ShowMyAppsButtonClickHandler">my apps</Button>
+            </StackPanel>
+        </PivotItem>
+        <PivotItem Header="try picolyrics">
+            <ScrollViewer>
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border
+                        Width="150"
+                        Height="150"
+                        HorizontalAlignment="Left" 
+                        VerticalAlignment="Top">
+                            <Image Source="/Assets/PicoLyrics/Background300.png"/>
+                        </Border>
+                        <TextBlock Grid.Column="1" Margin="20,0,0,0" Style="{StaticResource BodyTextBlockStyle}">
+                       PicoLyrics is the best lyrics application for Windows Phone. It is the only application that scrolls lyrics along the music.
+                        </TextBlock>
+                    </Grid>
+                    <Button Margin="0,10" Click="ShowPicoLyricsButtonClickHandler">get app from store</Button>
+                    <TextBlock
+                    Margin="0,10"
+                    Style="{StaticResource ListViewItemTextBlockStyle}">Screenshots:</TextBlock>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Button Click="ButtonBase_OnClick" Style="{StaticResource ContentWrapperButtonStyle}" Grid.Column="0">
+                            <Image Source="/Assets/PicoLyrics/1.png"/>
+                        </Button>
+                        <Button Click="ButtonBase_OnClick1" Style="{StaticResource ContentWrapperButtonStyle}" Grid.Column="2">
+                            <Image Source="/Assets/PicoLyrics/2.png"/>
+                        </Button>
+                        <Button Click="ButtonBase_OnClick2" Style="{StaticResource ContentWrapperButtonStyle}" Grid.Column="4">
+                            <Image Source="/Assets/PicoLyrics/3.png"/>
+                        </Button>
+                    </Grid>
+                </StackPanel>
+            </ScrollViewer>
+        </PivotItem>
+    </Pivot>
 </Page>

@@ -14,8 +14,8 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using DjvuApp.Djvu;
 using DjvuApp.Misc;
-using DjvuLibRT;
 
 namespace DjvuApp.Controls
 {
@@ -26,9 +26,9 @@ namespace DjvuApp.Controls
             InitializeComponent();
         }
 
-        public DjvuDocument Source
+        public DjvuAsyncDocument Source
         {
-            get { return (DjvuDocument)GetValue(SourceProperty); }
+            get { return (DjvuAsyncDocument)GetValue(SourceProperty); }
             set { SetValue(SourceProperty, value); }
         }
 
@@ -39,7 +39,7 @@ namespace DjvuApp.Controls
         }
 
         public static readonly DependencyProperty SourceProperty =
-            DependencyProperty.Register("Source", typeof(DjvuDocument), typeof(DocumentViewer), new PropertyMetadata(null, SourceChangedCallback));
+            DependencyProperty.Register("Source", typeof(DjvuAsyncDocument), typeof(DocumentViewer), new PropertyMetadata(null, SourceChangedCallback));
 
         public static readonly DependencyProperty PageNumberProperty =
             DependencyProperty.Register("PageNumber", typeof(uint), typeof(DocumentViewer), new PropertyMetadata(0U, PageNumberChangedCallback));
@@ -207,6 +207,17 @@ namespace DjvuApp.Controls
             if (item != null)
             {
                 item.Dispose();
+            }
+        }
+
+        private void UnloadedHandler(object sender, RoutedEventArgs e)
+        {
+            if (_viewModel == null)
+                return;
+
+            foreach (var page in _viewModel)
+            {
+                page.Dispose();
             }
         }
     }

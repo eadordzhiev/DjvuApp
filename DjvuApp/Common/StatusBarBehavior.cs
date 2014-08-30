@@ -1,4 +1,5 @@
 ﻿using System;
+using Windows.ApplicationModel;
 using Microsoft.Xaml.Interactivity;
 using Windows.UI;
 using Windows.UI.ViewManagement;
@@ -55,7 +56,7 @@ namespace DjvuApp.Common
             typeof(Color),
             typeof(StatusBarBehavior),
             new PropertyMetadata(null, OnBackgroundChanged));
-
+        
         public void Attach(DependencyObject associatedObject)
         {
             OnIsVisibleChanged(this, null);
@@ -69,6 +70,9 @@ namespace DjvuApp.Common
         {
             var sender = (StatusBarBehavior) d;
 
+            if (DesignMode.DesignModeEnabled)
+                return;
+
             if (sender.IsVisible)
             {
                 await StatusBar.GetForCurrentView().ShowAsync();
@@ -80,16 +84,25 @@ namespace DjvuApp.Common
         }
         private static void OnOpacityChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
+            if (DesignMode.DesignModeEnabled)
+                return;
+
             StatusBar.GetForCurrentView().BackgroundOpacity = (double)e.NewValue;
         }
 
         private static void OnForegroundColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
+            if (DesignMode.DesignModeEnabled)
+                return;
+
             StatusBar.GetForCurrentView().ForegroundColor = (Color)e.NewValue;
         }
 
         private static void OnBackgroundChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
+            if (DesignMode.DesignModeEnabled)
+                return;
+
             var behavior = (StatusBarBehavior)d;
             StatusBar.GetForCurrentView().BackgroundColor = behavior.BackgroundColor;
 
