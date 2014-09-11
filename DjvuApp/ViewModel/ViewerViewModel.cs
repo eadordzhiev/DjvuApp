@@ -12,6 +12,7 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 using Windows.UI.Popups;
 using Windows.UI.Xaml.Controls;
+using DjvuApp.Controls;
 using DjvuApp.Djvu;
 using JetBrains.Annotations;
 using DjvuApp.ViewModel.Messages;
@@ -252,16 +253,24 @@ namespace DjvuApp.ViewModel
                 return;
             }
 
+            await _provider.UpdateLastOpeningTimeAsync(book);
+
             Outline = document.GetOutline();
 
             _bookmarks = new ObservableCollection<IBookmark>(await _provider.GetBookmarksAsync(book));
             _bookmarks.CollectionChanged += (sender, e) => UpdateIsCurrentPageBookmarked();
 
-            CurrentDocument = document;
+            DjvuPageSource.PageRendered += PageRenderedHandler;
 
+            CurrentDocument = document;
+        }
+
+        private void PageRenderedHandler(object sender, EventArgs e)
+        {
+            DjvuPageSource.PageRendered -= PageRenderedHandler;
             IsProgressVisible = false;
         }
-        
+
         private void OnCurrentPageNumberChanged()
         {
             UpdateIsCurrentPageBookmarked();

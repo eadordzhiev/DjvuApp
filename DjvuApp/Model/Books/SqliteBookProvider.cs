@@ -13,7 +13,7 @@ using SQLite;
 
 namespace DjvuApp.Model.Books
 {
-    public sealed class SqliteBookProvider : IBookProvider
+    public class SqliteBookProvider : IBookProvider
     {
         private sealed class SqliteBook : IBook
         {
@@ -206,6 +206,15 @@ namespace DjvuApp.Model.Books
 
             var connection = await GetConnectionAsync();
             await connection.DeleteAsync(bookmark);
+        }
+
+        public async Task UpdateLastOpeningTimeAsync(IBook book)
+        {
+            var sqliteBook = (SqliteBook)book;
+            sqliteBook.LastOpeningTime = DateTime.Now;
+
+            var connection = await GetConnectionAsync();
+            await connection.UpdateAsync(sqliteBook);
         }
 
         private static async Task<IStorageFolder> GetBooksFolderAsync()

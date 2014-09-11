@@ -25,5 +25,7 @@ namespace DjvuApp.Model.Books
             uint pageNumber);
 
         Task RemoveBookmarkAsync([NotNull] IBookmark bookmark);
+
+        Task UpdateLastOpeningTimeAsync(IBook book);
     }
 }

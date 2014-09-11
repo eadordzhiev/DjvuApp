@@ -160,6 +160,11 @@ namespace DjvuApp.Model.Books
             throw new NotImplementedException();
         }
 
+        public Task UpdateLastOpeningTimeAsync(IBook book)
+        {
+            return Task.Delay(1);
+        }
+
         private async Task SaveBookDescriptionAsync(IBook book)
         {
             if (book == null)

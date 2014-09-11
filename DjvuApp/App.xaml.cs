@@ -76,6 +76,8 @@ namespace DjvuApp
                 
                 // Place the frame in the current Window
                 Window.Current.Content = rootFrame;
+
+                ApplicationView.GetForCurrentView().SetDesiredBoundsMode(ApplicationViewBoundsMode.UseCoreWindow);
             }
 
             if (rootFrame.Content == null)

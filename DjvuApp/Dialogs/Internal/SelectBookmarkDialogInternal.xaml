@@ -10,24 +10,35 @@
     Style="{StaticResource FullScreenContentDialogStyle}"
     DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
-    <ListView
-        ItemsSource="{Binding Items}"
-        ItemClick="ItemClickHandler"
-        IsItemClickEnabled="True">
-        <ItemsControl.ItemContainerStyle>
-            <Style TargetType="ContentControl">
-                <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
-            </Style>
-        </ItemsControl.ItemContainerStyle>
-        <ItemsControl.ItemTemplate>
-            <DataTemplate>
-                <TextBlock
-                    Margin="0,12"
-                    Text="{Binding Title}"
-                    TextWrapping="Wrap"
-                    Style="{StaticResource ListViewItemTextBlockStyle}"/>
-            </DataTemplate>
-        </ItemsControl.ItemTemplate>
-    </ListView>
+    <Grid>
+        <TextBlock 
+            Style="{StaticResource ListViewEmptyStaticTextBlockStyle}" 
+            Text="No saved bookmarks"
+            Margin="2.5"
+            Visibility="{Binding Items, Converter={StaticResource IsNullOrEmptyToVisibilityConverter}, ConverterParameter=negate}"/>
+        <ListView
+            ItemsSource="{Binding Items}"
+            ItemClick="ItemClickHandler"
+            IsItemClickEnabled="True">
+            <ItemsControl.ItemContainerStyle>
+                <Style TargetType="ContentControl">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+                </Style>
+            </ItemsControl.ItemContainerStyle>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Margin="2.5,0,0,20">
+                        <TextBlock
+                        Text="{Binding Title}"
+                        Style="{StaticResource ListViewItemTextBlockStyle}"/>
+                        <TextBlock Style="{StaticResource ListViewItemSubheaderTextBlockStyle}">
+                            <Run Text="Page "/>
+                            <Run Text="{Binding PageNumber}"/>
+                        </TextBlock>
+                    </StackPanel>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ListView>
+    </Grid>
 
 </ContentDialog>

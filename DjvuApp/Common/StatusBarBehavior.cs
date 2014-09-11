@@ -19,7 +19,7 @@ namespace DjvuApp.Common
             DependencyProperty.Register("IsVisible",
             typeof(bool),
             typeof(StatusBarBehavior),
-            new PropertyMetadata(true, OnIsVisibleChanged));
+            new PropertyMetadata(false, OnIsVisibleChanged));
 
         public double BackgroundOpacity
         {
@@ -56,10 +56,18 @@ namespace DjvuApp.Common
             typeof(Color),
             typeof(StatusBarBehavior),
             new PropertyMetadata(null, OnBackgroundChanged));
+
+        private static bool isVisible = false;
+
+        static StatusBarBehavior()
+        {
+            StatusBar.GetForCurrentView().Showing += (s, e) => isVisible = true;
+            StatusBar.GetForCurrentView().Hiding += (s, e) => isVisible = false;
+        }
         
         public void Attach(DependencyObject associatedObject)
         {
-            OnIsVisibleChanged(this, null);
+            //OnIsVisibleChanged(this, null);
         }
 
         public void Detach() { }
@@ -75,7 +83,8 @@ namespace DjvuApp.Common
 
             if (sender.IsVisible)
             {
-                await StatusBar.GetForCurrentView().ShowAsync();
+                if (!isVisible)
+                    await StatusBar.GetForCurrentView().ShowAsync();
             }
             else
             {

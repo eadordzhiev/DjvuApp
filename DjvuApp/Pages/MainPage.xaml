@@ -15,7 +15,7 @@
         <TransitionCollection>
             <NavigationThemeTransition>
                 <NavigationThemeTransition.DefaultNavigationTransitionInfo>
-                    <CommonNavigationTransitionInfo IsStaggeringEnabled="True"/>
+                    <CommonNavigationTransitionInfo IsStaggeringEnabled="False"/>
                 </NavigationThemeTransition.DefaultNavigationTransitionInfo>
             </NavigationThemeTransition>
         </TransitionCollection>
@@ -33,19 +33,30 @@
             Value="{x:Null}"/>
     </i:Interaction.Behaviors>
 
-    <Grid>
+    <Grid Margin="0,25.5,0,57.5">
+        
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <!-- TitlePanel -->
-        <StackPanel Grid.Row="0" Margin="19,0,0,0">
-            <TextBlock Text="DJVU READER" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0"/>
-            <TextBlock Text="my library" Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
-        </StackPanel>
+        <Grid Grid.Row="0" Margin="19,0,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Text="DJVU READER" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0"/>
+            <TextBlock Grid.Row="1" Text="my library" Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
+            <TextBlock Grid.Row="0" Text="TRIAL VERSION, ? DAYS LEFT" Margin="0,0,12,0" x:Name="trialExpirationTextBlock" HorizontalAlignment="Right" VerticalAlignment="Bottom" Foreground="Red" Style="{StaticResource BaseTextBlockStyle}"/>
+        </Grid>
 
         <Grid Grid.Row="1">
+            <TextBlock 
+                Style="{StaticResource ListViewEmptyStaticTextBlockStyle}" 
+                Margin="19,0,19,0"
+                Text="Tap the plus sign to add a new book."
+                Visibility="{Binding Books, Converter={StaticResource IsNullOrEmptyToVisibilityConverter}, ConverterParameter=negate}"/>
             <ListView
                 ItemsSource="{Binding Books}"
                 ItemClick="ItemClickHandler"
@@ -64,9 +75,7 @@
                 </ItemsControl.ItemContainerStyle>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Grid
-                            CommonNavigationTransitionInfo.IsStaggerElement="True"
-                            Margin="19,0,0,12">
+                        <Grid Margin="19,0,0,20">
                             <common:MenuFlyoutService.MenuFlyout>
                                 <MenuFlyout>
                                     <MenuFlyoutItem 
@@ -92,19 +101,22 @@
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
                             <Image
-                                Width="33"
-                                Margin="0,0,18,5"
+                                Height="42.5"
+                                Stretch="Uniform"
+                                Margin="0,-3,16,3"
                                 Grid.RowSpan="2"
                                 VerticalAlignment="Bottom"
-                                Source="/Assets/page.png"/>
+                                Source="/Assets/PageIcon.png"/>
                             <TextBlock
                                 Grid.Row="0"
                                 Grid.Column="1"
+                                TextLineBounds="TrimToCapHeight"
                                 Style="{StaticResource ListViewItemTextBlockStyle}"
                                 Text="{Binding Title}"/>
                             <TextBlock
                                 Grid.Column="1"
                                 Grid.Row="1"
+                                TextLineBounds="TrimToBaseline"
                                 Style="{StaticResource ListViewItemSubheaderTextBlockStyle}"
                                 Text="{Binding LastOpeningTime}"/>
                         </Grid>
@@ -123,6 +135,10 @@
                     Command="{Binding AddBookCommand}"/>
             </CommandBar.PrimaryCommands>
             <CommandBar.SecondaryCommands>
+                <AppBarButton
+                    x:Name="buyAppBarButton"
+                    Label="buy application"
+                    Click="BuyButtonClickHandler"/>
                 <AppBarButton
                     Label="about"
                     Click="AboutButtonClickHandler"/>

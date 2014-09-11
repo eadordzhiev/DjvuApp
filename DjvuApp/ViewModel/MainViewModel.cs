@@ -140,7 +140,7 @@ namespace DjvuApp.ViewModel
 
             var books = 
                 from book in await _bookProvider.GetBooksAsync()
-                orderby book.CreationTime descending 
+                orderby book.LastOpeningTime descending 
                 select book;
 
             Books = new ObservableCollection<IBook>(books);

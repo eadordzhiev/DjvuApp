@@ -50,7 +50,7 @@
                     <FontIcon Glyph="&#xE1CE;"/>
                 </AppBarButton>
                 <AppBarButton
-                    Visibility="{Binding Outline, Converter={StaticResource IsNotNullToVisibilityConverter}}"
+                    Visibility="{Binding Outline, Converter={StaticResource IsNullOrEmptyToVisibilityConverter}}"
                     Label="outline"
                     Icon="Bookmarks"
                     Command="{Binding ShowOutlineCommand}"/>

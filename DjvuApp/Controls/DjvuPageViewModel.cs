@@ -12,6 +12,8 @@ namespace DjvuApp.Controls
 {
     public sealed class DjvuPageSource : INotifyPropertyChanged, IDisposable
     {
+        public static event EventHandler PageRendered;
+
         [UsedImplicitly]
         public uint PageNumber { get; set; }
 
@@ -45,10 +47,13 @@ namespace DjvuApp.Controls
         private static readonly TasksQueue _queue = new TasksQueue();
 
         private readonly DjvuAsyncDocument _document;
+
         private CancellationTokenSource _cts = new CancellationTokenSource();
+
         private DjvuAsyncPage _page;
+
         private ImageSource _source;
-        
+
         public DjvuPageSource(DjvuAsyncDocument document, uint pageNumber, uint width, uint height)
         {
             PageNumber = pageNumber;
@@ -86,6 +91,8 @@ namespace DjvuApp.Controls
             var bitmap = await _page.RenderPageAtScaleAsync(scale);
             Source = bitmap;
             _source = null;
+
+            OnPageRendered();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -95,6 +102,12 @@ namespace DjvuApp.Controls
         {
             var handler = PropertyChanged;
             if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private static void OnPageRendered()
+        {
+            var handler = PageRendered;
+            if (handler != null) handler(null, EventArgs.Empty);
         }
     }
 }

@@ -80,7 +80,7 @@ inline BOOL WINAPI TerminateThread(
 	_In_     DWORD dwExitCode
 	)
 {
-
+	return TRUE;
 }
 
 inline void WINAPI InitializeCriticalSection(

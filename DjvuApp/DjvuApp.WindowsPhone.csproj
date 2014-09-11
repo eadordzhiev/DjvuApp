@@ -16,6 +16,8 @@
     <ProjectTypeGuids>{76F1466A-8B6D-4E39-A767-685A06062A39};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+    <AppxBundlePlatforms>x86|arm</AppxBundlePlatforms>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -83,7 +85,9 @@
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <Content Include="Assets\FileTypeLogo.png" />
-    <Content Include="Assets\page.png" />
+    <Content Include="Assets\PageIcon.scale-100.png" />
+    <Content Include="Assets\PageIcon.scale-140.png" />
+    <Content Include="Assets\PageIcon.scale-240.png" />
     <Content Include="Assets\PicoLyrics\1.png" />
     <Content Include="Assets\PicoLyrics\2.png" />
     <Content Include="Assets\PicoLyrics\3.png" />
@@ -93,6 +97,7 @@
     <Content Include="Assets\WideLogo.scale-100.png" />
     <Content Include="Assets\WideLogo.scale-140.png" />
     <Content Include="Assets\WideLogo.scale-240.png" />
+    <Content Include="TrialSimulation\License.xml" />
     <None Include="Package.StoreAssociation.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -107,7 +112,8 @@
     <Compile Include="Djvu\DjvuAsyncPage.cs" />
     <Compile Include="Misc\FrameworkElementExtensions.cs" />
     <Compile Include="Misc\IocContainer.cs" />
-    <Compile Include="Common\IsNullToVisibilityConverter.cs" />
+    <Compile Include="Common\IsNullOrEmptyToVisibilityConverter.cs" />
+    <Compile Include="Model\Books\CachedSqliteBookProvider.cs" />
     <Compile Include="Pages\AboutPage.xaml.cs">
       <DependentUpon>AboutPage.xaml</DependentUpon>
     </Compile>
@@ -254,10 +260,6 @@
     <Reference Include="GalaSoft.MvvmLight, Version=4.4.32.18939, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\MvvmLightLibs.4.4.32.1\lib\wpa81\GalaSoft.MvvmLight.dll</HintPath>
-    </Reference>
-    <Reference Include="GalaSoft.MvvmLight.Extras, Version=4.4.32.18940, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\MvvmLightLibs.4.4.32.1\lib\wpa81\GalaSoft.MvvmLight.Extras.dll</HintPath>
     </Reference>
     <Reference Include="GalaSoft.MvvmLight.Platform, Version=4.4.32.18940, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

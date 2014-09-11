@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Windows.Graphics.Display;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -26,7 +27,6 @@ namespace DjvuApp.Pages
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             _navigationHelper.OnNavigatedFrom(e);
-            ApplicationView.GetForCurrentView().SetDesiredBoundsMode(ApplicationViewBoundsMode.UseVisible);
 
             Messenger.Default.Send(new OnNavigatedFromMessage(null));
         }
@@ -34,9 +34,13 @@ namespace DjvuApp.Pages
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             _navigationHelper.OnNavigatedTo(e);
-            ApplicationView.GetForCurrentView().SetDesiredBoundsMode(ApplicationViewBoundsMode.UseCoreWindow);
-            _book = (IBook) e.Parameter;
 
+            DisplayInformation.AutoRotationPreferences 
+                = DisplayOrientations.Portrait 
+                | DisplayOrientations.Landscape 
+                | DisplayOrientations.LandscapeFlipped;
+            
+            _book = (IBook) e.Parameter;
             Messenger.Default.Send(new OnNavigatedToMessage(null));
         }
 

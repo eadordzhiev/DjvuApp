@@ -12,7 +12,7 @@
         <misc:ViewModelLocator x:Key="ViewModelLocator"/>
         <common:StringFormatConverter x:Key="StringFormatConverter"/>
         <common:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-        <common:IsNotNullToVisibilityConverter x:Key="IsNotNullToVisibilityConverter"/>
+        <common:IsNullOrEmptyToVisibilityConverter x:Key="IsNullOrEmptyToVisibilityConverter"/>
 
         <Style x:Key="FullScreenContentDialogStyle" TargetType="ContentDialog">
             <Setter Property="Template">
