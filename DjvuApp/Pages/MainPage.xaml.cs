@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
+using Windows.ApplicationModel.Resources;
 using Windows.ApplicationModel.Store;
 using Windows.Graphics.Display;
 using Windows.UI;
@@ -21,11 +22,13 @@ namespace DjvuApp.Pages
     public sealed partial class MainPage : Page
     {
         private readonly NavigationHelper _navigationHelper;
+        private readonly ResourceLoader _resourceLoader;
 
         public MainPage()
         {
             InitializeComponent();
             _navigationHelper = new NavigationHelper(this);
+            _resourceLoader = ResourceLoader.GetForCurrentView();
         }
 
         protected async override void OnNavigatedTo(NavigationEventArgs e)
@@ -75,14 +78,17 @@ namespace DjvuApp.Pages
                 if (licenseInformation.IsTrial)
                 {
                     var trialTimeLeft = licenseInformation.ExpirationDate - DateTimeOffset.Now;
-                    trialExpirationTextBlock.Text = string.Format("TRIAL VERSION, {0} DAYS LEFT", Math.Ceiling(trialTimeLeft.TotalDays));
+                    var formatString = _resourceLoader.GetString("TrialNotificationFormat");
+                    trialExpirationTextBlock.Text = string.Format(formatString, Math.Ceiling(trialTimeLeft.TotalDays));
                 }
             }
             else
             {
-                var dialog = new MessageDialog("Your license has expired. We hope you enjoyed using this application.",
-                    "DjVu Reader");
-                dialog.Commands.Add(new UICommand("buy", async command =>
+                var title = _resourceLoader.GetString("ExpirationDialog_Title");
+                var content = _resourceLoader.GetString("ExpirationDialog_Content");
+                var buyButtonCaption = _resourceLoader.GetString("ExpirationDialog_BuyButton_Caption");
+                var dialog = new MessageDialog(title, content);
+                dialog.Commands.Add(new UICommand(buyButtonCaption, async command =>
                 {
                     await CurrentApp.RequestAppPurchaseAsync(false);
                     if (!CurrentApp.LicenseInformation.IsActive)

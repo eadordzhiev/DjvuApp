@@ -15,13 +15,13 @@ namespace DjvuApp.Controls
         public static event EventHandler PageRendered;
 
         [UsedImplicitly]
-        public uint PageNumber { get; set; }
+        public uint PageNumber { get; private set; }
 
         [UsedImplicitly]
-        public uint Width { get; set; }
+        public uint Width { get; private set; }
 
         [UsedImplicitly]
-        public uint Height { get; set; }
+        public uint Height { get; private set; }
 
         [UsedImplicitly]
         public ImageSource Source
@@ -54,7 +54,12 @@ namespace DjvuApp.Controls
 
         private ImageSource _source;
 
-        public DjvuPageSource(DjvuAsyncDocument document, uint pageNumber, uint width, uint height)
+        public DjvuPageSource(
+            DjvuAsyncDocument document, 
+            uint pageNumber, uint width, 
+            uint height, 
+            double scaleFactor, 
+            double previewScaleFactor)
         {
             PageNumber = pageNumber;
             Width = width;

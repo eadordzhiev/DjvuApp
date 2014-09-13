@@ -9,12 +9,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.ApplicationModel.Resources;
 using Windows.Storage;
 using Windows.UI.Popups;
 using Windows.UI.Xaml.Controls;
+using JetBrains.Annotations;
 using DjvuApp.Controls;
 using DjvuApp.Djvu;
-using JetBrains.Annotations;
 using DjvuApp.ViewModel.Messages;
 using DjvuApp.Common;
 using DjvuApp.Dialogs;
@@ -134,6 +135,7 @@ namespace DjvuApp.ViewModel
         private readonly DataTransferManager _dataTransferManager;
         private readonly IBookProvider _provider;
         private readonly INavigationService _navigationService;
+        private readonly ResourceLoader _resourceLoader;
         private ObservableCollection<IBookmark> _bookmarks;
         private IBook _book;
 
@@ -142,6 +144,8 @@ namespace DjvuApp.ViewModel
             _dataTransferManager = DataTransferManager.GetForCurrentView();
             _provider = provider;
             _navigationService = navigationService;
+            _resourceLoader = ResourceLoader.GetForCurrentView();
+
             ShowOutlineCommand = new RelayCommand(ShowOutline);
             JumpToPageCommand = new RelayCommand(ShowJumpToPageDialog);
             AddBookmarkCommand = new RelayCommand(AddBookmark);
@@ -228,8 +232,12 @@ namespace DjvuApp.ViewModel
 
         private async void ShowFileOpeningError(IBook book)
         {
-            var dialog = new MessageDialog("This file cannot be opened because it is damaged. You should remove this file.", "Can't open file");
-            dialog.Commands.Add(new UICommand("remove"));
+            var title = _resourceLoader.GetString("FileDamagedDialog_Title");
+            var content = _resourceLoader.GetString("FileDamagedDialog_Content");
+            var removeButtonCaption = _resourceLoader.GetString("FileDamagedDialog_RemoveButton_Caption");
+
+            var dialog = new MessageDialog(content, title);
+            dialog.Commands.Add(new UICommand(removeButtonCaption));
             await dialog.ShowAsync();
             await _provider.RemoveBookAsync(book);
             _navigationService.GoBack();

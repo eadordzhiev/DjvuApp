@@ -20,6 +20,7 @@
             ForegroundColor="White"
             BackgroundOpacity="1"/>
         <common:ProgressIndicatorBehavior
+            x:Uid="LoadingMessage"
             IsVisible="{Binding IsProgressVisible}"
             Text="Loading..."
             Value="{x:Null}"/>
@@ -38,40 +39,48 @@
             Closed="AppBar_OnClosed">
             <CommandBar.PrimaryCommands>
                 <AppBarButton
+                    x:Uid="ViewerPage_AddBookmarkAppBarButton"
                     Command="{Binding AddBookmarkCommand}"
                     Visibility="{Binding IsCurrentPageBookmarked, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Invert}"
                     Label="add bookmark">
                     <FontIcon Glyph="&#xE1CF;"/>
                 </AppBarButton>
                 <AppBarButton
+                    x:Uid="ViewerPage_RemoveBookmarkAppBarButton"
                     Command="{Binding RemoveBookmarkCommand}"
                     Visibility="{Binding IsCurrentPageBookmarked, Converter={StaticResource BooleanToVisibilityConverter}}"
                     Label="remove bookmark">
                     <FontIcon Glyph="&#xE1CE;"/>
                 </AppBarButton>
                 <AppBarButton
+                    x:Uid="ViewerPage_OutlineAppBarButton"
                     Visibility="{Binding Outline, Converter={StaticResource IsNullOrEmptyToVisibilityConverter}}"
                     Label="outline"
                     Icon="Bookmarks"
                     Command="{Binding ShowOutlineCommand}"/>
                 <AppBarButton
+                    x:Uid="ViewerPage_PreviousPageAppBarButton"
                     Label="previous"
                     Icon="Back"
                     Command="{Binding GoToPreviousPageCommand}"/>
                 <AppBarButton
+                    x:Uid="ViewerPage_NextPageAppBarButton"
                     Label="next"
                     Icon="Forward"
                     Command="{Binding GoToNextPageCommand}"/>
             </CommandBar.PrimaryCommands>
             <CommandBar.SecondaryCommands>
                 <AppBarButton
-                    Label="jump to page"
+                    x:Uid="ViewerPage_JumpToPageAppBarButton"
+                    Label="jump to page..."
                     Command="{Binding JumpToPageCommand}"/>
                 <AppBarButton
-                    Label="bookmarks"
+                    x:Uid="ViewerPage_ShowBookmarksAppBarButton"
+                    Label="bookmarks..."
                     Command="{Binding ShowBookmarksCommand}"/>
                 <AppBarButton
-                    Label="share"
+                    x:Uid="ViewerPage_ShareAppBarButton"
+                    Label="share..."
                     Command="{Binding ShareCommand}"/>
             </CommandBar.SecondaryCommands>
         </CommandBar>

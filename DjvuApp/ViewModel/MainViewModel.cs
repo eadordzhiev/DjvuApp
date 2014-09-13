@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Pickers;
@@ -67,11 +68,13 @@ namespace DjvuApp.ViewModel
         private bool _isProgressVisible;
 
         private readonly IBookProvider _bookProvider;
+        private readonly ResourceLoader _resourceLoader;
 
         [UsedImplicitly]
         public MainViewModel(IBookProvider bookProvider)
         {
             _bookProvider = bookProvider;
+            _resourceLoader = ResourceLoader.GetForCurrentView();
 
             RenameBookCommand = new RelayCommand<IBook>(RenameBook);
             RemoveBookCommand = new RelayCommand<IBook>(RemoveBook);
@@ -122,14 +125,19 @@ namespace DjvuApp.ViewModel
 
         private async void RemoveBook(IBook book)
         {
-            var dialog = new MessageDialog("If you delete this document, you won't be able to recover it later." +
-                " All the progress will also be deleted from your phone.", string.Format("Delete {0}?", book.Title));
-            dialog.Commands.Add(new UICommand("delete", async command =>
+            var titleFormat = _resourceLoader.GetString("RemoveBookDialog_Title");
+            var title = string.Format(titleFormat, book.Title);
+            var content = _resourceLoader.GetString("RemoveBookDialog_Content");
+            var removeButtonCaption = _resourceLoader.GetString("RemoveBookDialog_RemoveButton_Caption");
+            var cancelButtonCaption = _resourceLoader.GetString("RemoveBookDialog_CancelButton_Caption");
+
+            var dialog = new MessageDialog(content, title);
+            dialog.Commands.Add(new UICommand(removeButtonCaption, async command =>
             {
                 Books.Remove(book);
                 await _bookProvider.RemoveBookAsync(book);
             }));
-            dialog.Commands.Add(new UICommand("cancel"));
+            dialog.Commands.Add(new UICommand(cancelButtonCaption));
 
             await dialog.ShowAsync();
         }

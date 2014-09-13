@@ -58,8 +58,13 @@
         </TransitionCollection>
     </Page.Transitions>-->
 
-    <Pivot Title="DJVU READER">
-        <PivotItem Header="about">
+    <Pivot>
+        <Pivot.Title>
+            <TextBlock
+                x:Uid="ApplicationTitle"
+                Text="DJVU READER"/>
+        </Pivot.Title>
+        <PivotItem x:Uid="AboutPage_AboutSection" Header="about">
             <StackPanel>
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -74,68 +79,100 @@
                         Background="{StaticResource PhoneAccentBrush}">
                         <Image Source="/Assets/Logo.png"/>
                     </Border>
-                    <TextBlock Grid.Column="1" Margin="20,0,0,0" Style="{StaticResource BodyTextBlockStyle}">
+                    <TextBlock 
+                        x:Uid="AboutPage_AboutSection_Version"
+                        Grid.Column="1" 
+                        Margin="20,0,0,0" 
+                        Style="{StaticResource BodyTextBlockStyle}">
                         Version 1.0
                         <LineBreak/>By Useless guy
                         <LineBreak/>From Russia with love :)
                     </TextBlock>
                 </Grid>
-                <Button 
+                <Button
+                    x:Uid="AboutPage_AboutSection_RateButton"
                     Margin="0,20,0,0"
-					Content="rate and review" Click="RateButtonClickHandler"/>
+					Content="rate and review" 
+                    Click="RateButtonClickHandler"/>
                 <Button 
+                    x:Uid="AboutPage_AboutSection_ContactMeButton"
                     Margin="0,20,0,0"
-					Content="contact the author" Click="ContactMeButtonClickHandler"/>
+					Content="contact the author" 
+                    Click="ContactMeButtonClickHandler"/>
                 <TextBlock 
+                    x:Uid="AboutPage_AboutSection_ContactMeComment"
                 	Margin="0,10"
                 	Text="Any comments and suggestions are welcome! I'll try to answer every your letter."
                     Style="{StaticResource BodyTextBlockStyle}"/>
-                <Button Margin="0,20" Click="ShowMyAppsButtonClickHandler">my apps</Button>
+                <Button 
+                    x:Uid="AboutPage_AboutSection_MyAppsButton"
+                    Margin="0,20" 
+                    Click="ShowMyAppsButtonClickHandler"
+                    Content="my apps"/>
             </StackPanel>
         </PivotItem>
-        <PivotItem Header="try picolyrics">
-            <ScrollViewer>
-                <StackPanel>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Border
+
+        <PivotItem 
+            x:Uid="AboutPage_PicolyricsSection" 
+            Header="try picolyrics">
+            <StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border
                         Width="150"
                         Height="150"
                         HorizontalAlignment="Left" 
                         VerticalAlignment="Top">
-                            <Image Source="/Assets/PicoLyrics/Background300.png"/>
-                        </Border>
-                        <TextBlock Grid.Column="1" Margin="20,0,0,0" Style="{StaticResource BodyTextBlockStyle}">
-                       PicoLyrics is the best lyrics application for Windows Phone. It is the only application that scrolls lyrics along the music.
-                        </TextBlock>
-                    </Grid>
-                    <Button Margin="0,10" Click="ShowPicoLyricsButtonClickHandler">get app from store</Button>
-                    <TextBlock
+                        <Image Source="/Assets/PicoLyrics/Background300.png"/>
+                    </Border>
+                    <TextBlock 
+                        x:Uid="AboutPage_PicolyricsSection_Description"
+                        Grid.Column="1"
+                        Margin="20,0,0,0"
+                        Style="{StaticResource BodyTextBlockStyle}"
+                        Text="PicoLyrics is the best lyrics application for Windows Phone. It is the only application that scrolls lyrics along the music."/>
+                </Grid>
+                <Button
+                    x:Uid="AboutPage_PicolyricsSection_BuyButton"
                     Margin="0,10"
-                    Style="{StaticResource ListViewItemTextBlockStyle}">Screenshots:</TextBlock>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition Width="10"/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition Width="10"/>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
-                        <Button Click="ButtonBase_OnClick" Style="{StaticResource ContentWrapperButtonStyle}" Grid.Column="0">
-                            <Image Source="/Assets/PicoLyrics/1.png"/>
-                        </Button>
-                        <Button Click="ButtonBase_OnClick1" Style="{StaticResource ContentWrapperButtonStyle}" Grid.Column="2">
-                            <Image Source="/Assets/PicoLyrics/2.png"/>
-                        </Button>
-                        <Button Click="ButtonBase_OnClick2" Style="{StaticResource ContentWrapperButtonStyle}" Grid.Column="4">
-                            <Image Source="/Assets/PicoLyrics/3.png"/>
-                        </Button>
-                    </Grid>
-                </StackPanel>
-            </ScrollViewer>
+                    Content="get app from store"
+                    Click="ShowPicoLyricsButtonClickHandler"/>
+                <TextBlock
+                    x:Uid="AboutPage_PicolyricsSection_ScreenshotsHeader"
+                    Margin="0,0,0,10"
+                    Style="{StaticResource ListViewItemTextBlockStyle}"
+                    Text="screenshots"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Button
+                        Click="ButtonBase_OnClick"
+                        Style="{StaticResource ContentWrapperButtonStyle}"
+                        Grid.Column="0">
+                        <Image Source="/Assets/PicoLyrics/1.png"/>
+                    </Button>
+                    <Button
+                        Click="ButtonBase_OnClick1"
+                        Style="{StaticResource ContentWrapperButtonStyle}"
+                        Grid.Column="2">
+                        <Image Source="/Assets/PicoLyrics/2.png"/>
+                    </Button>
+                    <Button
+                        Click="ButtonBase_OnClick2" 
+                        Style="{StaticResource ContentWrapperButtonStyle}"
+                        Grid.Column="4">
+                        <Image Source="/Assets/PicoLyrics/3.png"/>
+                    </Button>
+                </Grid>
+            </StackPanel>
         </PivotItem>
     </Pivot>
 </Page>

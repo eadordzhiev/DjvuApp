@@ -8,10 +8,12 @@
     Title="BOOKMARKS"
     FullSizeDesired="True"
     Style="{StaticResource FullScreenContentDialogStyle}"
-    DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    DataContext="{Binding RelativeSource={RelativeSource Self}}"
+    x:Uid="SelectBookmarkDialog">
 
     <Grid>
         <TextBlock 
+            x:Uid="SelectBookmarkDialog_NoBookmarksHint"
             Style="{StaticResource ListViewEmptyStaticTextBlockStyle}" 
             Text="No saved bookmarks"
             Margin="2.5"
@@ -29,10 +31,10 @@
                 <DataTemplate>
                     <StackPanel Margin="2.5,0,0,20">
                         <TextBlock
-                        Text="{Binding Title}"
-                        Style="{StaticResource ListViewItemTextBlockStyle}"/>
+                            Text="{Binding Title}"
+                            Style="{StaticResource ListViewItemTextBlockStyle}"/>
                         <TextBlock Style="{StaticResource ListViewItemSubheaderTextBlockStyle}">
-                            <Run Text="Page "/>
+                            <Run x:Uid="SelectBookmarkDialog_BookmarkSubheader" Text="Page "/>
                             <Run Text="{Binding PageNumber}"/>
                         </TextBlock>
                     </StackPanel>

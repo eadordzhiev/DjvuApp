@@ -12,12 +12,12 @@
     SecondaryButtonText="cancel"
     SecondaryButtonClick="CancelButtonClickHandler"
     Loaded="LoadedHandler"
-    DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    DataContext="{Binding RelativeSource={RelativeSource Self}}"
+    x:Uid="RenameDialog">
 
-    <Grid>
-        <TextBox 
-            TabIndex="0"
-            Header="Name"
-            Text="{Binding NewName, Mode=TwoWay}"/>
-    </Grid>
+    <TextBox 
+        x:Uid="RenameDialog_NewNameField"
+        TabIndex="0"
+        Header="Name"
+        Text="{Binding NewName, Mode=TwoWay}"/>
 </ContentDialog>

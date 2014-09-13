@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace DjvuApp.Model.Outline
 {
-    class FakeOutlineItem : IOutlineItem
+    public sealed class FakeOutlineItem : IOutlineItem
     {
         public string Title { get; private set; }
         public uint PageNumber { get; private set; }

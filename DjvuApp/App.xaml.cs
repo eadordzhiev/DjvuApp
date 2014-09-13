@@ -137,7 +137,6 @@ namespace DjvuApp
 
         protected override void OnFileActivated(FileActivatedEventArgs args)
         {
-            Debug.WriteLine("OnFileActivated(), PreviousExecutionState = {0}", args.PreviousExecutionState);
             base.OnFileActivated(args);
 
             var file = args.Files.First() as IStorageFile;

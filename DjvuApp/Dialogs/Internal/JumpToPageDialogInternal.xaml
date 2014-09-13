@@ -10,22 +10,22 @@
     PrimaryButtonText="jump"
     IsPrimaryButtonEnabled="False"
     Loaded="LoadedHandler"
-    x:Name="dialog">
+    x:Uid="JumpToPageDialog"
+    DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
-    <StackPanel DataContext="{Binding ElementName=dialog}">
-        <TextBlock TextWrapping="Wrap">
-            <TextBlock.Text>
-                Type the number of the page you would like to jump to in document.
-            </TextBlock.Text>
-        </TextBlock>
+    <StackPanel>
+        <TextBlock
+            x:Uid="JumpToPageDialog_Designation"
+            TextWrapping="Wrap"
+            Style="{StaticResource BaseTextBlockStyle}"
+            Text="Type the number of the page you would like to jump to in document."/>
         <TextBox
+            x:Uid="JumpToPageDialog_PageNumberField"
             Header="Page number"
             InputScope="Number"
             Text="{Binding PageNumberText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
         <TextBlock TextWrapping="Wrap">
-            <Run>
-                The total number of pages is
-            </Run>
+            <Run x:Uid="JumpToPageDialog_TotalPageNumber" Text="The total number of pages is "/>
             <Run Text="{Binding PageCount}"/>
         </TextBlock>
     </StackPanel>

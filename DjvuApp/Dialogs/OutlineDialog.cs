@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Resources;
 using DjvuApp.Dialogs.Internal;
 using DjvuApp.Model.Outline;
 
@@ -12,9 +13,11 @@ namespace DjvuApp.Dialogs
     {
         public static async Task<uint?> ShowAsync(IEnumerable<IOutlineItem> outlineItems)
         {
+            var resourceLoader = ResourceLoader.GetForCurrentView();
+
             var outline = new
             {
-                Title = "Outline",
+                Title = resourceLoader.GetString("OutlineDialog_Title"),
                 Items = outlineItems
             };
             var dialog = new OutlineDialogInternal(outline);

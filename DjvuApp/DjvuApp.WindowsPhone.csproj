@@ -99,6 +99,8 @@
     <Content Include="Assets\WideLogo.scale-240.png" />
     <Content Include="TrialSimulation\License.xml" />
     <None Include="Package.StoreAssociation.xml" />
+    <PRIResource Include="strings\en\Resources.resw" />
+    <PRIResource Include="strings\ru\Resources.resw" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">

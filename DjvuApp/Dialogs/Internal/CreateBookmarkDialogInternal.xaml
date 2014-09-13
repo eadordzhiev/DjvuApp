@@ -13,12 +13,12 @@
     SecondaryButtonText="cancel"
     SecondaryButtonClick="CancelButtonClickHandler"
     Loaded="LoadedHandler"
-    DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    DataContext="{Binding RelativeSource={RelativeSource Self}}"
+    x:Uid="CreateBookmarkDialog">
 
-    <Grid>
-        <TextBox 
-            TabIndex="0"
-            Header="Name"
-            Text="{Binding BookmarkTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-    </Grid>
+    <TextBox 
+        x:Uid="CreateBookmarkDialog_NameField"
+        TabIndex="0"
+        Header="Name"
+        Text="{Binding BookmarkTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 </ContentDialog>
