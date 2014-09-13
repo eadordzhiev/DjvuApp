@@ -164,6 +164,24 @@ From Russia with love :)</value>
   <data name="CreateBookmarkDialog_NameField.Header" xml:space="preserve">
     <value>Name</value>
   </data>
+  <data name="DocumentOpeningErrorDialog_Content" xml:space="preserve">
+    <value>This file cannot be opened because it is damaged. If this file is correct and opens in others applications, please report about this file to the developer.</value>
+  </data>
+  <data name="DocumentOpeningErrorDialog_OkButton_Caption" xml:space="preserve">
+    <value>ok</value>
+  </data>
+  <data name="DocumentOpeningErrorDialog_Title" xml:space="preserve">
+    <value>Can't open file</value>
+  </data>
+  <data name="DocumentTypeIsNotSupportedDialog_Content" xml:space="preserve">
+    <value>The file cannot be opened because this application supports only bundled and single page djvu files.</value>
+  </data>
+  <data name="DocumentTypeIsNotSupportedDialog_OkButton_Caption" xml:space="preserve">
+    <value>ok</value>
+  </data>
+  <data name="DocumentTypeIsNotSupportedDialog_Title" xml:space="preserve">
+    <value>Can't open file</value>
+  </data>
   <data name="ExpirationDialog_BuyButton_Caption" xml:space="preserve">
     <value>buy</value>
   </data>

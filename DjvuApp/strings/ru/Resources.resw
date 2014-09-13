@@ -163,6 +163,24 @@ By Useless guy</value>
   <data name="CreateBookmarkDialog_NameField.Header" xml:space="preserve">
     <value>Название</value>
   </data>
+  <data name="DocumentOpeningErrorDialog_Content" xml:space="preserve">
+    <value>Этот файл не может быть открыт, так как он поврежден. В случае, если этот файл цел и открывается в других приложениях, сообщите разработчику об этом файле.</value>
+  </data>
+  <data name="DocumentOpeningErrorDialog_OkButton_Caption" xml:space="preserve">
+    <value>ок</value>
+  </data>
+  <data name="DocumentOpeningErrorDialog_Title" xml:space="preserve">
+    <value>Невозможно открыть файл</value>
+  </data>
+  <data name="DocumentTypeIsNotSupportedDialog_Content" xml:space="preserve">
+    <value>Этот файл не может быть открыт, так как данное приложение поддерживает только "bundled" и "single page" djvu-файлы.</value>
+  </data>
+  <data name="DocumentTypeIsNotSupportedDialog_OkButton_Caption" xml:space="preserve">
+    <value>ок</value>
+  </data>
+  <data name="DocumentTypeIsNotSupportedDialog_Title" xml:space="preserve">
+    <value>Невозможно открыть файл</value>
+  </data>
   <data name="ExpirationDialog_BuyButton_Caption" xml:space="preserve">
     <value>купить</value>
   </data>

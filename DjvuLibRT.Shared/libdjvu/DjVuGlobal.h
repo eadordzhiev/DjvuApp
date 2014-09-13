@@ -64,7 +64,7 @@
 
 #include "ThreadEmulation.h"
 #define DEBUGLVL 0
-//#define THREADMODEL NOTHREADS
+#define THREADMODEL NOTHREADS
 
 #if defined(UNDER_CE)
 # ifndef __WCEALT_H__

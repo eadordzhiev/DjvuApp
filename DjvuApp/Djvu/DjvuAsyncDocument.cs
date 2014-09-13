@@ -56,9 +56,9 @@ namespace DjvuApp.Djvu
                 _semaphore.Release();
             }
 
-            if (document.Type == DocumentType.Indirect || document.Type == DocumentType.OldIndexed)
+            if (document.Type != DocumentType.SinglePage && document.Type != DocumentType.Bundled && document.Type != DocumentType.OldBundled)
             {
-                throw new DocumentTypeNotSupportedException("Indirect and old indexed documents are not supported.");
+                throw new DocumentTypeNotSupportedException("Unsupported document type. Only bundled and single page documents are supported.");
             }
 
             return new DjvuAsyncDocument(document);

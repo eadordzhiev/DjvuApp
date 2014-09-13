@@ -7,10 +7,12 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Display;
 using Windows.Storage;
+using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -150,12 +152,27 @@ namespace DjvuApp
         private async void OpenFile(IStorageFile file)
         {
             var tmpFile = await file.CopyAsync(
-                destinationFolder: ApplicationData.Current.TemporaryFolder, 
-                desiredNewName: file.Name, 
+                destinationFolder: ApplicationData.Current.TemporaryFolder,
+                desiredNewName: file.Name,
                 option: NameCollisionOption.ReplaceExisting);
 
             var provider = ServiceLocator.Current.GetInstance<IBookProvider>();
-            var book = await provider.AddBookAsync(tmpFile);
+
+            IBook book;
+            try
+            {
+                book = await provider.AddBookAsync(tmpFile);
+            }
+            catch (DocumentTypeNotSupportedException ex)
+            {
+                ShowDocumentTypeIsNotSupportedMessage();
+                return;
+            }
+            catch (DjvuDocumentException ex)
+            {
+                ShowDocumentOpeningErrorMessage();
+                return;
+            }
 
             try
             {
@@ -163,13 +180,39 @@ namespace DjvuApp
             }
             catch (UnauthorizedAccessException)
             {
-                
+
             }
 
             OnLaunched(null);
 
-            var frame = (Frame)Window.Current.Content;
-            frame.Navigate(typeof(ViewerPage), book);
+            var frame = (Frame) Window.Current.Content;
+            frame.Navigate(typeof (ViewerPage), book);
+        }
+
+        private async void ShowDocumentOpeningErrorMessage()
+        {
+            var resourceLoader = ResourceLoader.GetForCurrentView();
+            var title = resourceLoader.GetString("DocumentOpeningErrorDialog_Title");
+            var content = resourceLoader.GetString("DocumentOpeningErrorDialog_Content");
+            var okButtonCaption = resourceLoader.GetString("DocumentOpeningErrorDialog_OkButton_Caption");
+
+            var dialog = new MessageDialog(content, title);
+            dialog.Commands.Add(new UICommand(okButtonCaption, a => { }));
+            await dialog.ShowAsync();
+            Exit();
+        }
+
+        private async void ShowDocumentTypeIsNotSupportedMessage()
+        {
+            var resourceLoader = ResourceLoader.GetForCurrentView();
+            var title = resourceLoader.GetString("DocumentTypeIsNotSupportedDialog_Title");
+            var content = resourceLoader.GetString("DocumentTypeIsNotSupportedDialog_Content");
+            var okButtonCaption = resourceLoader.GetString("DocumentTypeIsNotSupportedDialog_OkButton_Caption");
+
+            var dialog = new MessageDialog(content, title);
+            dialog.Commands.Add(new UICommand(okButtonCaption, a => { }));
+            await dialog.ShowAsync();
+            Exit();
         }
 
         protected override void OnActivated(IActivatedEventArgs args)

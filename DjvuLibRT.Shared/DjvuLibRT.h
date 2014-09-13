@@ -75,14 +75,15 @@ namespace DjvuLibRT
 		}
 		static IAsyncOperation<DjvuDocument^>^ LoadAsync(String^ path);
 		Array<DjvuBookmark>^ GetBookmarks();
-		Array<PageInfo>^ GetPageInfos();
 		IAsyncOperation<DjvuPage^>^ GetPageAsync(unsigned int pageNumber);
+		Array<PageInfo>^ GetPageInfos();
 	private:
 		ddjvu_context_t* context;
 		ddjvu_format_t* format;
 		ddjvu_document_t* document = nullptr;
 		unsigned int pageCount = 0;
 		DocumentType doctype;
+		Array<PageInfo>^ pageInfos;
 
 		DjvuDocument(const char* path);
 	internal:

@@ -507,9 +507,10 @@ msg_prep_info(GUTF8String message)
     msg_push_nothrow(xhead(DDJVU_ERROR,x),\
                      msg_prep_error(m,__func__,__FILE__,__LINE__))
 #else
-# define ERROR1(x, m) \
-    msg_push_nothrow(xhead(DDJVU_ERROR,x),\
-                     msg_prep_error(m,0,__FILE__,__LINE__))
+//# define ERROR1(x, m) \
+//    msg_push_nothrow(xhead(DDJVU_ERROR,x),\
+//                     msg_prep_error(m,0,__FILE__,__LINE__))
+#define ERROR1(x, m) throw
 #endif
 
 
