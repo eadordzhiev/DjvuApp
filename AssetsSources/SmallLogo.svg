@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="360"
+   height="360"
+   id="svg5176"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="SmallLogo.svg">
+  <defs
+     id="defs5178" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="138.6497"
+     inkscape:cy="117.79581"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1842"
+     inkscape:window-height="1051"
+     inkscape:window-x="69"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata5181">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-692.36218)">
+    <rect
+       style="fill:#6a00ff;fill-opacity:1;stroke:none"
+       id="rect4070"
+       width="360"
+       height="360"
+       x="0"
+       y="692.36218"
+       inkscape:export-xdpi="26.5"
+       inkscape:export-ydpi="26.5"
+       inkscape:export-filename="C:\Users\Desktop1\Desktop\SmallLogo.scale-240.png" />
+    <path
+       style="fill:none;stroke:#ffffff;stroke-width:16.5762043;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 90.193129,849.77409 c 0,0 101.113301,114.57947 118.582911,128.24802 25.93652,20.29312 53.15017,18.33712 66.06559,4.39432 12.9154,-13.94254 13.517,-39.28814 -2.39207,-63.69313 C 260.58148,900.51727 138.17614,768.10532 131.123,761.27312 120.48766,750.97093 98.951003,746.97653 85.40842,759.26197 c -13.542626,12.28546 -12.280182,35.07479 -1.518639,47.08393 11.305828,12.61652 76.624679,86.657 113.766429,126.48122 10.00114,10.72348 25.12105,13.97892 34.3734,5.78335 9.25164,-8.19491 8.4531,-22.98334 -1.90394,-35.13587 -21.80759,-25.58819 -67.36125,-73.58858 -67.36125,-73.58858"
+       id="path4066"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cszsszssssc"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+  </g>
+</svg>

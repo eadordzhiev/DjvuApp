@@ -85,13 +85,13 @@
         </Style>
         
         <Style x:Key="CircleButtonStyle" TargetType="Button">
-            <Setter Property="MinWidth" Value="38.5"/>
-            <Setter Property="MinHeight" Value="38.5"/>
-            <Setter Property="Template">
+        	<Setter Property="MinWidth" Value="38.5"/>
+        	<Setter Property="MinHeight" Value="38.5"/>
+        	<Setter Property="Template">
         		<Setter.Value>
         			<ControlTemplate TargetType="Button">
-                        <Grid x:Name="Grid" Background="Transparent">
-                            <VisualStateManager.VisualStateGroups>
+        				<Grid x:Name="Grid" Background="Transparent">
+        					<VisualStateManager.VisualStateGroups>
         						<VisualStateGroup x:Name="CommonStates">
         							<VisualStateGroup.Transitions>
         								<VisualTransition From="Pressed" To="PointerOver">
@@ -139,10 +139,10 @@
         						</VisualStateGroup>
         					</VisualStateManager.VisualStateGroups>
         					<Grid HorizontalAlignment="Center" Height="38.5" Width="38.5" Margin="{TemplateBinding Padding}">
-								<Ellipse x:Name="Border" Fill="{TemplateBinding Background}" Height="38.5" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="2.5" UseLayoutRounding="False" Width="38.5"/>
-								<ContentPresenter x:Name="ContentPresenter" AutomationProperties.AccessibilityView="Raw" Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-							</Grid>
-                        </Grid>
+        						<Ellipse x:Name="Border" Fill="{TemplateBinding Background}" Height="38.5" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="2.5" UseLayoutRounding="False" Width="38.5"/>
+        						<ContentPresenter x:Name="ContentPresenter" AutomationProperties.AccessibilityView="Raw" Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+        					</Grid>
+        				</Grid>
         			</ControlTemplate>
         		</Setter.Value>
         	</Setter>

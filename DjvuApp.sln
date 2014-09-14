@@ -16,47 +16,47 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{0E59AE
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Store", "Store", "{9F06FC0A-37F6-424E-B477-2BBD0762863B}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AssetsSources", "AssetsSources", "{3DA3F9EE-A6F3-4421-999D-C5C17FB97819}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\..\..\Desktop\pics\StoreLogo300x300.png = ..\..\..\..\Desktop\pics\StoreLogo300x300.png
-		..\..\..\..\Desktop\pics\StoreSquareLogo358x358.png = ..\..\..\..\Desktop\pics\StoreSquareLogo358x358.png
-		..\..\..\..\Desktop\pics\StoreWideLogo358x173.png = ..\..\..\..\Desktop\pics\StoreWideLogo358x173.png
+		AssetsSources\PageIcon.svg = AssetsSources\PageIcon.svg
+		AssetsSources\SmallLogo.svg = AssetsSources\SmallLogo.svg
+		AssetsSources\SplashScreen.svg = AssetsSources\SplashScreen.svg
+		AssetsSources\Square71x71Logo.svg = AssetsSources\Square71x71Logo.svg
+		AssetsSources\StoreLogo.svg = AssetsSources\StoreLogo.svg
+		AssetsSources\WideLogo.svg = AssetsSources\WideLogo.svg
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Screenshots", "Screenshots", "{362BA1C0-508E-4DAF-8E66-ECB0DBB6012B}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "en", "en", "{EE35DA8B-C000-4ED4-9B26-5008A880ACE4}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Store", "Store", "{0559B6B3-E309-44B5-BAE0-C20533F7D286}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\..\..\Desktop\pics\Screenshots\en\1.png = ..\..\..\..\Desktop\pics\Screenshots\en\1.png
-		..\..\..\..\Desktop\pics\Screenshots\en\2.png = ..\..\..\..\Desktop\pics\Screenshots\en\2.png
-		..\..\..\..\Desktop\pics\Screenshots\en\3.png = ..\..\..\..\Desktop\pics\Screenshots\en\3.png
-		..\..\..\..\Desktop\pics\Screenshots\en\4.png = ..\..\..\..\Desktop\pics\Screenshots\en\4.png
-		..\..\..\..\Desktop\pics\Screenshots\en\5.png = ..\..\..\..\Desktop\pics\Screenshots\en\5.png
-		..\..\..\..\Desktop\pics\Screenshots\en\6.png = ..\..\..\..\Desktop\pics\Screenshots\en\6.png
-		..\..\..\..\Desktop\pics\Screenshots\en\7.png = ..\..\..\..\Desktop\pics\Screenshots\en\7.png
-		..\..\..\..\Desktop\pics\Screenshots\en\8.png = ..\..\..\..\Desktop\pics\Screenshots\en\8.png
+		Store\StoreLogo300x300.png = Store\StoreLogo300x300.png
+		Store\StoreSquareLogo358x358.png = Store\StoreSquareLogo358x358.png
+		Store\StoreWideLogo358x173.png = Store\StoreWideLogo358x173.png
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ru", "ru", "{685C6A84-894E-4C60-A8FF-E78007CE597E}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Screenshots", "Screenshots", "{4457C2EE-1588-4190-8643-0716E1CA0148}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "en", "en", "{CFBA9269-0C45-4724-9AA4-6465470FB692}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\..\..\Desktop\pics\Screenshots\ru\1.png = ..\..\..\..\Desktop\pics\Screenshots\ru\1.png
-		..\..\..\..\Desktop\pics\Screenshots\ru\2.png = ..\..\..\..\Desktop\pics\Screenshots\ru\2.png
-		..\..\..\..\Desktop\pics\Screenshots\ru\3.png = ..\..\..\..\Desktop\pics\Screenshots\ru\3.png
-		..\..\..\..\Desktop\pics\Screenshots\ru\4.png = ..\..\..\..\Desktop\pics\Screenshots\ru\4.png
-		..\..\..\..\Desktop\pics\Screenshots\ru\5.png = ..\..\..\..\Desktop\pics\Screenshots\ru\5.png
-		..\..\..\..\Desktop\pics\Screenshots\ru\6.png = ..\..\..\..\Desktop\pics\Screenshots\ru\6.png
-		..\..\..\..\Desktop\pics\Screenshots\ru\7.png = ..\..\..\..\Desktop\pics\Screenshots\ru\7.png
-		..\..\..\..\Desktop\pics\Screenshots\ru\8.png = ..\..\..\..\Desktop\pics\Screenshots\ru\8.png
+		Store\Screenshots\en\1.png = Store\Screenshots\en\1.png
+		Store\Screenshots\en\2.png = Store\Screenshots\en\2.png
+		Store\Screenshots\en\3.png = Store\Screenshots\en\3.png
+		Store\Screenshots\en\4.png = Store\Screenshots\en\4.png
+		Store\Screenshots\en\5.png = Store\Screenshots\en\5.png
+		Store\Screenshots\en\6.png = Store\Screenshots\en\6.png
+		Store\Screenshots\en\7.png = Store\Screenshots\en\7.png
+		Store\Screenshots\en\8.png = Store\Screenshots\en\8.png
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AssetsSources", "AssetsSources", "{0FE46679-88EF-4CB5-BC04-6CCEFAA73FEF}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ru", "ru", "{774769EA-59EA-44D4-AEB0-4F77EA6BA01B}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\..\..\Desktop\pics\Assets\PageIcon.svg = ..\..\..\..\Desktop\pics\Assets\PageIcon.svg
-		..\..\..\..\Desktop\pics\Assets\SmallLogo.svg = ..\..\..\..\Desktop\pics\Assets\SmallLogo.svg
-		..\..\..\..\Desktop\pics\Assets\SplashScreen.svg = ..\..\..\..\Desktop\pics\Assets\SplashScreen.svg
-		..\..\..\..\Desktop\pics\Assets\Square71x71Logo.svg = ..\..\..\..\Desktop\pics\Assets\Square71x71Logo.svg
-		..\..\..\..\Desktop\pics\Assets\StoreLogo.svg = ..\..\..\..\Desktop\pics\Assets\StoreLogo.svg
-		..\..\..\..\Desktop\pics\Assets\WideLogo.svg = ..\..\..\..\Desktop\pics\Assets\WideLogo.svg
+		Store\Screenshots\ru\1.png = Store\Screenshots\ru\1.png
+		Store\Screenshots\ru\2.png = Store\Screenshots\ru\2.png
+		Store\Screenshots\ru\3.png = Store\Screenshots\ru\3.png
+		Store\Screenshots\ru\4.png = Store\Screenshots\ru\4.png
+		Store\Screenshots\ru\5.png = Store\Screenshots\ru\5.png
+		Store\Screenshots\ru\6.png = Store\Screenshots\ru\6.png
+		Store\Screenshots\ru\7.png = Store\Screenshots\ru\7.png
+		Store\Screenshots\ru\8.png = Store\Screenshots\ru\8.png
 	EndProjectSection
 EndProject
 Global
@@ -168,8 +168,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{362BA1C0-508E-4DAF-8E66-ECB0DBB6012B} = {9F06FC0A-37F6-424E-B477-2BBD0762863B}
-		{EE35DA8B-C000-4ED4-9B26-5008A880ACE4} = {362BA1C0-508E-4DAF-8E66-ECB0DBB6012B}
-		{685C6A84-894E-4C60-A8FF-E78007CE597E} = {362BA1C0-508E-4DAF-8E66-ECB0DBB6012B}
+		{4457C2EE-1588-4190-8643-0716E1CA0148} = {0559B6B3-E309-44B5-BAE0-C20533F7D286}
+		{CFBA9269-0C45-4724-9AA4-6465470FB692} = {4457C2EE-1588-4190-8643-0716E1CA0148}
+		{774769EA-59EA-44D4-AEB0-4F77EA6BA01B} = {4457C2EE-1588-4190-8643-0716E1CA0148}
 	EndGlobalSection
 EndGlobal

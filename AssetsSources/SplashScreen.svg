@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1152"
+   height="1920"
+   id="svg6250"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="SplashScreen.svg"
+   inkscape:export-filename="C:\Users\Desktop1\Desktop\SplashScreen.scale-100.png"
+   inkscape:export-xdpi="37.5"
+   inkscape:export-ydpi="37.5">
+  <defs
+     id="defs6252" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.35"
+     inkscape:cx="642.37579"
+     inkscape:cy="1108.8349"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1842"
+     inkscape:window-height="1051"
+     inkscape:window-x="69"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata6255">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,867.63782)">
+    <rect
+       style="fill:#6a00ff;fill-opacity:1;stroke:none"
+       id="rect4070"
+       width="1152"
+       height="1920"
+       x="0"
+       y="-867.63782"
+       inkscape:export-xdpi="37.5"
+       inkscape:export-ydpi="37.5"
+       inkscape:export-filename="C:\Users\Desktop1\Desktop\Logo.scale-100.png" />
+    <path
+       style="fill:none;stroke:#ffffff;stroke-width:15.29122829;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 493.15488,71.525072 c 0,0 93.27509,105.697378 109.39048,118.306338 23.92591,18.72007 49.02999,16.91557 60.9442,4.05377 11.91423,-12.86181 12.46919,-36.24265 -2.20662,-58.75578 C 650.33486,118.3347 537.41828,-3.8127703 530.9119,-10.115341 c -9.8109,-9.503556 -29.67806,-13.188325 -42.17082,-1.855243 -12.49281,11.33309742 -11.32823,32.355804 -1.4009,43.434011 10.42939,11.638493 70.68478,79.939403 104.94731,116.676473 9.22588,9.89221 23.1737,12.89531 31.70883,5.33502 8.53445,-7.55964 7.7978,-21.20167 -1.75636,-32.41215 C 602.12288,97.458165 560.1005,53.178725 560.1005,53.178725"
+       id="path4066"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cszsszssssc"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+  </g>
+</svg>

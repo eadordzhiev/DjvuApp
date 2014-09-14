@@ -100,51 +100,6 @@
     <Content Include="Assets\WideLogo.scale-100.png" />
     <Content Include="Assets\WideLogo.scale-140.png" />
     <Content Include="Assets\WideLogo.scale-240.png" />
-    <DesignTimeOnly Include="SampleData\OutlineSampleDataSource\OutlineSampleDataSource_Files\image01.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </DesignTimeOnly>
-    <DesignTimeOnly Include="SampleData\OutlineSampleDataSource\OutlineSampleDataSource_Files\image02.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </DesignTimeOnly>
-    <DesignTimeOnly Include="SampleData\OutlineSampleDataSource\OutlineSampleDataSource_Files\image03.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </DesignTimeOnly>
-    <DesignTimeOnly Include="SampleData\OutlineSampleDataSource\OutlineSampleDataSource_Files\image04.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </DesignTimeOnly>
-    <DesignTimeOnly Include="SampleData\OutlineSampleDataSource\OutlineSampleDataSource_Files\image05.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </DesignTimeOnly>
-    <DesignTimeOnly Include="SampleData\MainPageSampleDataSource\MainPageSampleDataSource_Files\image01.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </DesignTimeOnly>
-    <DesignTimeOnly Include="SampleData\MainPageSampleDataSource\MainPageSampleDataSource_Files\image02.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </DesignTimeOnly>
-    <DesignTimeOnly Include="SampleData\MainPageSampleDataSource\MainPageSampleDataSource_Files\image03.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </DesignTimeOnly>
-    <DesignTimeOnly Include="SampleData\MainPageSampleDataSource\MainPageSampleDataSource_Files\image04.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </DesignTimeOnly>
-    <DesignTimeOnly Include="SampleData\MainPageSampleDataSource\MainPageSampleDataSource_Files\image05.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </DesignTimeOnly>
-    <DesignTimeOnly Include="SampleData\SelectBookmarkDialogSampleDataSource\SelectBookmarkDialogSampleDataSource_Files\image01.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </DesignTimeOnly>
-    <DesignTimeOnly Include="SampleData\SelectBookmarkDialogSampleDataSource\SelectBookmarkDialogSampleDataSource_Files\image02.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </DesignTimeOnly>
-    <DesignTimeOnly Include="SampleData\SelectBookmarkDialogSampleDataSource\SelectBookmarkDialogSampleDataSource_Files\image03.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </DesignTimeOnly>
-    <DesignTimeOnly Include="SampleData\SelectBookmarkDialogSampleDataSource\SelectBookmarkDialogSampleDataSource_Files\image04.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </DesignTimeOnly>
-    <DesignTimeOnly Include="SampleData\SelectBookmarkDialogSampleDataSource\SelectBookmarkDialogSampleDataSource_Files\image05.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </DesignTimeOnly>
     <Content Include="TrialSimulation\License.xml" />
     <None Include="Package.StoreAssociation.xml" />
     <PRIResource Include="strings\en\Resources.resw" />
@@ -356,6 +311,7 @@
   <ItemGroup>
     <DesignTimeOnly Include="SampleData\SelectBookmarkDialogSampleDataSource\SelectBookmarkDialogSampleDataSource.xsd" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
     <VisualStudioVersion>12.0</VisualStudioVersion>
   </PropertyGroup>
