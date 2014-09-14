@@ -36,9 +36,10 @@ namespace DjvuApp.Pages
             _navigationHelper.OnNavigatedTo(e);
 
             DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
-
-            CurrentApp.LicenseInformation.LicenseChanged += LicenseChangedHandler;
+            
             await LoadTrialModeProxyFileAsync();
+            CurrentApp.LicenseInformation.LicenseChanged += LicenseChangedHandler;
+            await Task.Delay(100);
             LicenseChangedHandler();
         }
 
@@ -87,12 +88,12 @@ namespace DjvuApp.Pages
                 var title = _resourceLoader.GetString("ExpirationDialog_Title");
                 var content = _resourceLoader.GetString("ExpirationDialog_Content");
                 var buyButtonCaption = _resourceLoader.GetString("ExpirationDialog_BuyButton_Caption");
-                var dialog = new MessageDialog(title, content);
+                var dialog = new MessageDialog(content, title);
                 dialog.Commands.Add(new UICommand(buyButtonCaption, async command =>
                 {
                     await CurrentApp.RequestAppPurchaseAsync(false);
                     if (!CurrentApp.LicenseInformation.IsActive)
-                        Application.Current.Exit();
+                        LicenseChangedHandler();
                 }));
                 var result = await dialog.ShowAsync();
                 if (result == null)

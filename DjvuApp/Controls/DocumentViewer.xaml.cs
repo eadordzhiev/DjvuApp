@@ -7,6 +7,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Graphics.Display;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -76,14 +77,17 @@ namespace DjvuApp.Controls
 
         private void UpdateZoomConstraints(bool afterSourceChanged)
         {
-            var normalZoomFactor = GetNormalZoomFactor(_viewModel.MaxWidth);
+            var displayScaleFactor = DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+            var normalZoomFactor = GetNormalZoomFactor((float) (_viewModel.MaxWidth / displayScaleFactor));
             var minZoomFactor = normalZoomFactor / 2;
-            var maxZoomFactor = 1;
+            var maxZoomFactor = 0.5f;
 
             // ScrollViewer throws an exception
             // if MinZoomFactor is less than 0.1
             if (minZoomFactor < 0.1f)
                 minZoomFactor = 0.1f;
+            if (maxZoomFactor > 1f)
+                maxZoomFactor = 1f;
             
             _scrollViewer.MinZoomFactor = minZoomFactor;
             _scrollViewer.MaxZoomFactor = maxZoomFactor;

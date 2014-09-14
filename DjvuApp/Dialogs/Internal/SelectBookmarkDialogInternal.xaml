@@ -9,14 +9,14 @@
     FullSizeDesired="True"
     Style="{StaticResource FullScreenContentDialogStyle}"
     DataContext="{Binding RelativeSource={RelativeSource Self}}"
-    x:Uid="SelectBookmarkDialog">
+    x:Uid="SelectBookmarkDialog" 
+	d:DataContext="{d:DesignData /SampleData/SelectBookmarkDialogSampleDataSource/SelectBookmarkDialogSampleDataSource.xaml}">
 
-    <Grid>
+    <Grid Margin="2.5,0,0,0">
         <TextBlock 
             x:Uid="SelectBookmarkDialog_NoBookmarksHint"
             Style="{StaticResource ListViewEmptyStaticTextBlockStyle}" 
             Text="No saved bookmarks"
-            Margin="2.5"
             Visibility="{Binding Items, Converter={StaticResource IsNullOrEmptyToVisibilityConverter}, ConverterParameter=negate}"/>
         <ListView
             ItemsSource="{Binding Items}"
@@ -29,7 +29,7 @@
             </ItemsControl.ItemContainerStyle>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Margin="2.5,0,0,20">
+                    <StackPanel Margin="0,0,0,20">
                         <TextBlock
                             Text="{Binding Title}"
                             Style="{StaticResource ListViewItemTextBlockStyle}"/>

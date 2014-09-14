@@ -8,7 +8,7 @@ namespace DjvuApp.Model.Outline
         [NotNull]
         string Title { get; }
 
-        uint PageNumber { get; }
+        uint? PageNumber { get; }
 
         bool HasItems { get; }
 

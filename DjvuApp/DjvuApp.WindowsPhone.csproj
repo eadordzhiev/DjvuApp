@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DjvuApp</RootNamespace>
     <AssemblyName>DjvuApp</AssemblyName>
-    <DefaultLanguage>en-US</DefaultLanguage>
+    <DefaultLanguage>en</DefaultLanguage>
     <TargetPlatformVersion>8.1</TargetPlatformVersion>
     <MinimumVisualStudioVersion>12</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
@@ -17,7 +17,9 @@
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
-    <AppxBundlePlatforms>x86|arm</AppxBundlePlatforms>
+    <AppxBundlePlatforms>arm</AppxBundlePlatforms>
+    <AppxPackageDir>C:\Users\Desktop1\Documents\Visual Studio 2013\Projects\DjvuApp\AppPackages\</AppxPackageDir>
+    <ExpressionBlendVersion>12.0.50716.0</ExpressionBlendVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -92,11 +94,57 @@
     <Content Include="Assets\PicoLyrics\2.png" />
     <Content Include="Assets\PicoLyrics\3.png" />
     <Content Include="Assets\PicoLyrics\Background300.png" />
+    <Content Include="Assets\PlaceholderImage.png" />
     <Content Include="Assets\SplashScreen.scale-100.png" />
     <Content Include="Assets\SplashScreen.scale-140.png" />
     <Content Include="Assets\WideLogo.scale-100.png" />
     <Content Include="Assets\WideLogo.scale-140.png" />
     <Content Include="Assets\WideLogo.scale-240.png" />
+    <DesignTimeOnly Include="SampleData\OutlineSampleDataSource\OutlineSampleDataSource_Files\image01.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </DesignTimeOnly>
+    <DesignTimeOnly Include="SampleData\OutlineSampleDataSource\OutlineSampleDataSource_Files\image02.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </DesignTimeOnly>
+    <DesignTimeOnly Include="SampleData\OutlineSampleDataSource\OutlineSampleDataSource_Files\image03.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </DesignTimeOnly>
+    <DesignTimeOnly Include="SampleData\OutlineSampleDataSource\OutlineSampleDataSource_Files\image04.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </DesignTimeOnly>
+    <DesignTimeOnly Include="SampleData\OutlineSampleDataSource\OutlineSampleDataSource_Files\image05.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </DesignTimeOnly>
+    <DesignTimeOnly Include="SampleData\MainPageSampleDataSource\MainPageSampleDataSource_Files\image01.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </DesignTimeOnly>
+    <DesignTimeOnly Include="SampleData\MainPageSampleDataSource\MainPageSampleDataSource_Files\image02.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </DesignTimeOnly>
+    <DesignTimeOnly Include="SampleData\MainPageSampleDataSource\MainPageSampleDataSource_Files\image03.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </DesignTimeOnly>
+    <DesignTimeOnly Include="SampleData\MainPageSampleDataSource\MainPageSampleDataSource_Files\image04.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </DesignTimeOnly>
+    <DesignTimeOnly Include="SampleData\MainPageSampleDataSource\MainPageSampleDataSource_Files\image05.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </DesignTimeOnly>
+    <DesignTimeOnly Include="SampleData\SelectBookmarkDialogSampleDataSource\SelectBookmarkDialogSampleDataSource_Files\image01.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </DesignTimeOnly>
+    <DesignTimeOnly Include="SampleData\SelectBookmarkDialogSampleDataSource\SelectBookmarkDialogSampleDataSource_Files\image02.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </DesignTimeOnly>
+    <DesignTimeOnly Include="SampleData\SelectBookmarkDialogSampleDataSource\SelectBookmarkDialogSampleDataSource_Files\image03.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </DesignTimeOnly>
+    <DesignTimeOnly Include="SampleData\SelectBookmarkDialogSampleDataSource\SelectBookmarkDialogSampleDataSource_Files\image04.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </DesignTimeOnly>
+    <DesignTimeOnly Include="SampleData\SelectBookmarkDialogSampleDataSource\SelectBookmarkDialogSampleDataSource_Files\image05.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </DesignTimeOnly>
     <Content Include="TrialSimulation\License.xml" />
     <None Include="Package.StoreAssociation.xml" />
     <PRIResource Include="strings\en\Resources.resw" />
@@ -118,6 +166,15 @@
     <Compile Include="Model\Books\CachedSqliteBookProvider.cs" />
     <Compile Include="Pages\AboutPage.xaml.cs">
       <DependentUpon>AboutPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SampleData\MainPageSampleDataSource\MainPageSampleDataSource.xaml.cs">
+      <DependentUpon>MainPageSampleDataSource.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SampleData\OutlineSampleDataSource\OutlineSampleDataSource.xaml.cs">
+      <DependentUpon>OutlineSampleDataSource.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SampleData\SelectBookmarkDialogSampleDataSource\SelectBookmarkDialogSampleDataSource.xaml.cs">
+      <DependentUpon>SelectBookmarkDialogSampleDataSource.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\Messages\LoadedHandledMessage.cs" />
     <Compile Include="Common\ProgressBehavior.cs" />
@@ -151,7 +208,6 @@
       <DependentUpon>JumpToPageDialogInternal.xaml</DependentUpon>
     </Compile>
     <Compile Include="Model\Books\SqliteBookProvider.cs" />
-    <Compile Include="Model\Outline\FakeOutlineItem.cs" />
     <Compile Include="Model\Outline\IOutlineItem.cs" />
     <Compile Include="Pages\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
@@ -169,8 +225,8 @@
     <Compile Include="Pages\ViewerPage.xaml.cs">
       <DependentUpon>ViewerPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SQLite.cs" />
-    <Compile Include="SQLiteAsync.cs" />
+    <Compile Include="Misc\SQLite.cs" />
+    <Compile Include="Misc\SQLiteAsync.cs" />
     <Compile Include="Model\Books\IBookmark.cs" />
     <Compile Include="Controls\DjvuDocumentViewModel.cs" />
     <Compile Include="Controls\DjvuPageViewModel.cs" />
@@ -239,6 +295,18 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <DesignTimeOnly Include="SampleData\OutlineSampleDataSource\OutlineSampleDataSource.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </DesignTimeOnly>
+    <DesignTimeOnly Include="SampleData\MainPageSampleDataSource\MainPageSampleDataSource.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </DesignTimeOnly>
+    <DesignTimeOnly Include="SampleData\SelectBookmarkDialogSampleDataSource\SelectBookmarkDialogSampleDataSource.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </DesignTimeOnly>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DjvuLibRT.WindowsPhone\DjvuLibRT.WindowsPhone.vcxproj">
@@ -257,7 +325,6 @@
       <Name>SQLite for Windows Phone 8.1</Name>
     </SDKReference>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Reference Include="GalaSoft.MvvmLight, Version=4.4.32.18939, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -277,6 +344,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <DesignTimeOnly Include="SampleData\MainPageSampleDataSource\MainPageSampleDataSource.xsd">
+      <SubType>Designer</SubType>
+    </DesignTimeOnly>
+  </ItemGroup>
+  <ItemGroup>
+    <DesignTimeOnly Include="SampleData\OutlineSampleDataSource\OutlineSampleDataSource.xsd" />
+  </ItemGroup>
+  <ItemGroup>
+    <DesignTimeOnly Include="SampleData\SelectBookmarkDialogSampleDataSource\SelectBookmarkDialogSampleDataSource.xsd" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
     <VisualStudioVersion>12.0</VisualStudioVersion>

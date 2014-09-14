@@ -40,13 +40,13 @@
             </ScrollViewer>
         </ControlTemplate>
         <DataTemplate x:Key="DjvuViewItemTemplate">
-            <Grid Margin="0,0,0,24" Background="{StaticResource PhoneChromeBrush}">
-                <Image 
-                    Source="{Binding Source}" 
-                    HorizontalAlignment="Center" 
-                    Height="{Binding Height}" 
-                    Width="{Binding Width}"/>
-            </Grid>
+            <Image 
+                Margin="0,0,0,80"
+                Source="{Binding Source}" 
+                Stretch="Fill"
+                HorizontalAlignment="Center" 
+                Height="{Binding Height}" 
+                Width="{Binding Width}"/>
         </DataTemplate>
         <ItemsPanelTemplate x:Key="DjvuViewItemsPanelTemplate">
             <VirtualizingStackPanel Orientation="Vertical"/>

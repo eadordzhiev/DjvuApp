@@ -16,6 +16,49 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{0E59AE
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Store", "Store", "{9F06FC0A-37F6-424E-B477-2BBD0762863B}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\..\Desktop\pics\StoreLogo300x300.png = ..\..\..\..\Desktop\pics\StoreLogo300x300.png
+		..\..\..\..\Desktop\pics\StoreSquareLogo358x358.png = ..\..\..\..\Desktop\pics\StoreSquareLogo358x358.png
+		..\..\..\..\Desktop\pics\StoreWideLogo358x173.png = ..\..\..\..\Desktop\pics\StoreWideLogo358x173.png
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Screenshots", "Screenshots", "{362BA1C0-508E-4DAF-8E66-ECB0DBB6012B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "en", "en", "{EE35DA8B-C000-4ED4-9B26-5008A880ACE4}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\..\Desktop\pics\Screenshots\en\1.png = ..\..\..\..\Desktop\pics\Screenshots\en\1.png
+		..\..\..\..\Desktop\pics\Screenshots\en\2.png = ..\..\..\..\Desktop\pics\Screenshots\en\2.png
+		..\..\..\..\Desktop\pics\Screenshots\en\3.png = ..\..\..\..\Desktop\pics\Screenshots\en\3.png
+		..\..\..\..\Desktop\pics\Screenshots\en\4.png = ..\..\..\..\Desktop\pics\Screenshots\en\4.png
+		..\..\..\..\Desktop\pics\Screenshots\en\5.png = ..\..\..\..\Desktop\pics\Screenshots\en\5.png
+		..\..\..\..\Desktop\pics\Screenshots\en\6.png = ..\..\..\..\Desktop\pics\Screenshots\en\6.png
+		..\..\..\..\Desktop\pics\Screenshots\en\7.png = ..\..\..\..\Desktop\pics\Screenshots\en\7.png
+		..\..\..\..\Desktop\pics\Screenshots\en\8.png = ..\..\..\..\Desktop\pics\Screenshots\en\8.png
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ru", "ru", "{685C6A84-894E-4C60-A8FF-E78007CE597E}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\..\Desktop\pics\Screenshots\ru\1.png = ..\..\..\..\Desktop\pics\Screenshots\ru\1.png
+		..\..\..\..\Desktop\pics\Screenshots\ru\2.png = ..\..\..\..\Desktop\pics\Screenshots\ru\2.png
+		..\..\..\..\Desktop\pics\Screenshots\ru\3.png = ..\..\..\..\Desktop\pics\Screenshots\ru\3.png
+		..\..\..\..\Desktop\pics\Screenshots\ru\4.png = ..\..\..\..\Desktop\pics\Screenshots\ru\4.png
+		..\..\..\..\Desktop\pics\Screenshots\ru\5.png = ..\..\..\..\Desktop\pics\Screenshots\ru\5.png
+		..\..\..\..\Desktop\pics\Screenshots\ru\6.png = ..\..\..\..\Desktop\pics\Screenshots\ru\6.png
+		..\..\..\..\Desktop\pics\Screenshots\ru\7.png = ..\..\..\..\Desktop\pics\Screenshots\ru\7.png
+		..\..\..\..\Desktop\pics\Screenshots\ru\8.png = ..\..\..\..\Desktop\pics\Screenshots\ru\8.png
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AssetsSources", "AssetsSources", "{0FE46679-88EF-4CB5-BC04-6CCEFAA73FEF}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\..\Desktop\pics\Assets\PageIcon.svg = ..\..\..\..\Desktop\pics\Assets\PageIcon.svg
+		..\..\..\..\Desktop\pics\Assets\SmallLogo.svg = ..\..\..\..\Desktop\pics\Assets\SmallLogo.svg
+		..\..\..\..\Desktop\pics\Assets\SplashScreen.svg = ..\..\..\..\Desktop\pics\Assets\SplashScreen.svg
+		..\..\..\..\Desktop\pics\Assets\Square71x71Logo.svg = ..\..\..\..\Desktop\pics\Assets\Square71x71Logo.svg
+		..\..\..\..\Desktop\pics\Assets\StoreLogo.svg = ..\..\..\..\Desktop\pics\Assets\StoreLogo.svg
+		..\..\..\..\Desktop\pics\Assets\WideLogo.svg = ..\..\..\..\Desktop\pics\Assets\WideLogo.svg
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		DjvuLibRT.Shared\DjvuLibRT.Shared.vcxitems*{1c7d99f4-51b0-4694-a897-692d18834651}*SharedItemsImports = 9
@@ -123,5 +166,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{362BA1C0-508E-4DAF-8E66-ECB0DBB6012B} = {9F06FC0A-37F6-424E-B477-2BBD0762863B}
+		{EE35DA8B-C000-4ED4-9B26-5008A880ACE4} = {362BA1C0-508E-4DAF-8E66-ECB0DBB6012B}
+		{685C6A84-894E-4C60-A8FF-E78007CE597E} = {362BA1C0-508E-4DAF-8E66-ECB0DBB6012B}
 	EndGlobalSection
 EndGlobal

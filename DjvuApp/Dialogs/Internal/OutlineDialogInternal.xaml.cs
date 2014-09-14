@@ -30,8 +30,15 @@ namespace DjvuApp.Dialogs.Internal
         private void ItemClickHandler(object sender, ItemClickEventArgs e)
         {
             var item = (IOutlineItem) e.ClickedItem;
-            TargetPageNumber = item.PageNumber;
-            Hide();
+            if (item.PageNumber != null)
+            {
+                TargetPageNumber = item.PageNumber;
+                Hide();
+            }
+            else
+            {
+                ShowNextDialog(item);
+            }
         }
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
@@ -39,6 +46,11 @@ namespace DjvuApp.Dialogs.Internal
             var button = (ButtonBase) sender;
             var item = (IOutlineItem) button.DataContext;
 
+            ShowNextDialog(item);
+        }
+
+        private void ShowNextDialog(IOutlineItem item)
+        {
             if (item.HasItems)
             {
                 Hide();
