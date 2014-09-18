@@ -2,7 +2,6 @@
 
 using namespace Platform;
 using namespace Windows::Foundation;
-using namespace Windows::Foundation::Collections;
 using namespace Windows::UI::Xaml::Media::Imaging;
 
 namespace DjvuLibRT
@@ -31,7 +30,7 @@ namespace DjvuLibRT
 		unsigned int Dpi;
 		unsigned int PageNumber;
 	};
-	
+
 	ref class DjvuDocument;
 
 	[Windows::Foundation::Metadata::WebHostHidden]
@@ -62,8 +61,8 @@ namespace DjvuLibRT
 
 	[Windows::Foundation::Metadata::WebHostHidden]
 	public ref class DjvuDocument sealed
-    {
-    public:
+	{
+	public:
 		virtual ~DjvuDocument();
 		property unsigned int PageCount
 		{
@@ -88,5 +87,5 @@ namespace DjvuLibRT
 		DjvuDocument(const char* path);
 	internal:
 		ddjvu_format_t* GetFormat();
-    };	
+	};
 }

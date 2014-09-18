@@ -22,7 +22,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
-using DjvuApp.Common;
+using DjvuApp.Djvu;
 using DjvuApp.Misc;
 using DjvuApp.Model.Books;
 using DjvuApp.Pages;

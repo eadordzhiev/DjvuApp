@@ -1,6 +1,7 @@
 ﻿// DjvuLibRT.cpp
 #include "pch.h"
 #include "DjvuLibRT.h"
+#include "LicenseValidator.h"
 #include <sstream>
 #include <collection.h>
 #include <ppltasks.h>
@@ -15,6 +16,7 @@ using namespace Platform::Collections;
 using namespace Windows::Foundation;
 using namespace Windows::Foundation::Collections;
 using namespace Windows::Graphics::Imaging;
+using namespace Windows::Storage;
 using namespace Windows::Storage::Streams;
 
 typedef unsigned int uint;
@@ -44,11 +46,21 @@ static void RethrowToWinRtException(const GException& ex)
 
 IAsyncOperation<DjvuDocument^>^ DjvuDocument::LoadAsync(String^ path)
 {
-	return create_async([path]() -> DjvuDocument^
+	return create_async([path]()
 	{
-		auto utf8_path = ConvertCxStringToUTF8(path);
-		auto result = ref new DjvuDocument(utf8_path.c_str());
-		return result;
+		auto applicationFolder = Windows::ApplicationModel::Package::Current->InstalledLocation;
+
+		return LicenseValidator::GetLicenseStatusStealth()
+			.then([=](bool isLicenseValid)
+		{
+			if (!isLicenseValid)
+			{
+				throw ref new Exception(E_UNEXPECTED);
+			}
+
+			auto utf8_path = ConvertCxStringToUTF8(path);
+			return ref new DjvuDocument(utf8_path.c_str());
+		});
 	});
 }
 
@@ -266,7 +278,7 @@ IAsyncAction^ DjvuPage::RenderRegionAsync(WriteableBitmap^ bitmap, Size rescaled
 		throw ref new InvalidArgumentException("Buffer is too small");
 	}
 
-	return create_async([this, prect, rrect, pDstPixels, rowsize]
+	return create_async([=]
 	{
 		try
 		{

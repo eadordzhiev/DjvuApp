@@ -16,11 +16,14 @@ using DjvuApp.Common;
 #if TRIAL_SIMULATION
 using CurrentApp = Windows.ApplicationModel.Store.CurrentAppSimulator;
 #endif
+using DjvuLibRT;
 
 namespace DjvuApp.Pages
 {
     public sealed partial class MainPage : Page
     {
+        private static bool? _hasLicense = null;
+
         private readonly NavigationHelper _navigationHelper;
         private readonly ResourceLoader _resourceLoader;
 
@@ -36,7 +39,18 @@ namespace DjvuApp.Pages
             _navigationHelper.OnNavigatedTo(e);
 
             DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
-            
+
+            if (_hasLicense == null)
+            {
+                _hasLicense = await LicenseValidator.GetLicenseStatusAsync();
+            }
+            if (_hasLicense != true)
+            {
+                var dialog = new MessageDialog("I don't like being pirated...");
+                await dialog.ShowAsync();
+                Application.Current.Exit();
+            }
+
             await LoadTrialModeProxyFileAsync();
             CurrentApp.LicenseInformation.LicenseChanged += LicenseChangedHandler;
             await Task.Delay(100);

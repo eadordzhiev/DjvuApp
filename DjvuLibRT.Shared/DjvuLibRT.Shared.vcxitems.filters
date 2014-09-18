@@ -144,6 +144,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjvuMessage.h">
       <Filter>djvulibre\Headers</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)LicenseValidator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)DjvuLibRT.cpp" />
@@ -298,6 +299,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\BSEncodeByteStream.cpp">
       <Filter>djvulibre\Source</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)LicenseValidator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="djvulibre">

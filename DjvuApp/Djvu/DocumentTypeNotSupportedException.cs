@@ -1,6 +1,6 @@
 using System;
 
-namespace DjvuApp.Model.Books
+namespace DjvuApp.Djvu
 {
     public class DocumentTypeNotSupportedException : Exception
     {

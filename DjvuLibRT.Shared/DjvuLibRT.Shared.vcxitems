@@ -62,6 +62,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\UnicodeByteStream.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\XMLTags.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\ZPCodec.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)LicenseValidator.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)pch.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StringConversion.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ThreadEmulation.h" />
@@ -310,6 +311,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)LicenseValidator.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
