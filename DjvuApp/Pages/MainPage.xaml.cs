@@ -46,6 +46,7 @@ namespace DjvuApp.Pages
             }
             if (_hasLicense != true)
             {
+                GoogleAnalytics.EasyTracker.GetTracker().SendEvent("Piracy", "PiracyMessageShown", null, 0);
                 var dialog = new MessageDialog("I don't like being pirated...");
                 await dialog.ShowAsync();
                 Application.Current.Exit();
@@ -128,6 +129,11 @@ namespace DjvuApp.Pages
         private async void BuyButtonClickHandler(object sender, RoutedEventArgs e)
         {
             await CurrentApp.RequestAppPurchaseAsync(false);
+        }
+
+        private void MainPage_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            GoogleAnalytics.EasyTracker.GetTracker().SendView("MainPage");
         }
     }
 }

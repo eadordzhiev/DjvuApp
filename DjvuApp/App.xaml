@@ -3,8 +3,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:common="using:DjvuApp.Common"
     xmlns:misc="using:DjvuApp.Misc"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"	
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"	
     mc:Ignorable="d"
     x:Class="DjvuApp.App"
     RequestedTheme="Light">
@@ -24,14 +24,14 @@
         				<Border x:Name="Container">
         					<VisualStateManager.VisualStateGroups>
         						<VisualStateGroup x:Name="Orientation">
-        							<VisualState x:Name="Portrait" />
+        							<VisualState x:Name="Portrait"/>
         							<VisualState x:Name="Landscape">
         								<Storyboard>
         									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Width" Storyboard.TargetName="ContentPanel" EnableDependentAnimation="True">
-        										<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ContentDialogContentLandscapeWidth}" />
+        										<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ContentDialogContentLandscapeWidth}"/>
         									</ObjectAnimationUsingKeyFrames>
         									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="HorizontalAlignment" Storyboard.TargetName="ContentPanel">
-        										<DiscreteObjectKeyFrame KeyTime="0" Value="Left" />
+        										<DiscreteObjectKeyFrame KeyTime="0" Value="Left"/>
         									</ObjectAnimationUsingKeyFrames>
         								</Storyboard>
         							</VisualState>
@@ -40,40 +40,28 @@
 
         					<Grid x:Name="LayoutRoot">
         						<Grid.RowDefinitions>
-        							<RowDefinition Height="Auto" />
+        							<RowDefinition Height="Auto"/>
         						</Grid.RowDefinitions>
-        						<Border x:Name="BackgroundElement" 
-        							Background="{TemplateBinding Background}"
-        							FlowDirection="LeftToRight">
+        						<Border x:Name="BackgroundElement" Background="{TemplateBinding Background}" FlowDirection="LeftToRight">
         							<Border FlowDirection="{TemplateBinding FlowDirection}">
         								<Grid x:Name="ContentPanel">
         									<Grid.RowDefinitions>
-        										<RowDefinition Height="Auto" MinHeight="{ThemeResource ContentDialogTitleMinHeight}" />
-        										<RowDefinition Height="*" MinHeight="{ThemeResource ContentDialogContentMinHeight}" />
-        										<RowDefinition Height="Auto" />
+        										<RowDefinition Height="Auto" MinHeight="{ThemeResource ContentDialogTitleMinHeight}"/>
+        										<RowDefinition Height="*" MinHeight="{ThemeResource ContentDialogContentMinHeight}"/>
+        										<RowDefinition Height="Auto"/>
         									</Grid.RowDefinitions>
         									<Grid.ColumnDefinitions>
-        										<ColumnDefinition Width="*" />
-        										<ColumnDefinition Width="*" />
+        										<ColumnDefinition Width="*"/>
+        										<ColumnDefinition Width="*"/>
         									</Grid.ColumnDefinitions>
-        									<ContentControl x:Name="Title"
-        										Margin="{ThemeResource ContentDialogTitleMargin}"
-        										Content="{TemplateBinding Title}"
-        										ContentTemplate="{TemplateBinding TitleTemplate}"
-        										FontSize="{StaticResource TextStyleExtraLargeFontSize}"
-        										FontFamily="{ThemeResource PhoneFontFamilyNormal}"
-        										FontWeight="SemiBold"
-        										Grid.ColumnSpan="2" />
-        									<ContentPresenter x:Name="Content"
-        										ContentTemplate="{TemplateBinding ContentTemplate}"
-        										Content="{TemplateBinding Content}"
-        										FontSize="{StaticResource TextStyleLargeFontSize}"
-        										FontFamily="{ThemeResource PhoneFontFamilyNormal}"
-        										Margin="{ThemeResource ContentDialogContentMargin}"
-        										Grid.Row="1"
-        										Grid.ColumnSpan="2" />
-        									<Border x:Name="Button1Host" Padding="{ThemeResource ContentDialogButton1HostPadding}" Grid.Row="2" />
-        									<Border x:Name="Button2Host" Padding="{ThemeResource ContentDialogButton2HostPadding}" Grid.Row="2" Grid.Column="1" />
+        									<ContentControl x:Name="Title" Margin="{ThemeResource ContentDialogTitleMargin}" Content="{TemplateBinding Title}"
+        										ContentTemplate="{TemplateBinding TitleTemplate}" FontSize="{StaticResource TextStyleExtraLargeFontSize}"
+        										FontFamily="{ThemeResource PhoneFontFamilyNormal}" FontWeight="SemiBold" Grid.ColumnSpan="2"/>
+        									<ContentPresenter x:Name="Content" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}"
+        										FontSize="{StaticResource TextStyleLargeFontSize}" FontFamily="{ThemeResource PhoneFontFamilyNormal}"
+        										Margin="{ThemeResource ContentDialogContentMargin}" Grid.Row="1" Grid.ColumnSpan="2"/>
+        									<Border x:Name="Button1Host" Padding="{ThemeResource ContentDialogButton1HostPadding}" Grid.Row="2"/>
+        									<Border x:Name="Button2Host" Padding="{ThemeResource ContentDialogButton2HostPadding}" Grid.Row="2" Grid.Column="1"/>
         								</Grid>
         							</Border>
         						</Border>
@@ -139,8 +127,10 @@
         						</VisualStateGroup>
         					</VisualStateManager.VisualStateGroups>
         					<Grid HorizontalAlignment="Center" Height="38.5" Width="38.5" Margin="{TemplateBinding Padding}">
-        						<Ellipse x:Name="Border" Fill="{TemplateBinding Background}" Height="38.5" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="2.5" UseLayoutRounding="False" Width="38.5"/>
-        						<ContentPresenter x:Name="ContentPresenter" AutomationProperties.AccessibilityView="Raw" Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+        						<Ellipse x:Name="Border" Fill="{TemplateBinding Background}" Height="38.5" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="2.5"
+        							UseLayoutRounding="False" Width="38.5"/>
+        						<ContentPresenter x:Name="ContentPresenter" AutomationProperties.AccessibilityView="Raw" Content="{TemplateBinding Content}"
+        							Foreground="{TemplateBinding Foreground}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
         					</Grid>
         				</Grid>
         			</ControlTemplate>

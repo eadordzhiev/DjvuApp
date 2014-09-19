@@ -58,7 +58,7 @@ namespace DjvuApp
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
             Debug.WriteLine("OnLaunched");
-
+            
             if (Debugger.IsAttached)
             {
                 this.DebugSettings.EnableFrameRateCounter = true;

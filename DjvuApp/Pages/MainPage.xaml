@@ -10,7 +10,8 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     DataContext="{Binding MainViewModel, Source={StaticResource ViewModelLocator}}"
     d:DataContext="{d:DesignData /SampleData/MainPageSampleDataSource/MainPageSampleDataSource.xaml}"
-    x:Name="page">
+    x:Name="page"
+    Loaded="MainPage_OnLoaded">
 
     <Page.Transitions>
         <TransitionCollection>
