@@ -26,7 +26,6 @@ static task<bool> CheckLicense()
 		{
 			if (file->Name == "AppxSignature.p7x")
 				return true;
-			break;
 		}
 
 		return false;

@@ -21,6 +21,7 @@
     <AppxPackageDir>C:\Users\Desktop1\Documents\Visual Studio 2013\Projects\DjvuApp\AppPackages\</AppxPackageDir>
     <ExpressionBlendVersion>12.0.50716.0</ExpressionBlendVersion>
     <NuGetPackageImportStamp>035f4dbc</NuGetPackageImportStamp>
+    <AppxBundle>Always</AppxBundle>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -106,7 +107,9 @@
     <None Include="analytics.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Package.StoreAssociation.xml" />
+    <None Include="Package.StoreAssociation.xml">
+      <SubType>Designer</SubType>
+    </None>
     <PRIResource Include="strings\en\Resources.resw" />
     <PRIResource Include="strings\ru\Resources.resw" />
   </ItemGroup>
