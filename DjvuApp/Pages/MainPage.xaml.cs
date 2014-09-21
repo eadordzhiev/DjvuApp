@@ -1,4 +1,5 @@
-﻿using System;
+﻿#define TRIAL_SIMULATION
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
@@ -13,10 +14,10 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using DjvuApp.Common;
-#if TRIAL_SIMULATION
-using CurrentApp = Windows.ApplicationModel.Store.CurrentAppSimulator;
-#endif
+using DjvuApp.Misc.TrialExperience;
 using DjvuLibRT;
+using Microsoft.Practices.ServiceLocation;
+using Microsoft.WindowsAzure.MobileServices;
 
 namespace DjvuApp.Pages
 {
@@ -52,10 +53,7 @@ namespace DjvuApp.Pages
                 Application.Current.Exit();
             }
 
-            await LoadTrialModeProxyFileAsync();
-            CurrentApp.LicenseInformation.LicenseChanged += LicenseChangedHandler;
-            await Task.Delay(100);
-            LicenseChangedHandler();
+            UpdateLicenseStatus();
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -65,55 +63,74 @@ namespace DjvuApp.Pages
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
-            CurrentApp.LicenseInformation.LicenseChanged -= LicenseChangedHandler;
             base.OnNavigatingFrom(e);
         }
-
-// ReSharper disable CSharpWarnings::CS1998
-        private async Task LoadTrialModeProxyFileAsync()
-// ReSharper restore CSharpWarnings::CS1998
+        
+        private async void UpdateLicenseStatus()
         {
 #if TRIAL_SIMULATION
-            var proxyDataFolder = await Package.Current.InstalledLocation.GetFolderAsync("TrialSimulation");
-            var proxyFile = await proxyDataFolder.GetFileAsync("License.xml");
-            await CurrentAppSimulator.ReloadSimulatorAsync(proxyFile);
-#endif
-        }
-
-        private async void LicenseChangedHandler()
-        {
+            var isTrial = true;
+#else
             var licenseInformation = CurrentApp.LicenseInformation;
+            var isTrial = licenseInformation.IsTrial;
+#endif
+            
 
-            buyAppBarButton.Visibility = trialExpirationTextBlock.Visibility =
-                    licenseInformation.IsTrial
-                    ? Visibility.Visible
-                    : Visibility.Collapsed;
-
-            if (licenseInformation.IsActive)
+            if (isTrial)
             {
-                if (licenseInformation.IsTrial)
+                DateTimeOffset expirationDate;
+                try
                 {
-                    var trialTimeLeft = licenseInformation.ExpirationDate - DateTimeOffset.Now;
+                    var trialService = ServiceLocator.Current.GetInstance<ITrialService>();
+                    expirationDate = await trialService.GetExpirationDate<DjvuReaderUserInfo>();
+                }
+                catch (Exception)
+                {
+                    ShowLicenseCheckErrorMessage();
+                    return;
+                }
+                
+                var isExpired = expirationDate < DateTimeOffset.Now;
+
+                if (!isExpired)
+                {
+                    var trialTimeLeft = expirationDate - DateTimeOffset.Now;
                     var formatString = _resourceLoader.GetString("TrialNotificationFormat");
                     trialExpirationTextBlock.Text = string.Format(formatString, Math.Ceiling(trialTimeLeft.TotalDays));
                 }
-            }
-            else
-            {
-                var title = _resourceLoader.GetString("ExpirationDialog_Title");
-                var content = _resourceLoader.GetString("ExpirationDialog_Content");
-                var buyButtonCaption = _resourceLoader.GetString("ExpirationDialog_BuyButton_Caption");
-                var dialog = new MessageDialog(content, title);
-                dialog.Commands.Add(new UICommand(buyButtonCaption, async command =>
+                else
                 {
-                    await CurrentApp.RequestAppPurchaseAsync(false);
-                    if (!CurrentApp.LicenseInformation.IsActive)
-                        LicenseChangedHandler();
-                }));
-                var result = await dialog.ShowAsync();
-                if (result == null)
-                    Application.Current.Exit();
+                    await ShowExpirationMessage();
+                }
             }
+        }
+
+        private async Task ShowExpirationMessage()
+        {
+            var title = _resourceLoader.GetString("ExpirationDialog_Title");
+            var content = _resourceLoader.GetString("ExpirationDialog_Content");
+            var buyButtonCaption = _resourceLoader.GetString("ExpirationDialog_BuyButton_Caption");
+            var dialog = new MessageDialog(content, title);
+            dialog.Commands.Add(new UICommand(buyButtonCaption, async command =>
+            {
+                await CurrentApp.RequestAppPurchaseAsync(false);
+                if (!CurrentApp.LicenseInformation.IsActive)
+                    UpdateLicenseStatus();
+            }));
+            var result = await dialog.ShowAsync();
+            if (result == null)
+                Application.Current.Exit();
+        }
+
+        private async void ShowLicenseCheckErrorMessage()
+        {
+            var title = _resourceLoader.GetString("LicenseCheckErrorDialog_Title");
+            var content = _resourceLoader.GetString("LicenseCheckErrorDialog_Content");
+            var exitButtonCaption = _resourceLoader.GetString("LicenseCheckErrorDialog_ExitButton_Caption");
+            var dialog = new MessageDialog(content, title);
+            dialog.Commands.Add(new UICommand(exitButtonCaption, null));
+            await dialog.ShowAsync();
+            Application.Current.Exit();
         }
 
         private void ItemClickHandler(object sender, ItemClickEventArgs e)

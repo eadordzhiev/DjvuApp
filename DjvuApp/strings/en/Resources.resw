@@ -215,6 +215,15 @@ From Russia with love :)</value>
   <data name="JumpToPageDialog_TotalPageNumber.Text" xml:space="preserve">
     <value>The total number of pages is </value>
   </data>
+  <data name="LicenseCheckErrorDialog_Content" xml:space="preserve">
+    <value>Unable to verify your license info. Check the internet connection and current date and time, then restart the application.</value>
+  </data>
+  <data name="LicenseCheckErrorDialog_ExitButton_Caption" xml:space="preserve">
+    <value>ok</value>
+  </data>
+  <data name="LicenseCheckErrorDialog_Title" xml:space="preserve">
+    <value>License verification error</value>
+  </data>
   <data name="LoadingMessage.Text" xml:space="preserve">
     <value>Loading...</value>
   </data>

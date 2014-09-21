@@ -214,6 +214,15 @@ By Useless guy</value>
   <data name="JumpToPageDialog_TotalPageNumber.Text" xml:space="preserve">
     <value>Всего страниц </value>
   </data>
+  <data name="LicenseCheckErrorDialog_Content" xml:space="preserve">
+    <value>Возникла ошибка при проверке вашей лицензии. Проверьте наличие доступа в интернет и текущие дату и время, затем перезапустите приложение.</value>
+  </data>
+  <data name="LicenseCheckErrorDialog_ExitButton_Caption" xml:space="preserve">
+    <value>ок</value>
+  </data>
+  <data name="LicenseCheckErrorDialog_Title" xml:space="preserve">
+    <value>Ошибка проверки лицензии</value>
+  </data>
   <data name="LoadingMessage.Text" xml:space="preserve">
     <value>Открытие...</value>
   </data>
