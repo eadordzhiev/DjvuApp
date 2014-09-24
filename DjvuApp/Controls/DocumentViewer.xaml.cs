@@ -80,14 +80,14 @@ namespace DjvuApp.Controls
             var displayScaleFactor = DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
             var normalZoomFactor = GetNormalZoomFactor((float) (_viewModel.MaxWidth / displayScaleFactor));
             var minZoomFactor = normalZoomFactor / 2;
-            var maxZoomFactor = 0.5f;
+            var maxZoomFactor = 10f;
 
             // ScrollViewer throws an exception
             // if MinZoomFactor is less than 0.1
             if (minZoomFactor < 0.1f)
                 minZoomFactor = 0.1f;
-            if (maxZoomFactor > 1f)
-                maxZoomFactor = 1f;
+            if (maxZoomFactor > 10f)
+                maxZoomFactor = 10f;
             
             _scrollViewer.MinZoomFactor = minZoomFactor;
             _scrollViewer.MaxZoomFactor = maxZoomFactor;
