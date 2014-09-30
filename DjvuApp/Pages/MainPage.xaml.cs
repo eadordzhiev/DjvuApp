@@ -1,4 +1,5 @@
-﻿using System;
+﻿//#define TRIAL_SIMULATION
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
@@ -16,7 +17,6 @@ using DjvuApp.Common;
 using DjvuApp.Misc.TrialExperience;
 using DjvuLibRT;
 using Microsoft.Practices.ServiceLocation;
-using Microsoft.WindowsAzure.MobileServices;
 
 namespace DjvuApp.Pages
 {
@@ -77,6 +77,8 @@ namespace DjvuApp.Pages
 
             if (isTrial)
             {
+                buyAppBarButton.Visibility = Visibility.Visible;
+
                 DateTimeOffset expirationDate;
                 try
                 {
@@ -113,7 +115,6 @@ namespace DjvuApp.Pages
             dialog.Commands.Add(new UICommand(buyButtonCaption, async command =>
             {
                 await CurrentApp.RequestAppPurchaseAsync(false);
-                if (!CurrentApp.LicenseInformation.IsActive)
                     UpdateLicenseStatus();
             }));
             var result = await dialog.ShowAsync();

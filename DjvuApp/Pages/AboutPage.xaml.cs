@@ -154,7 +154,7 @@ namespace DjvuApp.Pages
         private async void RateButtonClickHandler(object sender, RoutedEventArgs e)
         {
             GoogleAnalytics.EasyTracker.GetTracker().SendEvent("Promotion", "ReviewButtonClick", null, 0);
-            await Launcher.LaunchUriAsync(new Uri("ms-windows-store:reviewapp"));
+            await Launcher.LaunchUriAsync(new Uri("zune:reviewapp?appid=appc6f56627-a976-443c-8531-00a92b42f4e5"));
         }
 
         private void AboutPage_OnLoaded(object sender, RoutedEventArgs e)

@@ -164,6 +164,7 @@
                 <AppBarButton
                     x:Uid="MainPage_BuyAppBarButton"
                     x:Name="buyAppBarButton"
+                    Visibility="Collapsed"
                     Label="buy application"
                     Click="BuyButtonClickHandler"/>
                 <AppBarButton
