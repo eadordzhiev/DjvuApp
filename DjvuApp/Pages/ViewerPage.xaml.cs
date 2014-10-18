@@ -47,7 +47,6 @@ namespace DjvuApp.Pages
         private void LoadedHandler(object sender, RoutedEventArgs e)
         {
             Messenger.Default.Send(new LoadedHandledMessage<IBook>(_book));
-            GoogleAnalytics.EasyTracker.GetTracker().SendView("ViewerPage");
         }
 
         private async void UIElement_OnTapped(object sender, TappedRoutedEventArgs e)

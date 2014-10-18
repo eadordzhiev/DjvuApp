@@ -147,10 +147,5 @@ namespace DjvuApp.Pages
         {
             await CurrentApp.RequestAppPurchaseAsync(false);
         }
-
-        private void MainPage_OnLoaded(object sender, RoutedEventArgs e)
-        {
-            GoogleAnalytics.EasyTracker.GetTracker().SendView("MainPage");
-        }
     }
 }

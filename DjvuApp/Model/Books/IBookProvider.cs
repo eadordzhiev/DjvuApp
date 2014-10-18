@@ -26,6 +26,10 @@ namespace DjvuApp.Model.Books
 
         Task RemoveBookmarkAsync([NotNull] IBookmark bookmark);
 
-        Task UpdateLastOpeningTimeAsync(IBook book);
+        Task UpdateLastOpeningTimeAsync([NotNull] IBook book);
+
+        Task UpdateLastOpenedPageAsync(
+            [NotNull] IBook book,
+            uint pageNumber);
     }
 }

@@ -17,7 +17,7 @@ namespace DjvuApp.Model.Books
             _provider = new SqliteBookProvider();
         }
         
-        public static async Task<CachedSqliteBookProvider> CreateNew()
+        public static async Task<CachedSqliteBookProvider> CreateNewAsync()
         {
             var provider = new CachedSqliteBookProvider();
 
@@ -68,6 +68,11 @@ namespace DjvuApp.Model.Books
         public async Task UpdateLastOpeningTimeAsync(IBook book)
         {
             await _provider.UpdateLastOpeningTimeAsync(book);
+        }
+
+        public async Task UpdateLastOpenedPageAsync(IBook book, uint pageNumber)
+        {
+            await _provider.UpdateLastOpenedPageAsync(book, pageNumber);
         }
     }
 }

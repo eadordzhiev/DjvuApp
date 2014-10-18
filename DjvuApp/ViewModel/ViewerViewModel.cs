@@ -8,10 +8,13 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Windows.ApplicationModel;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.Resources;
 using Windows.Storage;
+using Windows.UI.Core;
 using Windows.UI.Popups;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using JetBrains.Annotations;
 using DjvuApp.Controls;
@@ -163,9 +166,30 @@ namespace DjvuApp.ViewModel
             MessengerInstance.Register<LoadedHandledMessage<IBook>>(this, message => LoadedHandler(message.Parameter));
 
             MessengerInstance.Register<OnNavigatedFromMessage>(this,
-                message => _dataTransferManager.DataRequested -= DataRequestedHandler);
+                message =>
+                {
+                    _dataTransferManager.DataRequested -= DataRequestedHandler;
+                    Application.Current.Suspending -= ApplicationSuspendingHandler;
+                    SaveLastOpenedPageAsync();
+                });
             MessengerInstance.Register<OnNavigatedToMessage>(this,
-                message => _dataTransferManager.DataRequested += DataRequestedHandler);
+                message =>
+                {
+                    _dataTransferManager.DataRequested += DataRequestedHandler;
+                    Application.Current.Suspending += ApplicationSuspendingHandler;
+                });
+        }
+
+        private async void ApplicationSuspendingHandler(object sender, SuspendingEventArgs e)
+        {
+            var deferral = e.SuspendingOperation.GetDeferral();
+            await SaveLastOpenedPageAsync();
+            deferral.Complete();
+        }
+
+        private async Task SaveLastOpenedPageAsync()
+        {
+            await _provider.UpdateLastOpenedPageAsync(_book, CurrentPageNumber);
         }
 
         private async void DataRequestedHandler(DataTransferManager sender, DataRequestedEventArgs e)
@@ -271,6 +295,11 @@ namespace DjvuApp.ViewModel
             DjvuPageSource.PageRendered += PageRenderedHandler;
 
             CurrentDocument = document;
+            var lastOpenedPage = _book.LastOpenedPage;
+            if (lastOpenedPage != null)
+            {
+                CurrentPageNumber = (uint)lastOpenedPage;
+            }
         }
 
         private void PageRenderedHandler(object sender, EventArgs e)

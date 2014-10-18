@@ -156,10 +156,5 @@ namespace DjvuApp.Pages
             GoogleAnalytics.EasyTracker.GetTracker().SendEvent("Promotion", "ReviewButtonClick", null, 0);
             await Launcher.LaunchUriAsync(new Uri("zune:reviewapp?appid=appc6f56627-a976-443c-8531-00a92b42f4e5"));
         }
-
-        private void AboutPage_OnLoaded(object sender, RoutedEventArgs e)
-        {
-            GoogleAnalytics.EasyTracker.GetTracker().SendView("AboutPage");
-        }
     }
 }

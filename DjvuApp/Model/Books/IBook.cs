@@ -10,9 +10,11 @@ namespace DjvuApp.Model.Books
         Guid Guid { get; }
 
         [NotNull]
-        string Title { get; set; }
+        string Title { get; }
 
         DateTime LastOpeningTime { get; }
+
+        uint? LastOpenedPage { get; }
 
         DateTime CreationTime { get; }
 

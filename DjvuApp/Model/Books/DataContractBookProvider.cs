@@ -39,6 +39,9 @@ namespace DjvuApp.Model.Books
             public DateTime LastOpeningTime { get; set; }
 
             [DataMember]
+            public uint? LastOpenedPage { get; set; }
+
+            [DataMember]
             public DateTime CreationTime { get; set; }
 
             [DataMember]
@@ -141,8 +144,9 @@ namespace DjvuApp.Model.Books
             if (string.IsNullOrWhiteSpace(title))
                 throw new ArgumentException("title can't be empty", "title");
 
-            book.Title = title;
-            await SaveBookDescriptionAsync(book);
+            var dataContractBook = (DataContractBook) book;
+            dataContractBook.Title = title;
+            await SaveBookDescriptionAsync(dataContractBook);
         }
 
         public Task<IEnumerable<IBookmark>> GetBookmarksAsync(IBook book)
@@ -163,6 +167,17 @@ namespace DjvuApp.Model.Books
         public Task UpdateLastOpeningTimeAsync(IBook book)
         {
             return Task.Delay(1);
+        }
+
+        public async Task UpdateLastOpenedPageAsync(IBook book, uint pageNumber)
+        {
+            if (book == null)
+                throw new ArgumentNullException("book");
+
+            var dataContractBook = (DataContractBook) book;
+
+            dataContractBook.LastOpenedPage = pageNumber;
+            await SaveBookDescriptionAsync(dataContractBook);
         }
 
         private async Task SaveBookDescriptionAsync(IBook book)

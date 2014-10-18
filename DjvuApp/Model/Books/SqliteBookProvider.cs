@@ -18,6 +18,7 @@ namespace DjvuApp.Model.Books
         private sealed class SqliteBook : IBook
         {
             private string _title;
+            private uint _lastOpenedPage;
 
             [PrimaryKey, AutoIncrement]
             public int Id { get; set; }
@@ -37,6 +38,19 @@ namespace DjvuApp.Model.Books
             }
 
             public DateTime LastOpeningTime { get; set; }
+
+            public uint? LastOpenedPage
+            {
+                get
+                {
+                    var isNull = _lastOpenedPage == 0;
+                    return isNull ? (uint?)null : _lastOpenedPage;
+                }
+                set
+                {
+                    _lastOpenedPage = value ?? 0;
+                }
+            }
 
             public DateTime CreationTime { get; set; }
 
@@ -163,10 +177,11 @@ namespace DjvuApp.Model.Books
             if (string.IsNullOrWhiteSpace(title))
                 throw new ArgumentException("title can't be empty", "title");
 
-            book.Title = title;
+            var sqliteBook = (SqliteBook) book;
+            sqliteBook.Title = title;
 
             var connection = await GetConnectionAsync();
-            await connection.UpdateAsync(book);
+            await connection.UpdateAsync(sqliteBook);
         }
 
         public async Task<IEnumerable<IBookmark>> GetBookmarksAsync(IBook book)
@@ -210,8 +225,25 @@ namespace DjvuApp.Model.Books
 
         public async Task UpdateLastOpeningTimeAsync(IBook book)
         {
+            if (book == null) 
+                throw new ArgumentNullException("book");
+
             var sqliteBook = (SqliteBook)book;
             sqliteBook.LastOpeningTime = DateTime.Now;
+
+            var connection = await GetConnectionAsync();
+            await connection.UpdateAsync(sqliteBook);
+        }
+
+        public async Task UpdateLastOpenedPageAsync(IBook book, uint pageNumber)
+        {
+            if (book == null) 
+                throw new ArgumentNullException("book");
+            if (pageNumber < 1 || pageNumber > book.PageCount)
+                throw new ArgumentOutOfRangeException("pageNumber");
+
+            var sqliteBook = (SqliteBook)book;
+            sqliteBook.LastOpenedPage = pageNumber;
 
             var connection = await GetConnectionAsync();
             await connection.UpdateAsync(sqliteBook);
