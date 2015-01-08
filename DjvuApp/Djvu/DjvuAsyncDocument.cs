@@ -7,14 +7,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using DjvuApp.Model.Books;
 using DjvuApp.Model.Outline;
-using DjvuLibRT;
 
 namespace DjvuApp.Djvu
 {
     public sealed class DjvuAsyncDocument
     {
         [DebuggerDisplay("{Title} at {PageNumber}")]
-        private sealed class OutlineItem : IOutlineItem
+        private sealed class OutlineSection : IOutlineSection
         {
             public string Title { get; set; }
 
@@ -22,15 +21,14 @@ namespace DjvuApp.Djvu
 
             public bool HasItems { get { return Items.Count > 0; } }
 
-            public IReadOnlyList<IOutlineItem> Items { get; set; }
+            public IReadOnlyList<IOutlineSection> Items { get; set; }
 
-            public IOutlineItem Parent { get; set; }
+            public IOutlineSection Parent { get; set; }
         }
 
         public uint PageCount { get; private set; }
 
         private readonly DjvuDocument _document;
-        private readonly static SemaphoreSlim _semaphore = new SemaphoreSlim(1);
 
         private DjvuAsyncDocument(DjvuDocument document)
         {
@@ -40,8 +38,6 @@ namespace DjvuApp.Djvu
 
         public static async Task<DjvuAsyncDocument> LoadFileAsync(string path)
         {
-            await _semaphore.WaitAsync();
-
             DjvuDocument document;
             try
             {
@@ -50,10 +46,6 @@ namespace DjvuApp.Djvu
             catch (Exception ex)
             {
                 throw new DjvuDocumentException("Cannot open document.", ex);
-            }
-            finally
-            {
-                _semaphore.Release();
             }
 
             if (document.Type != DocumentType.SinglePage && document.Type != DocumentType.Bundled && document.Type != DocumentType.OldBundled)
@@ -66,19 +58,9 @@ namespace DjvuApp.Djvu
 
         public async Task<DjvuAsyncPage> GetPageAsync(uint pageNumber)
         {
-            await _semaphore.WaitAsync();
-
-            DjvuPage page;
-            try
-            {
-                page = await _document.GetPageAsync(pageNumber);
-            }
-            finally
-            {
-                _semaphore.Release();
-            }
+            var page = await _document.GetPageAsync(pageNumber);
             
-            return new DjvuAsyncPage(page, _semaphore);
+            return new DjvuAsyncPage(page);
         }
 
         public IReadOnlyList<PageInfo> GetPageInfos()
@@ -86,17 +68,17 @@ namespace DjvuApp.Djvu
             return _document.GetPageInfos();
         }
 
-        public IEnumerable<IOutlineItem> GetOutline()
+        public IEnumerable<IOutlineSection> GetOutline()
         {
             var outline = _document.GetBookmarks();
             if (outline == null)
                 return null;
-            return GetOutlineItems(outline.AsEnumerable().GetEnumerator(), (uint) outline.Length, null);
+            return PickSections(outline.AsEnumerable().GetEnumerator(), (uint) outline.Length, null);
         }
 
-        private static IReadOnlyList<IOutlineItem> GetOutlineItems(IEnumerator<DjvuBookmark> enumerator, uint count, IOutlineItem parent)
+        private static IReadOnlyList<IOutlineSection> PickSections(IEnumerator<DjvuBookmark> enumerator, uint count, IOutlineSection parent)
         {
-            var result = new List<OutlineItem>();
+            var result = new IOutlineSection[count];
 
             for (uint i = 0; i < count; i++)
             {
@@ -112,7 +94,7 @@ namespace DjvuApp.Djvu
                     uint.TryParse(url.Substring(1), out pageNumber);
                 }
 
-                var item = new OutlineItem
+                var item = new OutlineSection
                 {
                     Title = bookmark.Name,
                     PageNumber = pageNumber > 0 ? (uint?) pageNumber : null,
@@ -120,10 +102,10 @@ namespace DjvuApp.Djvu
                 };
 
                 item.Items = bookmark.ChildrenCount > 0
-                    ? GetOutlineItems(enumerator, bookmark.ChildrenCount, item)
-                    : new IOutlineItem[0];
+                    ? PickSections(enumerator, bookmark.ChildrenCount, item)
+                    : new IOutlineSection[0];
 
-                result.Add(item);
+                result[i] = item;
             }
 
             return result;

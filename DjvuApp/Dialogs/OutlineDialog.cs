@@ -11,7 +11,7 @@ namespace DjvuApp.Dialogs
 {
     public static class OutlineDialog
     {
-        public static async Task<uint?> ShowAsync(IEnumerable<IOutlineItem> outlineItems)
+        public static async Task<uint?> ShowAsync(IEnumerable<IOutlineSection> outlineItems)
         {
             var resourceLoader = ResourceLoader.GetForCurrentView();
 

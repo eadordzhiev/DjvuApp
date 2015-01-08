@@ -34,82 +34,87 @@ namespace DjvuApp.ViewModel
     {
         public bool IsProgressVisible
         {
-            get { return _isProgressVisible; }
+            get
+            {
+                return _isProgressVisible;
+            }
 
             private set
             {
-                if (_isProgressVisible == value)
+                if (_isProgressVisible != value)
                 {
-                    return;
+                    _isProgressVisible = value;
+                    RaisePropertyChanged();
                 }
-
-                _isProgressVisible = value;
-                RaisePropertyChanged();
             }
         }
 
         public bool IsCurrentPageBookmarked
         {
-            get { return _isCurrentPageBookmarked; }
+            get
+            {
+                return _isCurrentPageBookmarked;
+            }
 
             private set
             {
-                if (_isCurrentPageBookmarked == value)
+                if (_isCurrentPageBookmarked != value)
                 {
-                    return;
+                    _isCurrentPageBookmarked = value;
+                    RaisePropertyChanged();
                 }
-
-                _isCurrentPageBookmarked = value;
-                RaisePropertyChanged();
             }
         }
 
         public DjvuAsyncDocument CurrentDocument
         {
-            get { return _currentDocument; }
+            get
+            {
+                return _currentDocument;
+            }
 
             private set
             {
-                if (_currentDocument == value)
+                if (_currentDocument != value)
                 {
-                    return;
+                    _currentDocument = value;
+                    RaisePropertyChanged();
                 }
-
-                _currentDocument = value;
-                RaisePropertyChanged();
             }
         }
 
         public uint CurrentPageNumber
         {
-            get { return _currentPageNumber; }
+            get
+            {
+                return _currentPageNumber;
+            }
 
             set
             {
-                if (_currentPageNumber == value)
+                if (_currentPageNumber != value)
                 {
-                    return;
+                    _currentPageNumber = value;
+                    OnCurrentPageNumberChanged();
+                    RaisePropertyChanged();
                 }
-
-                _currentPageNumber = value;
-                OnCurrentPageNumberChanged();
-                RaisePropertyChanged();
             }
         }
 
-        public IEnumerable<IOutlineItem> Outline
+        public IEnumerable<IOutlineSection> Outline
         {
-            get { return _outline; }
+            get
+            {
+                return _outline;
+            }
 
             private set
             {
-                if (_outline == value)
+                if (_outline != value)
                 {
-                    return;
+                    _outline = value;
+                    RaisePropertyChanged();
                 }
-
-                _outline = value;
-                RaisePropertyChanged();
             }
         }
 
@@ -133,7 +138,7 @@ namespace DjvuApp.ViewModel
         private bool _isCurrentPageBookmarked;
         private DjvuAsyncDocument _currentDocument;
         private uint _currentPageNumber;
-        private IEnumerable<IOutlineItem> _outline;
+        private IEnumerable<IOutlineSection> _outline;
 
         private readonly DataTransferManager _dataTransferManager;
         private readonly IBookProvider _provider;
@@ -166,11 +171,11 @@ namespace DjvuApp.ViewModel
             MessengerInstance.Register<LoadedHandledMessage<IBook>>(this, message => LoadedHandler(message.Parameter));
 
             MessengerInstance.Register<OnNavigatedFromMessage>(this,
-                message =>
+                async message =>
                 {
                     _dataTransferManager.DataRequested -= DataRequestedHandler;
                     Application.Current.Suspending -= ApplicationSuspendingHandler;
-                    SaveLastOpenedPageAsync();
+                    await SaveLastOpenedPageAsync();
                 });
             MessengerInstance.Register<OnNavigatedToMessage>(this,
                 message =>

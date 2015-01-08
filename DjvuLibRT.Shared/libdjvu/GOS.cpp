@@ -272,8 +272,8 @@ GOS::ticks()
   return (unsigned long)( ((tv.tv_sec & 0xfffff)*1000) 
                           + (tv.tv_usec/1000) );
 #elif defined(WIN32)
-  DWORD clk = GetTickCount();
-  return (unsigned long)clk;
+  ULONGLONG tickCount = GetTickCount64();
+  return static_cast<unsigned long>(tickCount);
 #elif defined(OS2)
   ULONG clk = 0;
   DosQuerySysInfo(QSV_MS_COUNT, QSV_MS_COUNT, (PVOID)&clk, sizeof(ULONG));

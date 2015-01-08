@@ -15,7 +15,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)DebugHelper.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)DjvuLibRT.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)DjvuInterop.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)IBufferUtilities.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\Arrays.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\atomic.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\BSByteStream.h" />
@@ -63,16 +64,17 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\XMLTags.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\ZPCodec.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)LicenseValidator.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)WinRTNativePtr.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)pch.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StringConversion.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)ThreadEmulation.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)DebugHelper.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)DjvuLibRT.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)DjvuInterop.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)IBufferUtilities.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\Arrays.cpp">
       <SDLCheck>false</SDLCheck>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -253,7 +255,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\GThreads.cpp">
       <SDLCheck>false</SDLCheck>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <CompileAsWinRT>false</CompileAsWinRT>
+      <CompileAsWinRT>true</CompileAsWinRT>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\GUnicode.cpp">
       <SDLCheck>false</SDLCheck>
@@ -316,8 +318,5 @@
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)StringConversion.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)ThreadEmulation.cpp">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-    </ClCompile>
   </ItemGroup>
 </Project>

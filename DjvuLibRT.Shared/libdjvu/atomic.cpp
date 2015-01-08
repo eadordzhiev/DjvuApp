@@ -102,7 +102,7 @@ static void mutex_enter()
   if (!InterlockedExchange(&ini, 1))
     {
       InitializeCriticalSectionEx(&cs, 0, 0);
-      ev = CreateEvent(NULL, TRUE, FALSE, NULL);
+      ev = CreateEventEx(nullptr, nullptr, 0, EVENT_ALL_ACCESS);
       assert(ev);
     }
   EnterCriticalSection(&cs);
@@ -111,7 +111,7 @@ static void cond_wait()
 {
   ResetEvent(&ev);
   LeaveCriticalSection(&cs);
-  WaitForSingleObject(ev, INFINITE);
+  WaitForSingleObjectEx(ev, INFINITE, false);
   EnterCriticalSection(&cs);
 }
 # define MUTEX_ENTER mutex_enter()

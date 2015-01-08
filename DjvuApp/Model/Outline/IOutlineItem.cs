@@ -3,7 +3,7 @@ using JetBrains.Annotations;
 
 namespace DjvuApp.Model.Outline
 {
-    public interface IOutlineItem
+    public interface IOutlineSection
     {
         [NotNull]
         string Title { get; }
@@ -12,8 +12,8 @@ namespace DjvuApp.Model.Outline
 
         bool HasItems { get; }
 
-        IReadOnlyList<IOutlineItem> Items { get; }
+        IReadOnlyList<IOutlineSection> Items { get; }
 
-        IOutlineItem Parent { get; }
+        IOutlineSection Parent { get; }
     }
 }

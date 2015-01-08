@@ -1,17 +1,21 @@
 #include "pch.h"
 #include "DebugHelper.h"
 
-void _Print (int Line, LPCWSTR Function, LPCWSTR File, LPCWSTR Format, ...)
+void printDebugMessage(int lineNumber, LPCWSTR functionName, LPCWSTR fileName, LPCWSTR format, ...)
 {
     va_list vl;
-	va_start (vl, Format);
+    va_start(vl, format);
 
-	WCHAR buffer[255];
-	swprintf_s (buffer, L"[%s(%d):%s]: ", File, Line, Function);
-	OutputDebugString(buffer);
-	vswprintf_s (buffer, Format, vl);
-	OutputDebugString(buffer);
-	OutputDebugString(L"\n");
+    std::wstringstream stream;
+    stream << L"[" << fileName << L"(" << lineNumber << L"):" << functionName << L"]: ";
+    std::wstring str = stream.str();
+    OutputDebugString(str.c_str());
+
+    WCHAR buffer[1024];
+    vswprintf_s(buffer, format, vl);
+    OutputDebugString(buffer);
+
+    OutputDebugString(L"\n");
 
 	va_end (vl);
 }

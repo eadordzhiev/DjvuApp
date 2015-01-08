@@ -14,8 +14,8 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using DjvuApp.Common;
+using DjvuApp.Misc;
 using DjvuApp.Misc.TrialExperience;
-using DjvuLibRT;
 using Microsoft.Practices.ServiceLocation;
 
 namespace DjvuApp.Pages
@@ -46,7 +46,6 @@ namespace DjvuApp.Pages
             }
             if (_hasLicense != true)
             {
-                GoogleAnalytics.EasyTracker.GetTracker().SendEvent("Piracy", "PiracyMessageShown", null, 0);
                 var dialog = new MessageDialog("I don't like being pirated...");
                 await dialog.ShowAsync();
                 Application.Current.Exit();

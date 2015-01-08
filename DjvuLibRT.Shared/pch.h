@@ -6,7 +6,10 @@
 #pragma once
 
 #include <string>
+#include <sstream>
 #include <windows.h>
+#include <collection.h>
+#include <ppltasks.h>
 #include <wrl.h>
 #include <robuffer.h>
 

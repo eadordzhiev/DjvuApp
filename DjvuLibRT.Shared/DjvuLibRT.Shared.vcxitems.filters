@@ -1,10 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="$(MSBuildThisFileDirectory)DjvuLibRT.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)pch.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StringConversion.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)ThreadEmulation.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)DebugHelper.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\ZPCodec.h">
       <Filter>djvulibre\Headers</Filter>
@@ -145,12 +143,13 @@
       <Filter>djvulibre\Headers</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)LicenseValidator.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)IBufferUtilities.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)WinRTNativePtr.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)DjvuInterop.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)DjvuLibRT.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)pch.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)StringConversion.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)ThreadEmulation.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)DebugHelper.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\GURL.cpp">
       <Filter>djvulibre\Source</Filter>
@@ -300,6 +299,8 @@
       <Filter>djvulibre\Source</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)LicenseValidator.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)IBufferUtilities.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)DjvuInterop.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="djvulibre">

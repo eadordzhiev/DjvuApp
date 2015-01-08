@@ -20,7 +20,7 @@ namespace DjvuApp.Dialogs.Internal
             DataContext = outline;
         }
 
-        private OutlineDialogInternal(IOutlineItem outline)
+        private OutlineDialogInternal(IOutlineSection outline)
         {
             this.InitializeComponent();
 
@@ -29,7 +29,7 @@ namespace DjvuApp.Dialogs.Internal
 
         private void ItemClickHandler(object sender, ItemClickEventArgs e)
         {
-            var item = (IOutlineItem) e.ClickedItem;
+            var item = (IOutlineSection) e.ClickedItem;
             if (item.PageNumber != null)
             {
                 TargetPageNumber = item.PageNumber;
@@ -44,18 +44,18 @@ namespace DjvuApp.Dialogs.Internal
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
             var button = (ButtonBase) sender;
-            var item = (IOutlineItem) button.DataContext;
+            var item = (IOutlineSection) button.DataContext;
 
             ShowNextDialog(item);
         }
 
-        private void ShowNextDialog(IOutlineItem item)
+        private void ShowNextDialog(IOutlineSection section)
         {
-            if (item.HasItems)
+            if (section.HasItems)
             {
                 Hide();
 
-                var outlineDialog = new OutlineDialogInternal(item);
+                var outlineDialog = new OutlineDialogInternal(section);
                 NextDialog = outlineDialog;
             }
         }

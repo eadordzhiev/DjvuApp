@@ -105,22 +105,18 @@
 #include "GException.h"
 
 #define NOTHREADS     0
-#define POSIXTHREADS  10
 #define WINTHREADS    11
-#define MACTHREADS    12
+#define WINRTTHREADS  13
 
 // Known platforms
 #ifndef THREADMODEL
-#if defined(WIN32)
+#if defined(_WINRT_DLL)
+#define THREADMODEL WINRTTHREADS
+#elif defined(WIN32)
 #define THREADMODEL WINTHREADS
 #endif
 #endif
 
-// Exception emulation is not thread safe
-#ifdef USE_EXCEPTION_EMULATION
-#undef  THREADMODEL
-#define THREADMODEL NOTHREADS
-#endif
 // Default is nothreads
 #ifndef THREADMODEL
 #define THREADMODEL NOTHREADS
@@ -135,21 +131,6 @@
 #include "windows.h"
 #endif
 #endif
-
-#if THREADMODEL==MACTHREADS
-#include <threads.h>
-#endif
-
-#if THREADMODEL==POSIXTHREADS
-#include <sys/types.h>
-#include <sys/time.h>
-#include <unistd.h>
-#undef TRY
-#undef CATCH
-#define _CMA_NOWRAPPERS_
-#include <pthread.h>
-#endif
-
 
 // ----------------------------------------
 // PORTABLE CLASSES
@@ -221,10 +202,6 @@ public:
 private:
   HANDLE hthr;
   DWORD  thrid;
-#elif THREADMODEL==POSIXTHREADS
-private:
-  pthread_t hthr;
-  static void *start(void *arg);
 #endif
 public:
   // Should be considered as private
@@ -298,19 +275,13 @@ public:
       function is called by a thread which does not own the monitor. */
   void broadcast();
 private:
-#if THREADMODEL==WINTHREADS
+#if THREADMODEL==WINTHREADS || THREADMODEL==WINRTTHREADS
   int ok;
   int count;
   DWORD locker;
   CRITICAL_SECTION cs;
   struct thr_waiting *head;
   struct thr_waiting *tail;
-#elif THREADMODEL==POSIXTHREADS
-  int ok;
-  int count;
-  pthread_t locker;
-  pthread_mutex_t mutex;
-  pthread_cond_t cond;
 #endif  
 private:
   // Disable default members

@@ -123,13 +123,11 @@ namespace DjvuApp.Pages
 
         private async void ShowMyAppsButtonClickHandler(object sender, RoutedEventArgs e)
         {
-            GoogleAnalytics.EasyTracker.GetTracker().SendEvent("Promotion", "MyAppsButtonClick", null, 0);
             await Launcher.LaunchUriAsync(new Uri("zune:search?publisher=Useless guy"));
         }
 
         private async void ShowPicoLyricsButtonClickHandler(object sender, RoutedEventArgs e)
         {
-            GoogleAnalytics.EasyTracker.GetTracker().SendEvent("Promotion", "PicoLyricsLinkClick", null, 0);
             await Launcher.LaunchUriAsync(new Uri("zune:navigate?appid=75e3bd8f-3eee-df11-9264-00237de2db9e"));
         }
 
@@ -153,7 +151,6 @@ namespace DjvuApp.Pages
 
         private async void RateButtonClickHandler(object sender, RoutedEventArgs e)
         {
-            GoogleAnalytics.EasyTracker.GetTracker().SendEvent("Promotion", "ReviewButtonClick", null, 0);
             await Launcher.LaunchUriAsync(new Uri("zune:reviewapp?appid=appc6f56627-a976-443c-8531-00a92b42f4e5"));
         }
     }

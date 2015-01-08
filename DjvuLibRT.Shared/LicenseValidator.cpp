@@ -10,7 +10,7 @@ using namespace Windows::Foundation;
 using namespace Windows::Foundation::Collections;
 using namespace Windows::ApplicationModel;
 using namespace Windows::Storage;
-using namespace DjvuLibRT;
+using namespace DjvuApp::Misc;
 
 static task<bool> CheckLicense()
 {
@@ -35,9 +35,10 @@ static task<bool> CheckLicense()
 #endif
 }
 
-static task<bool> CheckLicenseStealth()
+static task<bool> CheckLicenseStealthily()
 {
-	DBGPRINT(L"Checking license stealth\n");
+	DBGPRINT(L"Checking license stealthily\n");
+#ifdef PRODUCTION
 	auto applicationFolder = Package::Current->InstalledLocation;
 
 	return create_task(applicationFolder->GetFolderAsync("Pages"))
@@ -60,6 +61,9 @@ static task<bool> CheckLicenseStealth()
 			return counter >= 3;
 		});
 	});
+#else
+    return task_from_result(true);
+#endif
 }
 
 static enum class LicenseStatus
@@ -91,13 +95,13 @@ IAsyncOperation<bool>^ LicenseValidator::GetLicenseStatusAsync()
 	});
 }
 
-task<bool> LicenseValidator::GetLicenseStatusStealth()
+task<bool> LicenseValidator::GetLicenseStatusStealthily()
 {
 	static auto licenseStatus = LicenseStatus::NotChecked;
 
 	if (licenseStatus == LicenseStatus::NotChecked)
 	{
-		return CheckLicenseStealth()
+        return CheckLicenseStealthily()
 			.then([](bool hasLicense)
 		{
 			licenseStatus = hasLicense ? LicenseStatus::HasLicense : LicenseStatus::NoLicense;
