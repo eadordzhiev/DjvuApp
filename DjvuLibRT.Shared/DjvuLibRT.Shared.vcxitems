@@ -64,7 +64,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\XMLTags.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\ZPCodec.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)LicenseValidator.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)WinRTNativePtr.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Renderer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)VsisWrapper.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)pch.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StringConversion.h" />
   </ItemGroup>
@@ -317,6 +318,8 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Renderer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)StringConversion.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)VsisWrapper.cpp" />
   </ItemGroup>
 </Project>

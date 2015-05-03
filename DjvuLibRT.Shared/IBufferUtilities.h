@@ -1,11 +1,10 @@
 #pragma once
-#include "WinRTNativePtr.h"
 
 namespace DjvuApp { namespace Misc 
 {
-    public ref class IBufferUtilities sealed
+    ref class IBufferUtilities sealed
     {
-    public:
-        static WinRTNativePtr GetPointer(Windows::Storage::Streams::IBuffer^ buffer);
+    internal:
+        static void* GetPointer(Windows::Storage::Streams::IBuffer^ buffer);
     };
 } }

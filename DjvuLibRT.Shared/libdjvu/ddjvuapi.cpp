@@ -2116,7 +2116,7 @@ fmt_convert_row(const GPixel *p, int w,
 	case DDJVU_FORMAT_BGRA:    /* truecolor 24 bits in BGR order */
       {
         while (--w >= 0) { 
-          buf[0]=p->b; buf[1]=p->g; buf[2]=p->r; buf[3]=255;
+          buf[0]=p->b; buf[1]=p->g; buf[2]=p->r; buf[3]=(char)0xFF;
           buf+=4; p+=1; 
         }
         break;
@@ -2245,7 +2245,7 @@ fmt_convert_row(unsigned char *p, unsigned char g[256][4], int w,
           buf[0]=g[*p][2];
           buf[1]=g[*p][1];
           buf[2]=g[*p][0];
-		  buf[3]=255;
+          buf[3]=(char)0xFF;
           buf+=4; p+=1; 
         }
         break;

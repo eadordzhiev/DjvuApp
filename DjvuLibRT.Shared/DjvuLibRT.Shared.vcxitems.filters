@@ -144,8 +144,9 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)LicenseValidator.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)IBufferUtilities.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)WinRTNativePtr.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)DjvuInterop.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Renderer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)VsisWrapper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)pch.cpp" />
@@ -301,6 +302,8 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)LicenseValidator.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)IBufferUtilities.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)DjvuInterop.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Renderer.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)VsisWrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="djvulibre">

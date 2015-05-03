@@ -247,7 +247,7 @@ DjvuPage::~DjvuPage()
 	}
 }
 
-void DjvuPage::RenderRegion(IntPtr bufferPtr, Size rescaledPageSize, Rect renderRegion)
+void DjvuPage::RenderRegion(void* bufferPtr, Size rescaledPageSize, Rect renderRegion)
 {
     if (page == nullptr)
     {
@@ -275,26 +275,19 @@ void DjvuPage::RenderRegion(IntPtr bufferPtr, Size rescaledPageSize, Rect render
     prect.h = (unsigned int)rescaledPageSize.Height;
 
 	rowsize = rrect.w * 4;
-	void* pDstPixels = (void*)bufferPtr;
 
 	try
 	{
-		/* Render */
-		if (!ddjvu_page_render(page, DDJVU_RENDER_COLOR, &prect, &rrect, document->GetFormat(), rowsize, (char*)pDstPixels))
+        if (!ddjvu_page_render(page, DDJVU_RENDER_COLOR, &prect, &rrect, document->GetFormat(), rowsize, (char*)bufferPtr))
 		{
 			DBGPRINT(L"Cannot render page, no data.");
-			memset(pDstPixels, UINT_MAX, rowsize * rrect.h);
+            memset(bufferPtr, UINT_MAX, rowsize * rrect.h);
 		}
 	}
 	catch (const GException& ex)
 	{
 		RethrowToWinRtException(ex);
 	}
-}
-
-void DjvuPage::RenderRegion(WinRTNativePtr bufferPtr, Size rescaledPageSize, Rect renderRegion)
-{
-    RenderRegion(IntPtr(reinterpret_cast<void*>(bufferPtr)), rescaledPageSize, renderRegion);
 }
 
 IAsyncAction^ DjvuPage::RenderRegionAsync(WriteableBitmap^ bitmap, Size rescaledPageSize, Rect renderRegion)

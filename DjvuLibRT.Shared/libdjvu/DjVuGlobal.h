@@ -64,7 +64,11 @@
 
 #define NOMINMAX
 #include <windows.h>
+
+#if defined(DEBUGLVL)
+#undef DEBUGLVL
 #define DEBUGLVL 0
+#endif
 
 #if defined(UNDER_CE)
 # ifndef __WCEALT_H__

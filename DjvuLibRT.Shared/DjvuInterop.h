@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include <cctype>
-#include "WinRTNativePtr.h"
 
 namespace DjvuApp { namespace Djvu 
 {
@@ -56,19 +55,13 @@ namespace DjvuApp { namespace Djvu
             Windows::Foundation::Size rescaledPageSize,
             Windows::Foundation::Rect renderRegion
             );
-        [Windows::Foundation::Metadata::DefaultOverloadAttribute]
-        void RenderRegion(
-            Platform::IntPtr bufferPtr, 
-            Windows::Foundation::Size rescaledPageSize,
-            Windows::Foundation::Rect renderRegion
-            );
-        void RenderRegion(
-            WinRTNativePtr bufferPtr,
-            Windows::Foundation::Size rescaledPageSize,
-            Windows::Foundation::Rect renderRegion
-            );
 	internal:
         DjvuPage(ddjvu_page_t* page, DjvuDocument^ document, uint32_t pageNumber);
+        void RenderRegion(
+            void* bufferPtr,
+            Windows::Foundation::Size rescaledPageSize,
+            Windows::Foundation::Rect renderRegion
+            );
 	private:
         uint32_t width, height, pageNumber;
 		DjvuDocument^ document;

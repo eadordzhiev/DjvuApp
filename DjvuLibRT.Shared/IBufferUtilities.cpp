@@ -14,7 +14,7 @@ void ThrowIfFailed(HRESULT hr)
     }
 }
 
-WinRTNativePtr IBufferUtilities::GetPointer(IBuffer^ buffer)
+void* IBufferUtilities::GetPointer(IBuffer^ buffer)
 {
     ComPtr<IInspectable> inspectable(reinterpret_cast<IInspectable*>(buffer));
 
@@ -24,5 +24,5 @@ WinRTNativePtr IBufferUtilities::GetPointer(IBuffer^ buffer)
     byte* pointer = nullptr;
     ThrowIfFailed(bufferByteAccess->Buffer(&pointer));
 
-    return reinterpret_cast<WinRTNativePtr>(pointer);
+    return pointer;
 }
