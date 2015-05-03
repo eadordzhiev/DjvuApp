@@ -7,7 +7,8 @@ void printDebugMessage(int lineNumber, LPCWSTR functionName, LPCWSTR fileName, L
     va_start(vl, format);
 
     std::wstringstream stream;
-    stream << L"[" << fileName << L"(" << lineNumber << L"):" << functionName << L"]: ";
+    //stream << L"[" << fileName << L"(" << lineNumber << L"):" << functionName << L"]: ";
+
     std::wstring str = stream.str();
     OutputDebugString(str.c_str());
 

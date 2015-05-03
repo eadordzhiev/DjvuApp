@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "VsisWrapper.h"
 
+using namespace Concurrency;
 using namespace Platform;
 using namespace Windows::Foundation;
 using namespace Windows::Graphics::Display;
@@ -85,6 +86,8 @@ namespace DjvuApp
             );
     }
 
+    
+    
     void VsisWrapper::UpdatesNeeded()
     {
         DWORD rectCount;
@@ -92,30 +95,71 @@ namespace DjvuApp
             vsisNative->GetUpdateRectCount(&rectCount)
             );
 
-        std::unique_ptr<RECT[]> updateRects(new RECT[rectCount]);
+        auto updateRects = new RECT[rectCount];
         DX::ThrowIfFailed(
-            vsisNative->GetUpdateRects(updateRects.get(), rectCount)
+            vsisNative->GetUpdateRects(updateRects, rectCount)
             );
 
         for (ULONG i = 0; i < rectCount; ++i)
         {
-            RenderRegion(updateRects[i]);
+            ComPtr<IDXGISurface> dxgiSurface;
+            POINT surfaceOffset = { 0 };
+
+            HRESULT hr = vsisNative->BeginDraw(updateRects[i], &dxgiSurface, &surfaceOffset);
+
+            if (SUCCEEDED(hr))
+            {
+                DX::ThrowIfFailed(
+                    vsisNative->EndDraw()
+                    );
+            }
+            else if ((hr == DXGI_ERROR_DEVICE_REMOVED) || (hr == DXGI_ERROR_DEVICE_RESET))
+            {
+                renderer->HandleDeviceLost();
+                vsisNative->Invalidate(updateRects[i]);
+            }
+            else
+            {
+                DX::ThrowIfFailed(hr);
+            }
         }
+
+        task<void> currentTask;
+        for (ULONG i = 0; i < rectCount; ++i)
+        {
+            if (i == 0)
+            {
+                currentTask = RenderRegion(updateRects[i]);
+            }
+            else
+            {
+                RECT rect = updateRects[i];
+                currentTask = currentTask.then([=]()
+                {
+                    RenderRegion(rect);
+                });
+            }
+        }
+        currentTask.then([=]()
+        {
+            delete[] updateRects;
+        }, task_continuation_context::use_current());
     }
 
-    void VsisWrapper::RenderRegion(const RECT& updateRect)
+    task<void> VsisWrapper::RenderRegion(const RECT& updateRect)
     {
-        ComPtr<IDXGISurface> dxgiSurface;
-        POINT surfaceOffset = { 0 };
+        static int currentTaskNumber = 0;
+        currentTaskNumber++;
+        int taskNumber = currentTaskNumber;
 
-        HRESULT hr = vsisNative->BeginDraw(updateRect, &dxgiSurface, &surfaceOffset);
-
-        if (SUCCEEDED(hr))
+        return create_task([=]()
         {
+            DBGPRINT(L"RenderRegion start1, task%d", taskNumber);
+
             UINT regionWidth = updateRect.right - updateRect.left;
             UINT regionHeight = updateRect.bottom - updateRect.top;
             UINT rowSize = regionWidth * 4;
-            
+
             Rect renderRegion;
             renderRegion.Width = static_cast<float>(regionWidth);
             renderRegion.Height = static_cast<float>(regionHeight);
@@ -128,8 +172,8 @@ namespace DjvuApp
             page->RenderRegion(buffer, pageSize, renderRegion);
 
             auto d2dDeviceContext = renderer->GetD2DDeviceContext();
-            
-            ComPtr<ID2D1Bitmap> bitmap;
+
+            ComPtr<ID2D1Bitmap> bitmap1;
             DX::ThrowIfFailed(
                 d2dDeviceContext->CreateBitmap(
                 D2D1::SizeU(regionWidth, regionHeight),
@@ -141,47 +185,62 @@ namespace DjvuApp
                 D2D1_ALPHA_MODE_IGNORE
                 )
                 ),
-                &bitmap)
+                &bitmap1)
                 );
+
+            bitmap = bitmap1;
 
             delete[] buffer;
-            
-            ComPtr<ID2D1Bitmap1> targetBitmap;
-            DX::ThrowIfFailed(
-                d2dDeviceContext->CreateBitmapFromDxgiSurface(
-                dxgiSurface.Get(),
-                nullptr,
-                &targetBitmap
-                )
-                );
-            d2dDeviceContext->SetTarget(targetBitmap.Get());
-
-            auto transform = D2D1::Matrix3x2F::Translation(
-                static_cast<float>(surfaceOffset.x),
-                static_cast<float>(surfaceOffset.y)
-                );
-            d2dDeviceContext->SetTransform(transform);
-
-            d2dDeviceContext->BeginDraw();
-            d2dDeviceContext->DrawBitmap(bitmap.Get());
-            DX::ThrowIfFailed(
-                d2dDeviceContext->EndDraw()
-                );
-
-            d2dDeviceContext->SetTarget(nullptr);
-
-            DX::ThrowIfFailed(
-                vsisNative->EndDraw()
-                );
-        }
-        else if ((hr == DXGI_ERROR_DEVICE_REMOVED) || (hr == DXGI_ERROR_DEVICE_RESET))
+        }).then([=]()
         {
-            renderer->HandleDeviceLost();
-            vsisNative->Invalidate(updateRect);
-        }
-        else
-        {
-            DX::ThrowIfFailed(hr);
-        }
+            DBGPRINT(L"RenderRegion start2, task%d", taskNumber);
+
+            auto d2dDeviceContext = renderer->GetD2DDeviceContext();
+
+            ComPtr<IDXGISurface> dxgiSurface;
+            POINT surfaceOffset = { 0 };
+
+            HRESULT hr = vsisNative->BeginDraw(updateRect, &dxgiSurface, &surfaceOffset);
+
+            if (SUCCEEDED(hr))
+            {
+                ComPtr<ID2D1Bitmap1> targetBitmap;
+                DX::ThrowIfFailed(
+                    d2dDeviceContext->CreateBitmapFromDxgiSurface(
+                    dxgiSurface.Get(),
+                    nullptr,
+                    &targetBitmap
+                    )
+                    );
+                d2dDeviceContext->SetTarget(targetBitmap.Get());
+
+                auto transform = D2D1::Matrix3x2F::Translation(
+                    static_cast<float>(surfaceOffset.x),
+                    static_cast<float>(surfaceOffset.y)
+                    );
+                d2dDeviceContext->SetTransform(transform);
+
+                d2dDeviceContext->BeginDraw();
+                d2dDeviceContext->DrawBitmap(bitmap.Get());
+                DX::ThrowIfFailed(
+                    d2dDeviceContext->EndDraw()
+                    );
+
+                d2dDeviceContext->SetTarget(nullptr);
+
+                DX::ThrowIfFailed(
+                    vsisNative->EndDraw()
+                    );
+            }
+            else if ((hr == DXGI_ERROR_DEVICE_REMOVED) || (hr == DXGI_ERROR_DEVICE_RESET))
+            {
+                renderer->HandleDeviceLost();
+                vsisNative->Invalidate(updateRect);
+            }
+            else
+            {
+                DX::ThrowIfFailed(hr);
+            }
+        }, task_continuation_context::use_current());
     }
 }

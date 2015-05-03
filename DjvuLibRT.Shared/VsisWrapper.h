@@ -25,8 +25,8 @@ namespace DjvuApp
 
     private:
         ~VsisWrapper();
-
-        void RenderRegion(const RECT& updateRect);
+        Microsoft::WRL::ComPtr<ID2D1Bitmap> bitmap;
+        Concurrency::task<void> RenderRegion(const RECT& updateRect);
         void HandleDeviceLost();
 
     private:
