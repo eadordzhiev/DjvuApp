@@ -297,19 +297,13 @@ namespace DjvuApp.ViewModel
             _bookmarks = new ObservableCollection<IBookmark>(await _provider.GetBookmarksAsync(book));
             _bookmarks.CollectionChanged += (sender, e) => UpdateIsCurrentPageBookmarked();
 
-            DjvuPageSource.PageRendered += PageRenderedHandler;
-
             CurrentDocument = document;
             var lastOpenedPage = _book.LastOpenedPage;
             if (lastOpenedPage != null)
             {
                 CurrentPageNumber = (uint)lastOpenedPage;
             }
-        }
 
-        private void PageRenderedHandler(object sender, EventArgs e)
-        {
-            DjvuPageSource.PageRendered -= PageRenderedHandler;
             IsProgressVisible = false;
         }
 

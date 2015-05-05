@@ -82,6 +82,7 @@ DjvuDocument::DjvuDocument(const char* path)
 		context = ddjvu_context_create(nullptr);
 		format = ddjvu_format_create(DDJVU_FORMAT_BGRA, 0, 0);
 		ddjvu_format_set_row_order(format, 1);
+        ddjvu_format_set_y_direction(format, 1);
 
 		document = ddjvu_document_create_by_filename_utf8(context, path, false);
 
@@ -199,7 +200,7 @@ DjvuPage^ DjvuDocument::GetPage(uint32 pageNumber)
 	{
 		throw ref new InvalidArgumentException("pageNumber is out of the range");
 	}
-
+    
 	ddjvu_page_t* page;
 
 	try
@@ -215,6 +216,8 @@ DjvuPage^ DjvuDocument::GetPage(uint32 pageNumber)
 	{
 		RethrowToWinRtException(ex);
 	}
+
+    assert(page != nullptr);
 
 	return ref new DjvuPage(page, this, pageNumber);
 }

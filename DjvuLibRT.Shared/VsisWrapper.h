@@ -9,7 +9,8 @@ namespace DjvuApp
     {
     public:
         VsisWrapper(Djvu::DjvuPage^ page, Renderer^ renderer, Windows::Foundation::Size pageViewSize);
-        
+        virtual ~VsisWrapper();
+
         property Windows::UI::Xaml::Media::Imaging::VirtualSurfaceImageSource^ Source
         {
             Windows::UI::Xaml::Media::Imaging::VirtualSurfaceImageSource^ get()
@@ -24,9 +25,7 @@ namespace DjvuApp
         void UpdatesNeeded();
 
     private:
-        ~VsisWrapper();
-        Microsoft::WRL::ComPtr<ID2D1Bitmap> bitmap;
-        Concurrency::task<void> RenderRegion(const RECT& updateRect);
+        void RenderRegion(const RECT& updateRect);
         void HandleDeviceLost();
 
     private:

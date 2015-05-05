@@ -65,6 +65,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\ZPCodec.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)LicenseValidator.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Renderer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)SisWrapper.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)VsisWrapper.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)pch.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StringConversion.h" />
@@ -319,6 +320,7 @@
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Renderer.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)SisWrapper.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)StringConversion.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)VsisWrapper.cpp" />
   </ItemGroup>

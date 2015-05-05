@@ -36,6 +36,11 @@ namespace DjvuApp.Djvu
             PageCount = document.PageCount;
         }
 
+        public DjvuDocument GetDocument()
+        {
+            return _document;
+        }
+
         public static async Task<DjvuAsyncDocument> LoadFileAsync(string path)
         {
             DjvuDocument document;

@@ -14,33 +14,14 @@ namespace DjvuApp.Controls
 
         public DjvuDocumentSource(DjvuAsyncDocument document)
         {
-            // 1GB devices have a 390MB limit
-            const ulong highMemoryUsageLimit = 350 * 1024 * 1024;
-            double scaleFactor, previewScaleFactor;
-
-            if (MemoryManager.AppMemoryUsageLimit >= highMemoryUsageLimit)
-            {
-                scaleFactor = 1 / 2D;
-                previewScaleFactor = 1 / 16D;
-            }
-            else
-            {
-                scaleFactor = 1 / 4D;
-                previewScaleFactor = 1 / 32D;
-            }
-
             var pageInfos = document.GetPageInfos();
             
             for (int i = 0; i < document.PageCount; i++)
             {
                 var pageInfo = pageInfos[i];
                 var page = new DjvuPageSource(
-                    document: document, 
-                    pageNumber: pageInfo.PageNumber, 
-                    width: pageInfo.Width, 
-                    height: pageInfo.Height, 
-                    scaleFactor: scaleFactor, 
-                    previewScaleFactor: previewScaleFactor);
+                    document: document.GetDocument(), 
+                    pageNumber: pageInfo.PageNumber);
                 _pages.Add(page);
             }
 

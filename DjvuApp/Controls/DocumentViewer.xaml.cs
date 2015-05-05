@@ -146,7 +146,7 @@ namespace DjvuApp.Controls
                 offset -= pageOffset;
 
             var page = GetPage(pageNumber);
-            var zoomFactor = GetNormalZoomFactor(page.Width);
+            var zoomFactor = GetNormalZoomFactor((float) page.Width);
 
             // Now we have centered offset and right zoomFactor
             // so we can finally change view
@@ -221,7 +221,7 @@ namespace DjvuApp.Controls
 
             foreach (var page in _viewModel)
             {
-                page.Dispose();
+                //page.Dispose();
             }
         }
     }
