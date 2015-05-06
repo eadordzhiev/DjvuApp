@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -38,6 +39,7 @@ namespace DjvuApp
         {
             if (document != null)
                 return;
+
             document = await DjvuDocument.LoadAsync("djvu3spec.djvu");
             //document = await DjvuDocument.LoadAsync("strategikon.djvu");
             PageViewControl.Renderer = new Renderer();

@@ -40,7 +40,12 @@ namespace DjvuApp
         renderer(renderer),
         vsisNative(nullptr)
     {
-        double dpiFactor = DisplayInformation::GetForCurrentView()->RawPixelsPerViewPixel;
+        if (page == nullptr)
+        {
+            throw ref new InvalidArgumentException();
+        }
+
+        double dpiFactor = DisplayInformation::GetForCurrentView()->LogicalDpi / 96;
         width = static_cast<uint32>(pageViewSize.Width * dpiFactor);
         height = static_cast<uint32>(pageViewSize.Height * dpiFactor);
     }

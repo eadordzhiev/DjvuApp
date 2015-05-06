@@ -5,8 +5,9 @@
     <CodeSharingProject>248F659F-DAC5-46E8-AC09-60EC9FC95053</CodeSharingProject>
     <HasSharedItems>true</HasSharedItems>
     <SharedGUID>60070e97-579f-4e00-aa29-2b047d9f6deb</SharedGUID>
-    <ItemsProjectGuid>{1c7d99f4-51b0-4694-a897-692d18834651}</ItemsProjectGuid>
+    <ItemsProjectGuid>{4F641222-9453-48DD-A4AD-C883CEAA48EC}</ItemsProjectGuid>
     <ItemsRootNamespace>DjvuLibRT</ItemsRootNamespace>
+    <ItemsProjectName>DjvuLibRT.Shared</ItemsProjectName>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>

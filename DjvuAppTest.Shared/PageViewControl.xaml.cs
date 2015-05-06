@@ -83,7 +83,10 @@ namespace DjvuApp
         
         private void CreateContentSurface()
         {
-            Debug.Assert(_contentVsis == null);
+            if (_contentVsis != null)
+            {
+                throw new Exception();
+            }
 
             var pageViewSize = new Size(Width, Height);
             _contentVsis = new VsisWrapper(_page, Renderer, pageViewSize);
@@ -99,7 +102,10 @@ namespace DjvuApp
 
         private void CreateThumbnailSurface()
         {
-            Debug.Assert(_thumbnailSis == null);
+            if (_thumbnailSis != null)
+            {
+                throw new Exception();
+            }
 
             var pageViewSize = new Size(Width / 16, Height / 16);
             _thumbnailSis = new SisWrapper(_page, Renderer, pageViewSize);
@@ -123,13 +129,20 @@ namespace DjvuApp
             switch (args.Phase)
             {
                 case 0:
+                    Cleanup();
+
                     blankContentCanvas.Opacity = 1;
+                    thumbnailContentCanvas.Opacity = 0;
+                    contentCanvas.Opacity = 0;
                     args.RegisterUpdateCallback(containerContentChangingCallback);
                     break;
                 case 1:
-                    Debug.Assert(_page == null);
-                    _page = await State.Document.GetPageAsync(State.PageNumber);
+                    if (_page != null)
+                    {
+                        throw new Exception();
+                    }
 
+                    _page = State.Document.GetPage(State.PageNumber);
                     CreateThumbnailSurface();
 
                     blankContentCanvas.Opacity = 0;
