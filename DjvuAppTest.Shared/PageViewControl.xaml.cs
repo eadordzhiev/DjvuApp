@@ -16,16 +16,41 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using DjvuApp.Djvu;
 
-// The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
-
 namespace DjvuApp
 {
+    public class ZoomFactorObserver
+    {
+        private double _zoomFactor = 1;
+
+        public double ZoomFactor
+        {
+            get
+            {
+                return _zoomFactor;
+            }
+            set
+            {
+                _zoomFactor = value;
+                RaiseZoomFactorChanged();
+            }
+        }
+
+        public event Action ZoomFactorChanged;
+
+        private void RaiseZoomFactorChanged()
+        {
+            var handler = ZoomFactorChanged;
+            if (handler != null) handler();
+        }
+    }
+
     public class PageViewControlState
     {
         public DjvuDocument Document { get; set; }
         public uint PageNumber { get; set; }
         public double Width { get; set; }
         public double Height { get; set; }
+        public ZoomFactorObserver ZoomFactorObserver { get; set; }
     }
 
     public sealed partial class PageViewControl : UserControl
@@ -44,6 +69,7 @@ namespace DjvuApp
         private VsisWrapper _contentVsis;
         private SisWrapper _thumbnailSis;
         private DjvuPage _page;
+        private ZoomFactorObserver _zoomFactorObserver;
 
         private static void StateChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -58,29 +84,63 @@ namespace DjvuApp
             if (State == null)
                 return;
 
+            _zoomFactorObserver = State.ZoomFactorObserver;
+            _zoomFactorObserver.ZoomFactorChanged += HandleZoomFactorChanged;
+
             Width = State.Width;
             Height = State.Height;
+            
+            blankContentCanvas.Opacity = 1;
+            thumbnailContentCanvas.Opacity = 0;
+            contentCanvas.Opacity = 0;
+
+            if (_page != null)
+            {
+                throw new Exception();
+            }
+
+            _page = State.Document.GetPage(State.PageNumber);
+            CreateThumbnailSurface();
+
+            blankContentCanvas.Opacity = 0;
+            thumbnailContentCanvas.Opacity = 1;
+
+            CreateContentSurface();
+
+            contentCanvas.Opacity = 1;
         }
 
         private void Cleanup()
         {
+            if (_zoomFactorObserver != null)
+            {
+                _zoomFactorObserver.ZoomFactorChanged -= HandleZoomFactorChanged;
+                _zoomFactorObserver = null;
+            }
+            
             if (_contentVsis != null)
             {
                 _contentVsis.Dispose();
+                _contentVsis = null;
             }
 
             if (_thumbnailSis != null)
             {
                 _thumbnailSis.Dispose();
+                _thumbnailSis = null;
             }
 
             thumbnailContentCanvas.Background = null;
             contentCanvas.Background = null;
-            _contentVsis = null;
-            _thumbnailSis = null;
             _page = null;
         }
-        
+
+        private void HandleZoomFactorChanged()
+        {
+            _contentVsis = null;
+            CreateContentSurface();
+        }
+
         private void CreateContentSurface()
         {
             if (_contentVsis != null)
@@ -88,7 +148,8 @@ namespace DjvuApp
                 throw new Exception();
             }
 
-            var pageViewSize = new Size(Width, Height);
+            var zoomFactor = _zoomFactorObserver.ZoomFactor;
+            var pageViewSize = new Size(Width * zoomFactor, Height * zoomFactor);
             _contentVsis = new VsisWrapper(_page, Renderer, pageViewSize);
             _contentVsis.CreateSurface();
 
@@ -122,39 +183,6 @@ namespace DjvuApp
         public PageViewControl()
         {
             this.InitializeComponent();
-        }
-
-        public async void OnContainerContentChanging(ContainerContentChangingEventArgs args, TypedEventHandler<ListViewBase, ContainerContentChangingEventArgs> containerContentChangingCallback)
-        {
-            switch (args.Phase)
-            {
-                case 0:
-                    Cleanup();
-
-                    blankContentCanvas.Opacity = 1;
-                    thumbnailContentCanvas.Opacity = 0;
-                    contentCanvas.Opacity = 0;
-                    args.RegisterUpdateCallback(containerContentChangingCallback);
-                    break;
-                case 1:
-                    if (_page != null)
-                    {
-                        throw new Exception();
-                    }
-
-                    _page = State.Document.GetPage(State.PageNumber);
-                    CreateThumbnailSurface();
-
-                    blankContentCanvas.Opacity = 0;
-                    thumbnailContentCanvas.Opacity = 1;
-                    args.RegisterUpdateCallback(containerContentChangingCallback);
-                    break;
-                case 2:
-                    CreateContentSurface();
-
-                    contentCanvas.Opacity = 1;
-                    break;
-            }
         }
     }
 }

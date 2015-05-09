@@ -48,6 +48,16 @@ namespace DjvuApp
         double dpiFactor = DisplayInformation::GetForCurrentView()->LogicalDpi / 96;
         width = static_cast<uint32>(pageViewSize.Width * dpiFactor);
         height = static_cast<uint32>(pageViewSize.Height * dpiFactor);
+
+        if (width > page->Width)
+        {
+            width = page->Width;
+        }
+        
+        if (height > page->Height)
+        {
+            height = page->Height;
+        }
     }
 
     VsisWrapper::~VsisWrapper()

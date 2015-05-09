@@ -13,7 +13,7 @@
     <UserControl.Resources>
         <SolidColorBrush x:Key="ReaderCanvasForeground" Color="White"/>
     </UserControl.Resources>
-    
+
     <Canvas Background="Transparent">
         <Canvas 
             x:Name="blankContentCanvas"

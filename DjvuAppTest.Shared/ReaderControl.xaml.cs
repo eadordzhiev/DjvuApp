@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -14,8 +16,6 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using DjvuApp.Djvu;
 
-// The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
-
 namespace DjvuApp
 {
     public sealed partial class ReaderControl : UserControl
@@ -26,10 +26,22 @@ namespace DjvuApp
             set { SetValue(SourceProperty, value); }
         }
 
+        public uint PageNumber
+        {
+            get { return (uint)GetValue(PageNumberProperty); }
+            set { SetValue(PageNumberProperty, value); }
+        }
+
         public static readonly DependencyProperty SourceProperty =
             DependencyProperty.Register("Source", typeof(DjvuDocument), typeof(ReaderControl), new PropertyMetadata(null, SourceChangedCallback));
 
+        public static readonly DependencyProperty PageNumberProperty =
+            DependencyProperty.Register("PageNumber", typeof(uint), typeof(ReaderControl), new PropertyMetadata(0U, PageNumberChangedCallback));
+
         private bool _isLoaded;
+        private bool _isPageNumberChangedCallbackSuppressed;
+        private ZoomFactorObserver _zoomFactorObserver;
+        private ScrollViewer _scrollViewer;
 
         public ReaderControl()
         {
@@ -38,6 +50,39 @@ namespace DjvuApp
             Loaded += LoadedHandler;
             Unloaded += UnloadedHandler;
             SizeChanged += SizeChangedHandler;
+        }
+
+        private void OnPageNumberChanged(DependencyPropertyChangedEventArgs e)
+        {
+            if (Source == null)
+                throw new InvalidOperationException("Source is null.");
+            if (PageNumber == 0 || PageNumber > Source.PageCount)
+                throw new InvalidOperationException("PageNumber is out of range.");
+
+            if (_isPageNumberChangedCallbackSuppressed)
+                return;
+
+            GoToPage(PageNumber);
+        }
+
+        private void GoToPage(uint pageNumber)
+        {
+            // Due to unknown behavior of ListView,
+            // more at ViewChangedHandler
+            double offset = pageNumber + 1;
+
+            // We need to switch page first
+            // in order to get right ViewportHeight
+            // if it differs from the current
+            _scrollViewer.ChangeView(0, offset, null, true);
+
+            var pageOffset = (_scrollViewer.ViewportHeight - 1) / 2;
+            if (pageOffset > 0)
+                offset -= pageOffset;
+            
+            // Now we have centered offset and right zoomFactor
+            // so we can finally change view
+            _scrollViewer.ChangeView(0, offset, null, true);
         }
 
         private void OnSourceChanged()
@@ -60,6 +105,8 @@ namespace DjvuApp
             if (Source == null)
                 return;
 
+            _zoomFactorObserver = new ZoomFactorObserver();
+
             var pageInfos = Source.GetPageInfos();
             double maxWidth = pageInfos.Max(pageInfo => pageInfo.Width);
             var containerSize = new Size(ActualWidth, ActualHeight);
@@ -78,7 +125,8 @@ namespace DjvuApp
                     Document = Source,
                     PageNumber = i + 1,
                     Width = width,
-                    Height = height
+                    Height = height,
+                    ZoomFactorObserver = _zoomFactorObserver
                 };
                 states[i] = state;
             }
@@ -88,6 +136,7 @@ namespace DjvuApp
 
         private void Unload()
         {
+            _zoomFactorObserver = null;
             listView.ItemsSource = null;
         }
 
@@ -112,10 +161,38 @@ namespace DjvuApp
             sender.OnSourceChanged();
         }
 
-        private void ContainerContentChangingHandler(ListViewBase sender, ContainerContentChangingEventArgs args)
+        private static void PageNumberChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var pageViewControl = (PageViewControl) args.ItemContainer.ContentTemplateRoot;
-            pageViewControl.OnContainerContentChanging(args, ContainerContentChangingHandler);
+            var sender = (ReaderControl) d;
+            sender.OnPageNumberChanged(e);
+        }
+
+        private void ScrollViewerLoadedHandler(object sender, RoutedEventArgs e)
+        {
+            _scrollViewer = (ScrollViewer) sender;
+            _scrollViewer.ViewChanged += ViewChangedHandler;
+        }
+
+        private void ViewChangedHandler(object sender, ScrollViewerViewChangedEventArgs e)
+        {
+            // For some reason, VerticalOffset == top item index + 2.
+            var topPageNumber = _scrollViewer.VerticalOffset - 1;
+            var visiblePagesCount = _scrollViewer.ViewportHeight;
+            var middlePageNumber = topPageNumber + visiblePagesCount / 2;
+
+            // Suppress PageNumberChangedCallback
+            // to prevet accidental changing of the page
+            _isPageNumberChangedCallbackSuppressed = true;
+            PageNumber = (uint) middlePageNumber;
+            _isPageNumberChangedCallbackSuppressed = false;
+
+            if (!e.IsIntermediate)
+            {
+                if (_scrollViewer.ZoomFactor != _zoomFactorObserver.ZoomFactor)
+                {
+                    _zoomFactorObserver.ZoomFactor = _scrollViewer.ZoomFactor;
+                }
+            }
         }
     }
 }

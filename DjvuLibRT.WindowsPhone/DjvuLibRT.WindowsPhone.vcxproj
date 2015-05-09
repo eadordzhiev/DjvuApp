@@ -30,24 +30,24 @@
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120_wp81</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)'=='Release'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <PlatformToolset>v120_wp81</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Fast Debug|ARM'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)'=='Fast Debug'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <PlatformToolset>v120_wp81</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Production|ARM'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)'=='Production'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -55,26 +55,20 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <Import Project="..\DjvuLibRT.Shared\DjvuLibRT.Shared.vcxitems" Label="Shared" />
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)'=='Debug'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)'=='Release'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Fast Debug|ARM'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)'=='Fast Debug'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Production|ARM'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)'=='Production'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Fast Debug|ARM'" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Production|ARM'" />
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PreprocessorDefinitions>_WINRT_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -89,7 +83,7 @@
       <AdditionalDependencies>d2d1.lib;d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PreprocessorDefinitions>_WINRT_DLL;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -104,7 +98,7 @@
       <AdditionalDependencies>d2d1.lib;d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Fast Debug|ARM'">
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Fast Debug'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PreprocessorDefinitions>_WINRT_DLL;ENABLE_DBGPRINT;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -119,7 +113,7 @@
       <AdditionalDependencies>d2d1.lib;d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Production|ARM'">
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Production'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PreprocessorDefinitions>_WINRT_DLL;NDEBUG;PRODUCTION;%(PreprocessorDefinitions)</PreprocessorDefinitions>

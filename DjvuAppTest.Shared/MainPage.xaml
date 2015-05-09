@@ -10,5 +10,9 @@
 
     <Grid>
         <local:ReaderControl x:Name="reader"/>
+        <Border Background="Black" VerticalAlignment="Top" HorizontalAlignment="Left">
+            <TextBlock Foreground="White" Text="{Binding Path=PageNumber, ElementName=reader}"/>
+        </Border>
+        <Border Height="1" BorderThickness="0" Background="Red" VerticalAlignment="Center"/>
     </Grid>
 </Page>
