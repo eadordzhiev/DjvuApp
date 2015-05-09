@@ -36,7 +36,7 @@ namespace DjvuApp.Djvu
 
         private static IReadOnlyList<IOutlineSection> PickSections(IEnumerator<DjvuBookmark> enumerator, uint count, IOutlineSection parent)
         {
-            var result = new IOutlineSection[count];
+            var result = new List<IOutlineSection>();
 
             for (uint i = 0; i < count; i++)
             {
@@ -63,7 +63,7 @@ namespace DjvuApp.Djvu
                     ? PickSections(enumerator, bookmark.ChildrenCount, item)
                     : new IOutlineSection[0];
 
-                result[i] = item;
+                result.Add(item);
             }
 
             return result;

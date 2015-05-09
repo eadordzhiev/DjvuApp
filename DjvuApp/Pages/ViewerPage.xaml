@@ -26,10 +26,12 @@
             Value="{x:Null}"/>
     </i:Interaction.Behaviors>
     
-    <controls:ReaderControl
-        Source="{Binding CurrentDocument}"
-        PageNumber="{Binding CurrentPageNumber, Mode=TwoWay}"/>
-   
+    <Grid>
+        <controls:ReaderControl
+            Source="{Binding CurrentDocument}"
+            PageNumber="{Binding CurrentPageNumber, Mode=TwoWay}"/>
+    </Grid>
+    
     <Page.BottomAppBar>
         <CommandBar 
             x:Name="appBar"

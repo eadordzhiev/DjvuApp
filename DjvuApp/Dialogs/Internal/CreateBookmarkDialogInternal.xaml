@@ -17,8 +17,8 @@
     x:Uid="CreateBookmarkDialog">
 
     <TextBox 
+        x:Name="nameTextBox"
         x:Uid="CreateBookmarkDialog_NameField"
-        TabIndex="0"
         Header="Name"
         Text="{Binding BookmarkTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 </ContentDialog>

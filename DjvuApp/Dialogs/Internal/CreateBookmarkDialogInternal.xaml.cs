@@ -48,7 +48,7 @@ namespace DjvuApp.Dialogs.Internal
 
         private void LoadedHandler(object sender, RoutedEventArgs e)
         {
-            
+            nameTextBox.Focus(FocusState.Programmatic);
         }
     }
 }

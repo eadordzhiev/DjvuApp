@@ -20,6 +20,7 @@
             Style="{StaticResource BaseTextBlockStyle}"
             Text="Type the number of the page you would like to jump to in document."/>
         <TextBox
+            x:Name="pageNumberTextBox"
             x:Uid="JumpToPageDialog_PageNumberField"
             Header="Page number"
             InputScope="Number"

@@ -30,6 +30,7 @@ namespace DjvuApp.Dialogs.Internal
         private void ItemClickHandler(object sender, ItemClickEventArgs e)
         {
             var item = (IOutlineSection) e.ClickedItem;
+            
             if (item.PageNumber != null)
             {
                 TargetPageNumber = item.PageNumber;

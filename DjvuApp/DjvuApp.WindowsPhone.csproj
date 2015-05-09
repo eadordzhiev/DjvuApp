@@ -90,6 +90,7 @@
     <Compile Include="Misc\FrameworkElementExtensions.cs" />
     <Compile Include="Misc\IocContainer.cs" />
     <Compile Include="Common\IsNullOrEmptyToVisibilityConverter.cs" />
+    <Compile Include="Misc\TextBoxExtensions.cs" />
     <Compile Include="Misc\TrialExperience\AzureTrialService.cs" />
     <Compile Include="Misc\TrialExperience\ITrialService.cs" />
     <Compile Include="Misc\TrialExperience\DjvuReaderUserInfo.cs" />

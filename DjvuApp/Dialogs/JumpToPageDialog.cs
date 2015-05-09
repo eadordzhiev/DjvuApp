@@ -9,9 +9,9 @@ namespace DjvuApp.Dialogs
 {
     public static class JumpToPageDialog
     {
-        public static async Task<uint?> ShowAsync(uint pageCount)
+        public static async Task<uint?> ShowAsync(uint currentPageNumber, uint pageCount)
         {
-            var dialog = new JumpToPageDialogInternal {PageCount = pageCount};
+            var dialog = new JumpToPageDialogInternal {CurrentPageNumber = currentPageNumber, PageCount = pageCount};
             await dialog.ShowAsync();
             return dialog.PageNumber;
         }

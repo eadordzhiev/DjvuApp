@@ -27,11 +27,10 @@ namespace DjvuApp.Controls
         public static readonly DependencyProperty PageNumberProperty =
             DependencyProperty.Register("PageNumber", typeof(uint), typeof(ReaderControl), new PropertyMetadata(0U, PageNumberChangedCallback));
 
-        private bool _isLoaded;
         private bool _isPageNumberChangedCallbackSuppressed;
         private ZoomFactorObserver _zoomFactorObserver;
         private ScrollViewer _scrollViewer;
-        private double _maxPageWidth;
+        private Size containerSize;
         private PageViewControlState[] _pageStates;
 
         public ReaderControl()
@@ -58,6 +57,9 @@ namespace DjvuApp.Controls
 
         private void GoToPage(uint pageNumber)
         {
+            if (Source == null || ActualWidth == 0)
+                return;
+
             var pageState = _pageStates[pageNumber - 1];
 
             // I have no idea why, but it works.
@@ -72,9 +74,6 @@ namespace DjvuApp.Controls
 
         private void OnSourceChanged()
         {
-            if (!_isLoaded)
-                return;
-
             if (Source != null)
             {
                 Load();
@@ -90,12 +89,15 @@ namespace DjvuApp.Controls
             if (Source == null)
                 return;
 
+            if (ActualWidth == 0)
+            {
+                return;
+            }
+
             _zoomFactorObserver = new ZoomFactorObserver();
 
             var pageInfos = Source.GetPageInfos();
-            _maxPageWidth = pageInfos.Max(pageInfo => pageInfo.Width);
-
-            var containerSize = new Size(ActualWidth, ActualHeight);
+            double maxPageWidth = pageInfos.Max(pageInfo => pageInfo.Width);
             _pageStates = new PageViewControlState[Source.PageCount];
 
             for (uint i = 0; i < _pageStates.Length; i++)
@@ -104,7 +106,7 @@ namespace DjvuApp.Controls
                 double pageWidth = pageInfo.Width;
                 double pageHeight = pageInfo.Height;
 
-                var scaleFactor = pageWidth / _maxPageWidth;
+                var scaleFactor = pageWidth / maxPageWidth;
                 var aspectRatio = pageWidth / pageHeight;
                 var width = scaleFactor * containerSize.Width;
                 var height = width / aspectRatio;
@@ -128,17 +130,17 @@ namespace DjvuApp.Controls
 
         private void SizeChangedHandler(object sender, SizeChangedEventArgs e)
         {
+            containerSize = new Size(ActualWidth, ActualHeight);
             Load();
+            GoToPage(PageNumber);
         }
 
         private void UnloadedHandler(object sender, RoutedEventArgs e)
         {
-            _isLoaded = false;
         }
 
         private void LoadedHandler(object sender, RoutedEventArgs e)
         {
-            _isLoaded = true;
         }
 
         private static void SourceChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)

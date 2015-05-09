@@ -16,6 +16,7 @@
     x:Uid="RenameDialog">
 
     <TextBox 
+        x:Name="nameTextBox"
         x:Uid="RenameDialog_NewNameField"
         TabIndex="0"
         Header="Name"

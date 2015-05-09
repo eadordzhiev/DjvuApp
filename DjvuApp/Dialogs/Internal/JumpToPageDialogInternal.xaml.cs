@@ -1,12 +1,15 @@
 ﻿using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using DjvuApp.Misc;
 
 namespace DjvuApp.Dialogs.Internal
 {
     public sealed partial class JumpToPageDialogInternal : ContentDialog
     {
         public uint? PageNumber { get; private set; }
+
+        public uint CurrentPageNumber { get; set; }
 
         public string PageNumberText
         {
@@ -55,7 +58,8 @@ namespace DjvuApp.Dialogs.Internal
 
         private void LoadedHandler(object sender, RoutedEventArgs e)
         {
-
+            PageNumberText = CurrentPageNumber.ToString();
+            pageNumberTextBox.FocusAndSelectAll();
         }
     }
 }

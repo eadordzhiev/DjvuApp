@@ -163,7 +163,7 @@ namespace DjvuApp.ViewModel
 
             GoToNextPageCommand = new RelayCommand(
                 () => CurrentPageNumber++, 
-                () => CurrentPageNumber < CurrentDocument.PageCount);
+                () => CurrentDocument != null && CurrentPageNumber < CurrentDocument.PageCount);
             GoToPreviousPageCommand = new RelayCommand(
                 () => CurrentPageNumber--, 
                 () => CurrentPageNumber > 1);
@@ -194,6 +194,9 @@ namespace DjvuApp.ViewModel
 
         private async Task SaveLastOpenedPageAsync()
         {
+            if (CurrentPageNumber == 0)
+                return;
+
             await _provider.UpdateLastOpenedPageAsync(_book, CurrentPageNumber);
         }
 
@@ -252,7 +255,7 @@ namespace DjvuApp.ViewModel
 
         private async void ShowJumpToPageDialog()
         {
-            var pageNumber = await JumpToPageDialog.ShowAsync(CurrentDocument.PageCount);
+            var pageNumber = await JumpToPageDialog.ShowAsync(CurrentPageNumber, CurrentDocument.PageCount);
             if (pageNumber.HasValue)
             {
                 CurrentPageNumber = pageNumber.Value;
@@ -285,6 +288,11 @@ namespace DjvuApp.ViewModel
             }
             catch (Exception ex)
             {
+                if (Debugger.IsAttached)
+                {
+                    Debugger.Break();
+                }
+
                 IsProgressVisible = false;
                 ShowFileOpeningError(book);
                 return;
