@@ -55,7 +55,7 @@
                     <ScrollViewer 
                         x:Name="ScrollViewer"
                         HorizontalContentAlignment="Center" 
-                        MinZoomFactor="0.5"
+                        MinZoomFactor="1"
                         MaxZoomFactor="5"
                         Loaded="ScrollViewerLoadedHandler"
                         TabNavigation="{TemplateBinding TabNavigation}"

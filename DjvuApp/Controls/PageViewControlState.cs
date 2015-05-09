@@ -4,10 +4,19 @@ namespace DjvuApp.Controls
 {
     public class PageViewControlState
     {
-        public DjvuDocument Document { get; set; }
-        public uint PageNumber { get; set; }
-        public double Width { get; set; }
-        public double Height { get; set; }
-        public ZoomFactorObserver ZoomFactorObserver { get; set; }
+        public PageViewControlState(DjvuDocument document, uint pageNumber, double width, double height, ZoomFactorObserver zoomFactorObserver)
+        {
+            Document = document;
+            PageNumber = pageNumber;
+            Width = width;
+            Height = height;
+            ZoomFactorObserver = zoomFactorObserver;
+        }
+
+        public DjvuDocument Document { get; private set; }
+        public uint PageNumber { get; private set; }
+        public double Width { get; private set; }
+        public double Height { get; private set; }
+        public ZoomFactorObserver ZoomFactorObserver { get; private set; }
     }
 }

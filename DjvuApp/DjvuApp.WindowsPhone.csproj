@@ -107,6 +107,8 @@
     <Compile Include="SampleData\SelectBookmarkDialogSampleDataSource\SelectBookmarkDialogSampleDataSource.xaml.cs">
       <DependentUpon>SelectBookmarkDialogSampleDataSource.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Misc\SQLite.cs" />
+    <Compile Include="Misc\SQLiteAsync.cs" />
     <Compile Include="ViewModel\Messages\LoadedHandledMessage.cs" />
     <Compile Include="Common\ProgressBehavior.cs" />
     <Compile Include="Common\StatusBarBehavior.cs" />
@@ -150,8 +152,6 @@
     <Compile Include="Pages\ViewerPage.xaml.cs">
       <DependentUpon>ViewerPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Misc\SQLite.cs" />
-    <Compile Include="Misc\SQLiteAsync.cs" />
     <Compile Include="Model\Books\IBookmark.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewerViewModel.cs" />

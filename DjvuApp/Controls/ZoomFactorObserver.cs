@@ -4,9 +4,9 @@ namespace DjvuApp.Controls
 {
     public class ZoomFactorObserver
     {
-        private double _zoomFactor = 1;
+        private float _zoomFactor = 1;
 
-        public double ZoomFactor
+        public float ZoomFactor
         {
             get
             {
