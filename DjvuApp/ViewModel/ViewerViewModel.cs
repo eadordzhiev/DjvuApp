@@ -66,7 +66,7 @@ namespace DjvuApp.ViewModel
             }
         }
 
-        public DjvuAsyncDocument CurrentDocument
+        public DjvuDocument CurrentDocument
         {
             get
             {
@@ -136,7 +136,7 @@ namespace DjvuApp.ViewModel
 
         private bool _isProgressVisible;
         private bool _isCurrentPageBookmarked;
-        private DjvuAsyncDocument _currentDocument;
+        private DjvuDocument _currentDocument;
         private uint _currentPageNumber;
         private IEnumerable<IOutlineSection> _outline;
 
@@ -277,13 +277,13 @@ namespace DjvuApp.ViewModel
             IsProgressVisible = true;
 
             _book = book;
-            DjvuAsyncDocument document;
+            DjvuDocument document;
 
             try
             {
-                document = await DjvuAsyncDocument.LoadFileAsync(book.Path);
+                document = await DjvuDocument.LoadAsync(book.Path);
             }
-            catch (DjvuDocumentException ex)
+            catch (Exception ex)
             {
                 IsProgressVisible = false;
                 ShowFileOpeningError(book);

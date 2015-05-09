@@ -78,9 +78,15 @@
     <Compile Include="Common\MenuFlyoutService.cs" />
     <Compile Include="Common\NavigationService.cs" />
     <Compile Include="Common\StringFormatConverter.cs" />
-    <Compile Include="Djvu\DjvuAsyncDocument.cs" />
-    <Compile Include="Djvu\DjvuAsyncPage.cs" />
-    <Compile Include="Djvu\NoLicenseException.cs" />
+    <Compile Include="Controls\PageViewControl.xaml.cs">
+      <DependentUpon>PageViewControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PageViewControlState.cs" />
+    <Compile Include="Controls\ReaderControl.xaml.cs">
+      <DependentUpon>ReaderControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ZoomFactorObserver.cs" />
+    <Compile Include="Djvu\DjvuDocumentExtensions.cs" />
     <Compile Include="Misc\FrameworkElementExtensions.cs" />
     <Compile Include="Misc\IocContainer.cs" />
     <Compile Include="Common\IsNullOrEmptyToVisibilityConverter.cs" />
@@ -109,10 +115,6 @@
     <Compile Include="Common\NavigationHelper.cs" />
     <Compile Include="Common\ObservableDictionary.cs" />
     <Compile Include="Common\SuspensionManager.cs" />
-    <Compile Include="Misc\TasksQueue.cs" />
-    <Compile Include="Controls\DocumentViewer.xaml.cs">
-      <DependentUpon>DocumentViewer.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Dialogs\CreateBookmarkDialog.cs" />
     <Compile Include="Dialogs\Internal\CreateBookmarkDialogInternal.xaml.cs">
       <DependentUpon>CreateBookmarkDialogInternal.xaml</DependentUpon>
@@ -125,8 +127,6 @@
       <DependentUpon>SelectBookmarkDialogInternal.xaml</DependentUpon>
     </Compile>
     <Compile Include="Model\Books\DataContractBookProvider.cs" />
-    <Compile Include="Djvu\DjvuDocumentException.cs" />
-    <Compile Include="Djvu\DocumentTypeNotSupportedException.cs" />
     <Compile Include="Model\Books\IBook.cs" />
     <Compile Include="Model\Books\IBookProvider.cs" />
     <Compile Include="Dialogs\Internal\JumpToPageDialogInternal.xaml.cs">
@@ -153,8 +153,6 @@
     <Compile Include="Misc\SQLite.cs" />
     <Compile Include="Misc\SQLiteAsync.cs" />
     <Compile Include="Model\Books\IBookmark.cs" />
-    <Compile Include="Controls\DjvuDocumentViewModel.cs" />
-    <Compile Include="Controls\DjvuPageViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewerViewModel.cs" />
     <Compile Include="Misc\ViewModelLocator.cs" />
@@ -184,9 +182,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Controls\DocumentViewer.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="Controls\PageViewControl.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\ReaderControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Dialogs\Internal\CreateBookmarkDialogInternal.xaml">
       <SubType>Designer</SubType>

@@ -26,7 +26,7 @@
             Value="{x:Null}"/>
     </i:Interaction.Behaviors>
     
-    <controls:DocumentViewer
+    <controls:ReaderControl
         Source="{Binding CurrentDocument}"
         PageNumber="{Binding CurrentPageNumber, Mode=TwoWay}"/>
    

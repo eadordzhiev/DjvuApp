@@ -106,11 +106,15 @@ DjvuDocument::DjvuDocument(const char* path)
         }
 #endif
 
-		pageCount = ddjvu_document_get_pagenum(document);
 		GP<DjVuDocument> djvuDoc = ddjvu_get_DjVuDocument(document);
 		doctype = static_cast<DocumentType>(djvuDoc->get_doc_type());
 
-		// Setting page infos
+        if (doctype != DocumentType::SinglePage && doctype != DocumentType::Bundled)
+        {
+            throw ref new InvalidArgumentException("Unsupported document type. Only bundled and single page documents are supported.");
+        }
+
+        pageCount = ddjvu_document_get_pagenum(document);
 		pageInfos = ref new Platform::Array<PageInfo>(pageCount);
 
 		for (unsigned int i = 0; i < pageCount; i++)

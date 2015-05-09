@@ -163,12 +163,12 @@ namespace DjvuApp
             {
                 book = await provider.AddBookAsync(tmpFile);
             }
-            catch (DocumentTypeNotSupportedException ex)
+            catch (ArgumentException ex)
             {
                 ShowDocumentTypeIsNotSupportedMessage();
                 return;
             }
-            catch (DjvuDocumentException ex)
+            catch (Exception ex)
             {
                 ShowDocumentOpeningErrorMessage();
                 return;

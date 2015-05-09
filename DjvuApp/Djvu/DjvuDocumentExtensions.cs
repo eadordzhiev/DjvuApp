@@ -10,7 +10,7 @@ using DjvuApp.Model.Outline;
 
 namespace DjvuApp.Djvu
 {
-    public sealed class DjvuAsyncDocument
+    public static class DjvuDocumentExtensions
     {
         [DebuggerDisplay("{Title} at {PageNumber}")]
         private sealed class OutlineSection : IOutlineSection
@@ -26,56 +26,9 @@ namespace DjvuApp.Djvu
             public IOutlineSection Parent { get; set; }
         }
 
-        public uint PageCount { get; private set; }
-
-        private readonly DjvuDocument _document;
-
-        private DjvuAsyncDocument(DjvuDocument document)
+        public static IEnumerable<IOutlineSection> GetOutline(this DjvuDocument document)
         {
-            _document = document;
-            PageCount = document.PageCount;
-        }
-
-        public DjvuDocument GetDocument()
-        {
-            return _document;
-        }
-
-        public static async Task<DjvuAsyncDocument> LoadFileAsync(string path)
-        {
-            DjvuDocument document;
-            try
-            {
-                document = await DjvuDocument.LoadAsync(path);
-            }
-            catch (Exception ex)
-            {
-                throw new DjvuDocumentException("Cannot open document.", ex);
-            }
-
-            if (document.Type != DocumentType.SinglePage && document.Type != DocumentType.Bundled && document.Type != DocumentType.OldBundled)
-            {
-                throw new DocumentTypeNotSupportedException("Unsupported document type. Only bundled and single page documents are supported.");
-            }
-
-            return new DjvuAsyncDocument(document);
-        }
-
-        public async Task<DjvuAsyncPage> GetPageAsync(uint pageNumber)
-        {
-            var page = await _document.GetPageAsync(pageNumber);
-            
-            return new DjvuAsyncPage(page);
-        }
-
-        public IReadOnlyList<PageInfo> GetPageInfos()
-        {
-            return _document.GetPageInfos();
-        }
-
-        public IEnumerable<IOutlineSection> GetOutline()
-        {
-            var outline = _document.GetBookmarks();
+            var outline = document.GetBookmarks();
             if (outline == null)
                 return null;
             return PickSections(outline.AsEnumerable().GetEnumerator(), (uint) outline.Length, null);

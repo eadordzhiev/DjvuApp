@@ -102,7 +102,7 @@ namespace DjvuApp.Model.Books
             if (file == null)
                 throw new ArgumentNullException("file");
 
-            var document = await DjvuAsyncDocument.LoadFileAsync(file.Path);
+            var document = await DjvuDocument.LoadAsync(file.Path);
 
             var guid = Guid.NewGuid();
             var props = await file.GetBasicPropertiesAsync();
