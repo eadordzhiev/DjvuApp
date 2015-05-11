@@ -27,6 +27,7 @@ using DjvuApp.Misc;
 using DjvuApp.Model.Books;
 using DjvuApp.Pages;
 using Microsoft.Practices.ServiceLocation;
+using Microsoft.ApplicationInsights;
 
 namespace DjvuApp
 {
@@ -35,6 +36,11 @@ namespace DjvuApp
     /// </summary>
     public sealed partial class App : Application
     {
+        /// <summary>
+        /// Allows tracking page views, exceptions and other telemetry through the Microsoft Application Insights service.
+        /// </summary>
+        public static TelemetryClient TelemetryClient;
+
         private TransitionCollection transitions;
 
         /// <summary>
@@ -43,6 +49,8 @@ namespace DjvuApp
         /// </summary>
         public App()
         {
+            TelemetryClient = new TelemetryClient();
+
             this.InitializeComponent();
             this.Suspending += this.OnSuspending;
 

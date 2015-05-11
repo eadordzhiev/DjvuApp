@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.ApplicationModel;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Display;
@@ -71,6 +72,8 @@ namespace DjvuApp.Pages
         /// session.  The state will be null the first time a page is visited.</param>
         private void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
+            var version = Package.Current.Id.Version;
+            versionTextBlock.Text = String.Format("Version {0}.{1}.{2}.{3}\nBy Useless guy\nFrom Russia with love :)", version.Major, version.Minor, version.Build, version.Revision);
         }
 
         /// <summary>
