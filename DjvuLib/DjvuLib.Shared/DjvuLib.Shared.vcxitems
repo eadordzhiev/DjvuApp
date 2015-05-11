@@ -2,12 +2,11 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Label="Globals">
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <CodeSharingProject>248F659F-DAC5-46E8-AC09-60EC9FC95053</CodeSharingProject>
     <HasSharedItems>true</HasSharedItems>
-    <SharedGUID>60070e97-579f-4e00-aa29-2b047d9f6deb</SharedGUID>
-    <ItemsProjectGuid>{4F641222-9453-48DD-A4AD-C883CEAA48EC}</ItemsProjectGuid>
-    <ItemsRootNamespace>DjvuLibRT</ItemsRootNamespace>
-    <ItemsProjectName>DjvuLibRT.Shared</ItemsProjectName>
+    <ItemsProjectGuid>{53299ef0-0100-4b34-9ae8-911bc86503ac}</ItemsProjectGuid>
+    <ItemsRootNamespace>DjvuLib</ItemsRootNamespace>
+    <ItemsProjectName>DjvuLib.Shared</ItemsProjectName>
+    <CodeSharingProject>248F659F-DAC5-46E8-AC09-60EC9FC95053</CodeSharingProject>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -65,14 +64,11 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\XMLTags.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\ZPCodec.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)LicenseValidator.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)pch.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Renderer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SisWrapper.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)VsisWrapper.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)pch.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StringConversion.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectCapability Include="SourceItemsFromImports" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)VsisWrapper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)DebugHelper.cpp" />
@@ -94,7 +90,9 @@
       <CompileAsWinRT>false</CompileAsWinRT>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\BSEncodeByteStream.cpp">
+      <SDLCheck>false</SDLCheck>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\ByteStream.cpp">
       <SDLCheck>false</SDLCheck>
@@ -172,7 +170,9 @@
       <CompileAsWinRT>false</CompileAsWinRT>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuMessage.cpp">
+      <SDLCheck>false</SDLCheck>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuMessageLite.cpp">
       <SDLCheck>false</SDLCheck>
@@ -188,7 +188,6 @@
       <SDLCheck>false</SDLCheck>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
-      <DisableLanguageExtensions>false</DisableLanguageExtensions>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuPort.cpp">
       <SDLCheck>false</SDLCheck>
@@ -258,7 +257,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\GThreads.cpp">
       <SDLCheck>false</SDLCheck>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <CompileAsWinRT>true</CompileAsWinRT>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\GUnicode.cpp">
       <SDLCheck>false</SDLCheck>
@@ -276,7 +274,9 @@
       <CompileAsWinRT>false</CompileAsWinRT>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\IW44EncodeCodec.cpp">
+      <SDLCheck>false</SDLCheck>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\IW44Image.cpp">
       <SDLCheck>false</SDLCheck>
@@ -299,7 +299,9 @@
       <CompileAsWinRT>false</CompileAsWinRT>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\MMX.cpp">
+      <SDLCheck>false</SDLCheck>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\UnicodeByteStream.cpp">
       <SDLCheck>false</SDLCheck>
@@ -324,5 +326,8 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)SisWrapper.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)StringConversion.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)VsisWrapper.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
 </Project>

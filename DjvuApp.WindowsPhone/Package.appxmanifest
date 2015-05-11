@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest" xmlns:m3="http://schemas.microsoft.com/appx/2014/manifest" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest">
-  <Identity Name="56649Uselessguy.DjVuReader" Publisher="CN=9CA7A286-9193-4526-BAD4-40A4D7D3A37C" Version="2.0.0.0" />
-  <mp:PhoneIdentity PhoneProductId="db4c235a-b268-475e-9e77-1bdd42fcedab" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
+  <Identity Name="56649Uselessguy.DjVuReader" Publisher="CN=9CA7A286-9193-4526-BAD4-40A4D7D3A37C" Version="2.1.0.3" />
+  <mp:PhoneIdentity PhoneProductId="4dda4258-89ba-4afd-a8cb-5971521be533" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>DjVu Reader</DisplayName>
     <PublisherDisplayName>Useless guy</PublisherDisplayName>
