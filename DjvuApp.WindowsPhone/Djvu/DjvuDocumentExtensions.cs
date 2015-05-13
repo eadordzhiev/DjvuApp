@@ -21,7 +21,7 @@ namespace DjvuApp.Djvu
 
             public bool HasItems { get { return Items.Count > 0; } }
 
-            public IReadOnlyList<IOutlineSection> Items { get; set; }
+            public IReadOnlyCollection<IOutlineSection> Items { get; set; }
 
             public IOutlineSection Parent { get; set; }
         }
@@ -34,7 +34,7 @@ namespace DjvuApp.Djvu
             return PickSections(outline.AsEnumerable().GetEnumerator(), (uint) outline.Length, null);
         }
 
-        private static IReadOnlyList<IOutlineSection> PickSections(IEnumerator<DjvuBookmark> enumerator, uint count, IOutlineSection parent)
+        private static IReadOnlyCollection<IOutlineSection> PickSections(IEnumerator<DjvuBookmark> enumerator, uint count, IOutlineSection parent)
         {
             var result = new List<IOutlineSection>();
 

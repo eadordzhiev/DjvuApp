@@ -174,11 +174,13 @@ namespace DjvuApp
             catch (ArgumentException ex)
             {
                 ShowDocumentTypeIsNotSupportedMessage();
+                TelemetryClient.TrackException(ex);
                 return;
             }
             catch (Exception ex)
             {
                 ShowDocumentOpeningErrorMessage();
+                TelemetryClient.TrackException(ex);
                 return;
             }
 
@@ -186,9 +188,9 @@ namespace DjvuApp
             {
                 await tmpFile.DeleteAsync();
             }
-            catch (UnauthorizedAccessException)
+            catch (UnauthorizedAccessException ex)
             {
-
+                TelemetryClient.TrackException(ex);
             }
 
             OnLaunched(null);

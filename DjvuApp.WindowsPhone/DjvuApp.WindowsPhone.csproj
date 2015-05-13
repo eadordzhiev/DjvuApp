@@ -95,14 +95,12 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Common\BooleanNegationConverter.cs" />
     <Compile Include="Common\BooleanToVisibilityConverter.cs" />
     <Compile Include="Common\INavigationService.cs" />
     <Compile Include="Common\IsNullOrEmptyToVisibilityConverter.cs" />
     <Compile Include="Common\MenuFlyoutService.cs" />
     <Compile Include="Common\NavigationHelper.cs" />
     <Compile Include="Common\NavigationService.cs" />
-    <Compile Include="Common\ObservableDictionary.cs" />
     <Compile Include="Common\ProgressBehavior.cs" />
     <Compile Include="Common\StatusBarBehavior.cs" />
     <Compile Include="Common\StringFormatConverter.cs" />
@@ -152,7 +150,7 @@
     <Compile Include="Model\Books\IBookmark.cs" />
     <Compile Include="Model\Books\IBookProvider.cs" />
     <Compile Include="Model\Books\SqliteBookProvider.cs" />
-    <Compile Include="Model\Outline\IOutlineItem.cs" />
+    <Compile Include="Model\Outline\IOutlineSection.cs" />
     <Compile Include="Pages\AboutPage.xaml.cs">
       <DependentUpon>AboutPage.xaml</DependentUpon>
     </Compile>

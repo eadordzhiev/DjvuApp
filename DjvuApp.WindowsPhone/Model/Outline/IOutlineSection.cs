@@ -12,7 +12,7 @@ namespace DjvuApp.Model.Outline
 
         bool HasItems { get; }
 
-        IReadOnlyList<IOutlineSection> Items { get; }
+        IReadOnlyCollection<IOutlineSection> Items { get; }
 
         IOutlineSection Parent { get; }
     }
