@@ -12,6 +12,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Display;
 using Windows.Storage;
+using Windows.System;
 using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -240,6 +241,12 @@ namespace DjvuApp
 
             if (file != null)
                 OpenFile(file);
+        }
+
+        public static async Task RateApp()
+        {
+            var uri = new Uri("ms-windows-store:reviewapp?appid=appc6f56627-a976-443c-8531-00a92b42f4e5");
+            await Launcher.LaunchUriAsync(uri);
         }
     }
 }

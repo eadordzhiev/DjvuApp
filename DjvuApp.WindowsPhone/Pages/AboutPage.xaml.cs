@@ -120,7 +120,7 @@ namespace DjvuApp.Pages
 
         private async void RateButtonClickHandler(object sender, RoutedEventArgs e)
         {
-            await Launcher.LaunchUriAsync(new Uri("zune:reviewapp?appid=appc6f56627-a976-443c-8531-00a92b42f4e5"));
+            await App.RateApp();
         }
     }
 }

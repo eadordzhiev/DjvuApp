@@ -257,6 +257,18 @@ From Russia with love :)</value>
   <data name="OutlineDialog_Title" xml:space="preserve">
     <value>Outline</value>
   </data>
+  <data name="RateAppDialog_CancelButton_Caption" xml:space="preserve">
+    <value>cancel</value>
+  </data>
+  <data name="RateAppDialog_Content" xml:space="preserve">
+    <value>Please consider rating and reviewing this application. It won't take much time to write a review. Your positive reviews make the application better and inspire the developers to add more features!</value>
+  </data>
+  <data name="RateAppDialog_RateButton_Caption" xml:space="preserve">
+    <value>rate</value>
+  </data>
+  <data name="RateAppDialog_Title" xml:space="preserve">
+    <value>RATE THE APPLICATION</value>
+  </data>
   <data name="RemoveBookDialog_CancelButton_Caption" xml:space="preserve">
     <value>cancel</value>
   </data>

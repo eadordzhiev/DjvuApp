@@ -6,6 +6,8 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Resources;
 using Windows.ApplicationModel.Store;
 using Windows.Graphics.Display;
+using Windows.Storage;
+using Windows.System;
 using Windows.UI;
 using Windows.UI.Input;
 using Windows.UI.Popups;
@@ -52,6 +54,42 @@ namespace DjvuApp.Pages
             }
 
             UpdateLicenseStatus();
+
+            ShowRateAppDialog();
+        }
+
+        private async void ShowRateAppDialog()
+        {
+            const string key = "RateDialog_AppLaunchCount";
+            var settings = ApplicationData.Current.LocalSettings;
+            if (!settings.Values.ContainsKey(key))
+            {
+                settings.Values[key] = 0;
+            }
+
+            var count = (int) settings.Values[key];
+            
+            settings.Values[key] = count + 1;
+            count++;
+
+            if (count == 2 || count == 4 || count == 6)
+            {
+                var content = _resourceLoader.GetString("RateAppDialog_Content");
+                var title = _resourceLoader.GetString("RateAppDialog_Title");
+                var rateButtonCaption = _resourceLoader.GetString("RateAppDialog_RateButton_Caption");
+                var cancelButtonCaption = _resourceLoader.GetString("RateAppDialog_CancelButton_Caption");
+                var dialog = new MessageDialog(content, title);
+
+                dialog.Commands.Add(new UICommand(rateButtonCaption, async command =>
+                {
+                    settings.Values[key] = 1000;
+                    await App.RateApp();
+                }));
+                dialog.Commands.Add(new UICommand(cancelButtonCaption));
+                dialog.CancelCommandIndex = unchecked((uint) -1);
+
+                await dialog.ShowAsync();
+            }
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
