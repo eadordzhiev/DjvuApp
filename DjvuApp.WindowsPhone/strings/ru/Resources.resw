@@ -132,6 +132,9 @@
   <data name="AboutPage_AboutSection_RateButton.Content" xml:space="preserve">
     <value>оценить приложение</value>
   </data>
+  <data name="AboutPage_AboutSection_RateComment" xml:space="preserve">
+    <value>Оставьте отзыв о приложении, если вы еще этого не сделали. Это нетрудно, зато ваши положительные отзывы мотивируют разработчиков на улучшение приложения и добавление новых фич!</value>
+  </data>
   <data name="AboutPage_AboutSection_Version.Text" xml:space="preserve">
     <value>Версия 1.0
 By Useless guy</value>

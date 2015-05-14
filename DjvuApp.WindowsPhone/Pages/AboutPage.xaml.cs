@@ -83,7 +83,7 @@ namespace DjvuApp.Pages
 
         private async void ContactMeButtonClickHandler(object sender, RoutedEventArgs e)
         {
-            var recipient = new EmailRecipient("useless_guy@mail.ru", "Useless guy");
+            var recipient = new EmailRecipient("djvureaderwp@gmail.com", "Djvu Reader developer");
             var message = new EmailMessage();
             message.To.Add(recipient);
             message.Subject = "DjVu Reader";

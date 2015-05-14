@@ -93,22 +93,25 @@
                     </Grid>
                     <Button
                         x:Uid="AboutPage_AboutSection_RateButton"
-                        Margin="0,20,0,0"
+                        Margin="0,30,0,0"
                         Content="rate and review"
                         Click="RateButtonClickHandler" />
+                    <TextBlock
+                        x:Uid="AboutPage_AboutSection_RateComment"
+                        Text="If you have not already done so, please consider rating and reviewing this application."
+                        Style="{StaticResource BodyTextBlockStyle}" />
                     <Button
                         x:Uid="AboutPage_AboutSection_ContactMeButton"
-                        Margin="0,20,0,0"
+                        Margin="0,30,0,0"
                         Content="contact the author"
                         Click="ContactMeButtonClickHandler" />
                     <TextBlock
                         x:Uid="AboutPage_AboutSection_ContactMeComment"
-                        Margin="0,10"
-                        Text="Any comments and suggestions are welcome! I'll try to answer every your letter."
+                        Text="Any comment and suggestion are welcome! I will answer every your letter."
                         Style="{StaticResource BodyTextBlockStyle}" />
                     <Button
                         x:Uid="AboutPage_AboutSection_MyAppsButton"
-                        Margin="0,20"
+                        Margin="0,30"
                         Click="ShowMyAppsButtonClickHandler"
                         Content="my apps" />
                 </StackPanel>

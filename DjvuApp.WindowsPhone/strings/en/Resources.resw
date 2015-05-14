@@ -124,13 +124,16 @@
     <value>contact the author</value>
   </data>
   <data name="AboutPage_AboutSection_ContactMeComment.Text" xml:space="preserve">
-    <value>Any comments and suggestions are welcome! I'll try to answer every your letter.</value>
+    <value>Any comment and suggestion are welcome! I will answer every your letter.</value>
   </data>
   <data name="AboutPage_AboutSection_MyAppsButton.Content" xml:space="preserve">
     <value>my apps</value>
   </data>
   <data name="AboutPage_AboutSection_RateButton.Content" xml:space="preserve">
     <value>rate and review</value>
+  </data>
+  <data name="AboutPage_AboutSection_RateComment" xml:space="preserve">
+    <value>If you have not already done so, please consider rating and reviewing this application.</value>
   </data>
   <data name="AboutPage_AboutSection_Version.Text" xml:space="preserve">
     <value>Version 1.0
