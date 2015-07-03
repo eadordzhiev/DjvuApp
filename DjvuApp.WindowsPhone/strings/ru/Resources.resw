@@ -260,7 +260,7 @@ By Useless guy</value>
     <value>cancel</value>
   </data>
   <data name="RateAppDialog_Content" xml:space="preserve">
-    <value>Оставьте отзыв о приложении, если вы еще этого не сделали. Это не займет у вас много времени, однако ваши положительные отзывы мотивируют разработчиков на улучшение приложения и добавление новых фич!</value>
+    <value>Поставьте 5 звезд, если вы этого ещё не сделали. Это не займет у вас много времени, однако ваши положительные отзывы мотивируют разработчиков на улучшение приложения и добавление новых фич!</value>
   </data>
   <data name="RateAppDialog_RateButton_Caption" xml:space="preserve">
     <value>rate</value>
