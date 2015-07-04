@@ -27,9 +27,9 @@ namespace DjvuApp.Model.Books
             return provider;
         }
 
-        public async Task<IEnumerable<IBook>> GetBooksAsync()
+        public Task<IEnumerable<IBook>> GetBooksAsync()
         {
-            return _books;
+            return Task.FromResult(_books.AsEnumerable());
         }
 
         public async Task<IBook> AddBookAsync(IStorageFile file)

@@ -1,34 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Resources;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.Graphics.Display;
 using Windows.Storage;
 using Windows.System;
 using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
-using DjvuApp.Djvu;
 using DjvuApp.Misc;
 using DjvuApp.Model.Books;
 using DjvuApp.Pages;
 using Microsoft.Practices.ServiceLocation;
-using Microsoft.ApplicationInsights;
 
 namespace DjvuApp
 {
@@ -37,11 +25,6 @@ namespace DjvuApp
     /// </summary>
     public sealed partial class App : Application
     {
-        /// <summary>
-        /// Allows tracking page views, exceptions and other telemetry through the Microsoft Application Insights service.
-        /// </summary>
-        public static TelemetryClient TelemetryClient;
-
         private TransitionCollection transitions;
 
         /// <summary>
@@ -50,8 +33,6 @@ namespace DjvuApp
         /// </summary>
         public App()
         {
-            TelemetryClient = new TelemetryClient();
-
             this.InitializeComponent();
             this.Suspending += this.OnSuspending;
 
@@ -175,13 +156,13 @@ namespace DjvuApp
             catch (ArgumentException ex)
             {
                 ShowDocumentTypeIsNotSupportedMessage();
-                TelemetryClient.TrackException(ex);
+                //TelemetryClient.TrackException(ex);
                 return;
             }
             catch (Exception ex)
             {
                 ShowDocumentOpeningErrorMessage();
-                TelemetryClient.TrackException(ex);
+                //TelemetryClient.TrackException(ex);
                 return;
             }
 
@@ -191,7 +172,7 @@ namespace DjvuApp
             }
             catch (UnauthorizedAccessException ex)
             {
-                TelemetryClient.TrackException(ex);
+                //TelemetryClient.TrackException(ex);
             }
 
             OnLaunched(null);

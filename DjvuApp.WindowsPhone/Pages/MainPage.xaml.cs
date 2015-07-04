@@ -1,5 +1,4 @@
-﻿//#define TRIAL_SIMULATION
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
@@ -17,8 +16,6 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using DjvuApp.Common;
 using DjvuApp.Misc;
-using DjvuApp.Misc.TrialExperience;
-using Microsoft.Practices.ServiceLocation;
 
 namespace DjvuApp.Pages
 {
@@ -52,8 +49,6 @@ namespace DjvuApp.Pages
                 await dialog.ShowAsync();
                 Application.Current.Exit();
             }
-
-            UpdateLicenseStatus();
 
             ShowRateAppDialog();
         }
@@ -102,74 +97,6 @@ namespace DjvuApp.Pages
             base.OnNavigatingFrom(e);
         }
         
-        private async void UpdateLicenseStatus()
-        {
-#if TRIAL_SIMULATION
-            var isTrial = true;
-#else
-            var licenseInformation = CurrentApp.LicenseInformation;
-            var isTrial = licenseInformation.IsTrial;
-#endif
-            
-
-            if (isTrial)
-            {
-                buyAppBarButton.Visibility = Visibility.Visible;
-
-                DateTimeOffset expirationDate;
-                try
-                {
-                    var trialService = ServiceLocator.Current.GetInstance<ITrialService>();
-                    expirationDate = await trialService.GetExpirationDate<DjvuReaderUserInfo>();
-                }
-                catch (Exception)
-                {
-                    ShowLicenseCheckErrorMessage();
-                    return;
-                }
-                
-                var isExpired = expirationDate < DateTimeOffset.Now;
-
-                if (!isExpired)
-                {
-                    var trialTimeLeft = expirationDate - DateTimeOffset.Now;
-                    var formatString = _resourceLoader.GetString("TrialNotificationFormat");
-                    trialExpirationTextBlock.Text = string.Format(formatString, Math.Ceiling(trialTimeLeft.TotalDays));
-                }
-                else
-                {
-                    await ShowExpirationMessage();
-                }
-            }
-        }
-
-        private async Task ShowExpirationMessage()
-        {
-            var title = _resourceLoader.GetString("ExpirationDialog_Title");
-            var content = _resourceLoader.GetString("ExpirationDialog_Content");
-            var buyButtonCaption = _resourceLoader.GetString("ExpirationDialog_BuyButton_Caption");
-            var dialog = new MessageDialog(content, title);
-            dialog.Commands.Add(new UICommand(buyButtonCaption, async command =>
-            {
-                await CurrentApp.RequestAppPurchaseAsync(false);
-                    UpdateLicenseStatus();
-            }));
-            var result = await dialog.ShowAsync();
-            if (result == null)
-                Application.Current.Exit();
-        }
-
-        private async void ShowLicenseCheckErrorMessage()
-        {
-            var title = _resourceLoader.GetString("LicenseCheckErrorDialog_Title");
-            var content = _resourceLoader.GetString("LicenseCheckErrorDialog_Content");
-            var exitButtonCaption = _resourceLoader.GetString("LicenseCheckErrorDialog_ExitButton_Caption");
-            var dialog = new MessageDialog(content, title);
-            dialog.Commands.Add(new UICommand(exitButtonCaption, null));
-            await dialog.ShowAsync();
-            Application.Current.Exit();
-        }
-
         private void ItemClickHandler(object sender, ItemClickEventArgs e)
         {
             Frame.Navigate(typeof (ViewerPage), e.ClickedItem);
@@ -178,11 +105,6 @@ namespace DjvuApp.Pages
         private void AboutButtonClickHandler(object sender, RoutedEventArgs e)
         {
             Frame.Navigate(typeof (AboutPage));
-        }
-
-        private async void BuyButtonClickHandler(object sender, RoutedEventArgs e)
-        {
-            await CurrentApp.RequestAppPurchaseAsync(false);
         }
     }
 }

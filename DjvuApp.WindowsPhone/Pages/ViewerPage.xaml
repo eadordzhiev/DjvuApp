@@ -45,14 +45,14 @@
                     Command="{Binding AddBookmarkCommand}"
                     Visibility="{Binding IsCurrentPageBookmarked, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Invert}"
                     Label="add bookmark">
-                    <FontIcon Glyph="&#xE1CF;"/>
+                    <BitmapIcon UriSource="/Assets/AddBookmark.png"/>
                 </AppBarButton>
                 <AppBarButton
                     x:Uid="ViewerPage_RemoveBookmarkAppBarButton"
                     Command="{Binding RemoveBookmarkCommand}"
                     Visibility="{Binding IsCurrentPageBookmarked, Converter={StaticResource BooleanToVisibilityConverter}}"
                     Label="remove bookmark">
-                    <FontIcon Glyph="&#xE1CE;"/>
+                    <BitmapIcon UriSource="/Assets/RemoveBookmark.png"/>
                 </AppBarButton>
                 <AppBarButton
                     x:Uid="ViewerPage_OutlineAppBarButton"

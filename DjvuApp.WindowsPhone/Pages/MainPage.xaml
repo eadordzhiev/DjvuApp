@@ -60,14 +60,6 @@
                 Text="my library"
                 Style="{ThemeResource HeaderTextBlockStyle}"
                 CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
-            <TextBlock
-                x:Name="trialExpirationTextBlock"
-                Grid.Row="0" 
-                Margin="0,0,12,0"
-                HorizontalAlignment="Right" 
-                VerticalAlignment="Bottom"
-                Foreground="Red" 
-                Style="{StaticResource BaseTextBlockStyle}"/>
         </Grid>
 
         <Grid Grid.Row="1">
@@ -160,12 +152,6 @@
                     Command="{Binding AddBookCommand}"/>
             </CommandBar.PrimaryCommands>
             <CommandBar.SecondaryCommands>
-                <AppBarButton
-                    x:Uid="MainPage_BuyAppBarButton"
-                    x:Name="buyAppBarButton"
-                    Visibility="Collapsed"
-                    Label="buy application"
-                    Click="BuyButtonClickHandler"/>
                 <AppBarButton
                     x:Uid="MainPage_AboutAppBarButton"
                     Label="about"

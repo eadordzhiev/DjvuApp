@@ -295,7 +295,7 @@ namespace DjvuApp.ViewModel
 
                 IsProgressVisible = false;
                 ShowFileOpeningError(book);
-                App.TelemetryClient.TrackException(ex);
+                //App.TelemetryClient.TrackException(ex);
                 return;
             }
 
