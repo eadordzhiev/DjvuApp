@@ -9,6 +9,51 @@ namespace DjvuApp.Controls
 {
     public sealed partial class ReaderControl : UserControl
     {
+        private class ZoomFactorObserver : IZoomFactorObserver
+        {
+            public bool IsZooming { get; private set; }
+
+            public float ZoomFactor { get; private set; }
+
+            public event Action ZoomFactorChanging;
+
+            public event Action ZoomFactorChanged;
+
+            public ZoomFactorObserver()
+            {
+                ZoomFactor = 1;
+            }
+
+            public void OnZoomFactorChanged(float zoomFactor, bool isIntermediate)
+            {
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (zoomFactor != ZoomFactor && !IsZooming)
+                {
+                    RaiseZoomFactorChanging();
+                    IsZooming = true;
+                }
+
+                if (!isIntermediate && IsZooming)
+                {
+                    ZoomFactor = zoomFactor;
+                    RaiseZoomFactorChanged();
+                    IsZooming = false;
+                }
+            }
+
+            private void RaiseZoomFactorChanged()
+            {
+                var handler = ZoomFactorChanged;
+                if (handler != null) handler();
+            }
+
+            private void RaiseZoomFactorChanging()
+            {
+                var handler = ZoomFactorChanging;
+                if (handler != null) handler();
+            }
+        }
+
         public DjvuDocument Source
         {
             get { return (DjvuDocument)GetValue(SourceProperty); }
@@ -170,14 +215,7 @@ namespace DjvuApp.Controls
 
             SetPageNumberWithoutNotification((uint) middlePageNumber);
 
-            if (!e.IsIntermediate)
-            {
-                // ReSharper disable once CompareOfFloatsByEqualityOperator
-                if (_scrollViewer.ZoomFactor != _zoomFactorObserver.ZoomFactor)
-                {
-                    _zoomFactorObserver.ZoomFactor = _scrollViewer.ZoomFactor;
-                }
-            }
+            _zoomFactorObserver.OnZoomFactorChanged(_scrollViewer.ZoomFactor, e.IsIntermediate);
         }
 
         private void SetPageNumberWithoutNotification(uint value)

@@ -112,7 +112,7 @@
     <Compile Include="Controls\ReaderControl.xaml.cs">
       <DependentUpon>ReaderControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ZoomFactorObserver.cs" />
+    <Compile Include="Controls\IZoomFactorObserver.cs" />
     <Compile Include="Dialogs\CreateBookmarkDialog.cs" />
     <Compile Include="Dialogs\Internal\CreateBookmarkDialogInternal.xaml.cs">
       <DependentUpon>CreateBookmarkDialogInternal.xaml</DependentUpon>

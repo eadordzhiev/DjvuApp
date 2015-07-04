@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -23,7 +24,7 @@ namespace DjvuApp.Controls
         private VsisWrapper _contentVsis;
         private SisWrapper _thumbnailSis;
         private DjvuPage _page;
-        private ZoomFactorObserver _zoomFactorObserver;
+        private IZoomFactorObserver _zoomFactorObserver;
 
         private static void StateChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -39,6 +40,7 @@ namespace DjvuApp.Controls
                 return;
 
             _zoomFactorObserver = State.ZoomFactorObserver;
+            _zoomFactorObserver.ZoomFactorChanging += HandleZoomFactorChanging;
             _zoomFactorObserver.ZoomFactorChanged += HandleZoomFactorChanged;
 
             Width = State.Width;
@@ -59,8 +61,11 @@ namespace DjvuApp.Controls
             blankContentCanvas.Opacity = 0;
             thumbnailContentCanvas.Opacity = 1;
 
-            CreateContentSurface();
-
+            if (!_zoomFactorObserver.IsZooming)
+            {
+                CreateContentSurface();
+            }
+            
             contentCanvas.Opacity = 1;
         }
 
@@ -89,9 +94,17 @@ namespace DjvuApp.Controls
             _page = null;
         }
 
+        private void HandleZoomFactorChanging()
+        {
+            if (_contentVsis != null)
+            {
+                _contentVsis.Dispose();
+                _contentVsis = null;
+            }
+        }
+
         private void HandleZoomFactorChanged()
         {
-            _contentVsis = null;
             CreateContentSurface();
         }
 
