@@ -72,29 +72,25 @@ namespace DjvuApp.Controls
         public static readonly DependencyProperty PageNumberProperty =
             DependencyProperty.Register("PageNumber", typeof(uint), typeof(ReaderControl), new PropertyMetadata(0U, PageNumberChangedCallback));
 
-        private bool _isPageNumberChangedCallbackSuppressed;
+        private bool _supressPageNumberChangedCallback;
         private ZoomFactorObserver _zoomFactorObserver;
         private ScrollViewer _scrollViewer;
-        private Size containerSize;
+        private Size? _containerSize;
         private PageViewControlState[] _pageStates;
 
         public ReaderControl()
         {
             this.InitializeComponent();
-
-            Loaded += LoadedHandler;
-            Unloaded += UnloadedHandler;
-            SizeChanged += SizeChangedHandler;
         }
 
-        private void OnPageNumberChanged(DependencyPropertyChangedEventArgs e)
+        private void OnPageNumberChanged()
         {
             if (Source == null)
                 throw new InvalidOperationException("Source is null.");
             if (PageNumber == 0 || PageNumber > Source.PageCount)
                 throw new InvalidOperationException("PageNumber is out of range.");
 
-            if (_isPageNumberChangedCallbackSuppressed)
+            if (_supressPageNumberChangedCallback)
                 return;
 
             GoToPage(PageNumber);
@@ -102,8 +98,10 @@ namespace DjvuApp.Controls
 
         private void GoToPage(uint pageNumber)
         {
-            if (Source == null || ActualWidth == 0)
+            if (Source == null || _containerSize == null)
+            {
                 return;
+            }
 
             var pageState = _pageStates[pageNumber - 1];
 
@@ -131,10 +129,7 @@ namespace DjvuApp.Controls
 
         private void Load()
         {
-            if (Source == null)
-                return;
-
-            if (ActualWidth == 0)
+            if (Source == null || _containerSize == null)
             {
                 return;
             }
@@ -153,7 +148,7 @@ namespace DjvuApp.Controls
 
                 var scaleFactor = pageWidth / maxPageWidth;
                 var aspectRatio = pageWidth / pageHeight;
-                var width = scaleFactor * containerSize.Width;
+                var width = scaleFactor * _containerSize.Value.Width;
                 var height = width / aspectRatio;
 
                 _pageStates[i] = new PageViewControlState(
@@ -161,7 +156,7 @@ namespace DjvuApp.Controls
                     pageNumber: i + 1,
                     width: width,
                     height: height,
-                    zoomFactorObserver: _zoomFactorObserver); ;
+                    zoomFactorObserver: _zoomFactorObserver);
             }
 
             listView.ItemsSource = _pageStates;
@@ -175,17 +170,9 @@ namespace DjvuApp.Controls
 
         private void SizeChangedHandler(object sender, SizeChangedEventArgs e)
         {
-            containerSize = new Size(ActualWidth, ActualHeight);
+            _containerSize = new Size(ActualWidth, ActualHeight);
+
             Load();
-            GoToPage(PageNumber);
-        }
-
-        private void UnloadedHandler(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private void LoadedHandler(object sender, RoutedEventArgs e)
-        {
         }
 
         private static void SourceChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -197,7 +184,7 @@ namespace DjvuApp.Controls
         private static void PageNumberChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var sender = (ReaderControl) d;
-            sender.OnPageNumberChanged(e);
+            sender.OnPageNumberChanged();
         }
 
         private void ScrollViewerLoadedHandler(object sender, RoutedEventArgs e)
@@ -220,9 +207,9 @@ namespace DjvuApp.Controls
 
         private void SetPageNumberWithoutNotification(uint value)
         {
-            _isPageNumberChangedCallbackSuppressed = true;
+            _supressPageNumberChangedCallback = true;
             PageNumber = value;
-            _isPageNumberChangedCallbackSuppressed = false;
+            _supressPageNumberChangedCallback = false;
         }
     }
 }

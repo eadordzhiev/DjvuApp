@@ -2,7 +2,6 @@
     x:Class="DjvuApp.Controls.PageViewControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:DjvuApp"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
@@ -17,19 +16,16 @@
     <Canvas Background="Transparent">
         <Canvas 
             x:Name="blankContentCanvas"
-            Opacity="0"
             Width="{Binding Width, ElementName= pageViewControl}" 
             Height="{Binding Height, ElementName=pageViewControl}"
             Background="{StaticResource ReaderCanvasForeground}"/>
         <Canvas 
             x:Name="thumbnailContentCanvas"
-            Opacity="0"
             Width="{Binding Width, ElementName= pageViewControl}" 
             Height="{Binding Height, ElementName=pageViewControl}"
             Background="Transparent"/>
         <Canvas 
             x:Name="contentCanvas"
-            Opacity="0"
             Width="{Binding Width, ElementName= pageViewControl}" 
             Height="{Binding Height, ElementName=pageViewControl}"
             Background="Transparent"/>

@@ -10,7 +10,7 @@ namespace DjvuApp.Controls
 {
     public sealed partial class PageViewControl : UserControl
     {
-        public static Renderer Renderer;
+        private static readonly Lazy<Renderer> _renderer = new Lazy<Renderer>(() => new Renderer());
 
         public PageViewControlState State
         {
@@ -32,12 +32,19 @@ namespace DjvuApp.Controls
             sender.OnStateChanged();
         }
 
+        public PageViewControl()
+        {
+            this.InitializeComponent();
+        }
+
         private void OnStateChanged()
         {
-            Cleanup();
+            CleanUp();
 
             if (State == null)
+            {
                 return;
+            }
 
             _zoomFactorObserver = State.ZoomFactorObserver;
             _zoomFactorObserver.ZoomFactorChanging += HandleZoomFactorChanging;
@@ -45,34 +52,22 @@ namespace DjvuApp.Controls
 
             Width = State.Width;
             Height = State.Height;
-            
-            blankContentCanvas.Opacity = 1;
-            thumbnailContentCanvas.Opacity = 0;
-            contentCanvas.Opacity = 0;
-
-            if (_page != null)
-            {
-                throw new Exception();
-            }
 
             _page = State.Document.GetPage(State.PageNumber);
-            CreateThumbnailSurface();
 
-            blankContentCanvas.Opacity = 0;
-            thumbnailContentCanvas.Opacity = 1;
+            CreateThumbnailSurface();
 
             if (!_zoomFactorObserver.IsZooming)
             {
                 CreateContentSurface();
             }
-            
-            contentCanvas.Opacity = 1;
         }
 
-        private void Cleanup()
+        private void CleanUp()
         {
             if (_zoomFactorObserver != null)
             {
+                _zoomFactorObserver.ZoomFactorChanging -= HandleZoomFactorChanging;
                 _zoomFactorObserver.ZoomFactorChanged -= HandleZoomFactorChanged;
                 _zoomFactorObserver = null;
             }
@@ -110,14 +105,12 @@ namespace DjvuApp.Controls
 
         private void CreateContentSurface()
         {
-            if (_contentVsis != null)
-            {
-                throw new Exception();
-            }
+            Debug.Assert(_contentVsis == null);
 
             var zoomFactor = _zoomFactorObserver.ZoomFactor;
             var pageViewSize = new Size(Width * zoomFactor, Height * zoomFactor);
-            _contentVsis = new VsisWrapper(_page, Renderer, pageViewSize);
+
+            _contentVsis = new VsisWrapper(_page, _renderer.Value, pageViewSize);
             _contentVsis.CreateSurface();
 
             var contentBackgroundBrush = new ImageBrush
@@ -130,13 +123,12 @@ namespace DjvuApp.Controls
 
         private void CreateThumbnailSurface()
         {
-            if (_thumbnailSis != null)
-            {
-                throw new Exception();
-            }
+            Debug.Assert(_thumbnailSis == null);
 
-            var pageViewSize = new Size(Width / 16, Height / 16);
-            _thumbnailSis = new SisWrapper(_page, Renderer, pageViewSize);
+            const uint scaleFactor = 16;
+            var pageViewSize = new Size(Width / scaleFactor, Height / scaleFactor);
+
+            _thumbnailSis = new SisWrapper(_page, _renderer.Value, pageViewSize);
             _thumbnailSis.CreateSurface();
 
             var thumbnailBackgroundBrush = new ImageBrush
@@ -145,16 +137,6 @@ namespace DjvuApp.Controls
             };
 
             thumbnailContentCanvas.Background = thumbnailBackgroundBrush;
-        }
-
-        public PageViewControl()
-        {
-            this.InitializeComponent();
-
-            if (PageViewControl.Renderer == null)
-            {
-                PageViewControl.Renderer = new Renderer();
-            }
         }
     }
 }

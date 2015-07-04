@@ -14,9 +14,13 @@ namespace DjvuApp.Controls
         }
 
         public DjvuDocument Document { get; private set; }
+
         public uint PageNumber { get; private set; }
+
         public double Width { get; private set; }
+
         public double Height { get; private set; }
+
         public IZoomFactorObserver ZoomFactorObserver { get; private set; }
     }
 }
