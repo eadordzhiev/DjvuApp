@@ -72,7 +72,7 @@ namespace DjvuApp.Pages
             settings.Values[key] = count + 1;
             count++;
 
-            if (count == 2 || count == 4 || count == 6)
+            if (count == 5 || count == 10 || count == 15)
             {
                 var content = _resourceLoader.GetString("RateAppDialog_Content");
                 var title = _resourceLoader.GetString("RateAppDialog_Title");
