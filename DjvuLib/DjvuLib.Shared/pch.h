@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include <cassert>
 #include <string>
 #include <sstream>
 #include <windows.h>

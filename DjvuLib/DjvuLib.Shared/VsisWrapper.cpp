@@ -45,7 +45,7 @@ namespace DjvuApp
             throw ref new InvalidArgumentException();
         }
 
-        double dpiFactor = DisplayInformation::GetForCurrentView()->LogicalDpi / 96;
+        double dpiFactor = DisplayInformation::GetForCurrentView()->RawPixelsPerViewPixel;
         width = static_cast<uint32>(pageViewSize.Width * dpiFactor);
         height = static_cast<uint32>(pageViewSize.Height * dpiFactor);
 
@@ -116,6 +116,13 @@ namespace DjvuApp
         for (ULONG i = 0; i < rectCount; ++i)
         {
             RenderRegion(updateRects[i]);
+        }
+
+        DBGPRINT(L"\npage%d", page->PageNumber);
+        for (size_t i = 0; i < rectCount; i++)
+        {
+            RECT rect = updateRects[i];
+            DBGPRINT(L"%d %d %d %d", rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top);
         }
     }
 
