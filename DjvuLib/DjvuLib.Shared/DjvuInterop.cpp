@@ -23,15 +23,21 @@ static void RethrowToWinRtException(const GException& ex)
 {
 	auto functionName = ex.get_function();
 	if (functionName == nullptr)
+	{
 		functionName = "?";
+	}
 
 	auto cause = ex.get_cause();
 	if (cause == nullptr)
+	{
 		cause = "?";
+	}
 
 	auto fileName = ex.get_file();
 	if (fileName == nullptr)
+	{
 		fileName = "?";
+	}
 
 	std::wstringstream message;
 	message << L"Exception in function " << utf16_from_utf8(functionName) << std::endl;
@@ -39,7 +45,7 @@ static void RethrowToWinRtException(const GException& ex)
 	message << L"In file " << utf16_from_utf8(fileName) << std::endl;
 	message << L"At line " << ex.get_line();
     
-	throw ref new Exception(E_FAIL, ref new String(message.str().c_str()));
+	throw ref new FailureException(ref new String(message.str().c_str()));
 }
 
 IAsyncOperation<DjvuDocument^>^ DjvuDocument::LoadAsync(String^ path)
@@ -65,58 +71,28 @@ IAsyncOperation<DjvuDocument^>^ DjvuDocument::LoadAsync(IStorageFile^ file)
     return DjvuDocument::LoadAsync(file->Path);
 }
 
-ddjvu_format_t* DjvuDocument::GetFormat()
-{
-	if (format == nullptr)
-	{
-        throw ref new ObjectDisposedException("The format has been released.");
-	}
-
-	return format;
-}
-
 DjvuDocument::DjvuDocument(const char* path)
 {
 	try
 	{
 		context = ddjvu_context_create(nullptr);
-		format = ddjvu_format_create(DDJVU_FORMAT_BGRA, 0, 0);
-		ddjvu_format_set_row_order(format, 1);
-        ddjvu_format_set_y_direction(format, 1);
-
 		document = ddjvu_document_create_by_filename_utf8(context, path, false);
+		
+		auto djvuDocument = ddjvu_get_DjVuDocument(document);
+		if (!djvuDocument->wait_for_complete_init())
+		{
+			throw ref new FailureException(L"Failed to decode the document.");
+		}
 
-#if THREADMODEL != NOTHREADS
-        for (bool isCompleted = false; !isCompleted;)
-        {
-            auto status = ddjvu_document_decoding_status(document);
-            switch (status)
-            {
-            case ddjvu_status_t::DDJVU_JOB_FAILED:
-                throw ref new FailureException(L"Decoding failed with DDJVU_JOB_FAILED.");
-            case ddjvu_status_t::DDJVU_JOB_OK:
-                isCompleted = true;
-                break;
-            case ddjvu_status_t::DDJVU_JOB_STARTED:
-                Sleep(1);
-                break;
-            default:
-                throw ref new FailureException(L"An unexpected decoding status.");
-            }
-        }
-#endif
-
-		GP<DjVuDocument> djvuDoc = ddjvu_get_DjVuDocument(document);
-		doctype = static_cast<DocumentType>(djvuDoc->get_doc_type());
-
+		doctype = static_cast<DocumentType>(djvuDocument->get_doc_type());
         if (doctype != DocumentType::SinglePage && doctype != DocumentType::Bundled)
         {
             throw ref new InvalidArgumentException("Unsupported document type. Only bundled and single page documents are supported.");
         }
 
-        pageCount = ddjvu_document_get_pagenum(document);
+		pageCount = djvuDocument->get_pages_num();
 		pageInfos = ref new Platform::Array<PageInfo>(pageCount);
-
+		
 		for (unsigned int i = 0; i < pageCount; i++)
 		{
 			ddjvu_pageinfo_t ddjvuinfo;
@@ -144,11 +120,6 @@ DjvuDocument::~DjvuDocument()
 		ddjvu_context_release(context);
 		context = nullptr;
 	}
-	if (format != nullptr)
-	{
-		ddjvu_format_release(format);
-		format = nullptr;
-	}
 	if (document != nullptr)
 	{
 		ddjvu_document_release(document);
@@ -165,21 +136,19 @@ Array<DjvuBookmark>^ DjvuDocument::GetBookmarks()
 {
 	try
 	{
-		GP<DjVuDocument> djvuDoc = ddjvu_get_DjVuDocument(document);
-		GP<DjVmNav> navm = djvuDoc->get_djvm_nav();
+		auto djvuDoc = ddjvu_get_DjVuDocument(document);
+		auto navm = djvuDoc->get_djvm_nav();
 
 		if (navm == nullptr)
 			return nullptr;
 
-		int count = navm->getBookMarkCount();
+		auto count = navm->getBookMarkCount();
 		auto result = ref new Array<DjvuBookmark>(count);
 
 		for (int i = 0; i < count; i++)
 		{
 			GP<DjVmNav::DjVuBookMark> bookmark;
-			bool success = navm->getBookMark(bookmark, i);
-
-			if (!success)
+			if (!navm->getBookMark(bookmark, i))
 			{
 				DBGPRINT(L"Can't get bookmark at index %d, getBookMark() returned false", i);
 				throw ref new Exception(E_FAIL, "getBookMark() failed");
@@ -202,7 +171,7 @@ DjvuPage^ DjvuDocument::GetPage(uint32 pageNumber)
 {
 	if (pageNumber < 1 || pageNumber > pageCount)
 	{
-		throw ref new InvalidArgumentException("pageNumber is out of the range");
+		throw ref new InvalidArgumentException("pageNumber is out of range");
 	}
     
 	ddjvu_page_t* page;
@@ -211,10 +180,11 @@ DjvuPage^ DjvuDocument::GetPage(uint32 pageNumber)
 	{
 		page = ddjvu_page_create_by_pageno(document, pageNumber - 1);
 
-#if THREADMODEL != NOTHREADS
-		while (!ddjvu_page_decoding_done(page))
-			Sleep(1);
-#endif
+		auto djvuImage = ddjvu_get_DjVuImage(page);
+		if (!djvuImage->wait_for_complete_decode())
+		{
+			throw ref new FailureException("Failed to decode the page.");
+		}
 	}
 	catch (const GException& ex)
 	{
@@ -256,10 +226,10 @@ DjvuPage::~DjvuPage()
 
 void DjvuPage::RenderRegion(void* bufferPtr, Size rescaledPageSize, Rect renderRegion)
 {
-    if (page == nullptr)
-    {
-        throw ref new ObjectDisposedException();
-    }
+	if (page == nullptr)
+	{
+		throw ref new ObjectDisposedException();
+	}
 
 	DBGPRINT(L"width = %f, height = %f", rescaledPageSize.Width, rescaledPageSize.Height);
 	if (rescaledPageSize.Width < 1 || rescaledPageSize.Height < 1)
@@ -274,27 +244,33 @@ void DjvuPage::RenderRegion(void* bufferPtr, Size rescaledPageSize, Rect renderR
 	rrect.x = (int)renderRegion.X;
 	rrect.y = (int)renderRegion.Y;
 	rrect.w = (unsigned int)renderRegion.Width;
-    rrect.h = (unsigned int)renderRegion.Height;
+	rrect.h = (unsigned int)renderRegion.Height;
 
 	prect.x = 0;
 	prect.y = 0;
-    prect.w = (unsigned int)rescaledPageSize.Width;
-    prect.h = (unsigned int)rescaledPageSize.Height;
+	prect.w = (unsigned int)rescaledPageSize.Width;
+	prect.h = (unsigned int)rescaledPageSize.Height;
 
 	rowsize = rrect.w * 4;
 
+	auto format = ddjvu_format_create(ddjvu_format_style_t::DDJVU_FORMAT_BGRA, 0, nullptr);
+	ddjvu_format_set_row_order(format, 1);
+	ddjvu_format_set_y_direction(format, 1);
+
 	try
 	{
-        if (!ddjvu_page_render(page, DDJVU_RENDER_COLOR, &prect, &rrect, document->GetFormat(), rowsize, (char*)bufferPtr))
+		if (!ddjvu_page_render(page, DDJVU_RENDER_COLOR, &prect, &rrect, format, rowsize, (char*)bufferPtr))
 		{
 			DBGPRINT(L"Cannot render page, no data.");
-            memset(bufferPtr, UINT_MAX, rowsize * rrect.h);
+			memset(bufferPtr, UINT_MAX, rowsize * rrect.h);
 		}
 	}
 	catch (const GException& ex)
 	{
 		RethrowToWinRtException(ex);
 	}
+
+	ddjvu_format_release(format);
 }
 
 IAsyncAction^ DjvuPage::RenderRegionAsync(WriteableBitmap^ bitmap, Size rescaledPageSize, Rect renderRegion)

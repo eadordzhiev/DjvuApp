@@ -37,11 +37,19 @@ namespace DjvuApp.Controls
             this.InitializeComponent();
         }
 
-        private void OnStateChanged()
+        private async void OnStateChanged()
         {
             CleanUp();
 
             if (State == null)
+            {
+                return;
+            }
+
+            var state = State;
+            _page = State.Document.GetPage(State.PageNumber);
+
+            if (state != State)
             {
                 return;
             }
@@ -52,8 +60,7 @@ namespace DjvuApp.Controls
 
             Width = State.Width;
             Height = State.Height;
-
-            _page = State.Document.GetPage(State.PageNumber);
+                      
 
             CreateThumbnailSurface();
 
@@ -105,8 +112,6 @@ namespace DjvuApp.Controls
 
         private void CreateContentSurface()
         {
-            Debug.Assert(_contentVsis == null);
-
             var zoomFactor = _zoomFactorObserver.ZoomFactor;
             var pageViewSize = new Size(Width * zoomFactor, Height * zoomFactor);
 
@@ -123,8 +128,6 @@ namespace DjvuApp.Controls
 
         private void CreateThumbnailSurface()
         {
-            Debug.Assert(_thumbnailSis == null);
-
             const uint scaleFactor = 16;
             var pageViewSize = new Size(Width / scaleFactor, Height / scaleFactor);
 

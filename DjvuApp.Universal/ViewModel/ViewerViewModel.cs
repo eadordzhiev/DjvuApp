@@ -118,21 +118,21 @@ namespace DjvuApp.ViewModel
             }
         }
 
-        public ICommand ShowOutlineCommand { get; private set; }
+        public ICommand ShowOutlineCommand { get; }
 
-        public ICommand JumpToPageCommand { get; private set; }
+        public ICommand JumpToPageCommand { get; }
 
-        public ICommand AddBookmarkCommand { get; private set; }
+        public ICommand AddBookmarkCommand { get; }
 
-        public ICommand RemoveBookmarkCommand { get; private set; }
+        public ICommand RemoveBookmarkCommand { get; }
 
-        public ICommand ShowBookmarksCommand { get; private set; }
+        public ICommand ShowBookmarksCommand { get; }
 
-        public RelayCommand GoToNextPageCommand { get; private set; }
+        public RelayCommand GoToNextPageCommand { get; }
 
-        public RelayCommand GoToPreviousPageCommand { get; private set; }
+        public RelayCommand GoToPreviousPageCommand { get; }
 
-        public ICommand ShareCommand { get; private set; }
+        public ICommand ShareCommand { get; }
 
         private bool _isProgressVisible;
         private bool _isCurrentPageBookmarked;
@@ -169,7 +169,6 @@ namespace DjvuApp.ViewModel
                 () => CurrentPageNumber > 1);
 
             MessengerInstance.Register<LoadedHandledMessage<IBook>>(this, message => LoadedHandler(message.Parameter));
-
             MessengerInstance.Register<OnNavigatedFromMessage>(this,
                 async message =>
                 {

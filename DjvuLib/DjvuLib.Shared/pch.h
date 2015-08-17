@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include <cctype>
 #include <cassert>
 #include <string>
 #include <sstream>
@@ -16,6 +17,7 @@
 #include <wrl.h>
 #include <robuffer.h>
 
+#include "libdjvu\DjVuImage.h"
 #include "libdjvu\DjVuDocument.h"
 #include "libdjvu\DjVmNav.h"
 #include "libdjvu\ddjvuapi.h"

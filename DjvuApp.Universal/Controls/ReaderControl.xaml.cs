@@ -134,7 +134,7 @@ namespace DjvuApp.Controls
             _zoomFactorObserver = new ZoomFactorObserver();
 
             var pageInfos = Source.GetPageInfos();
-            double maxPageWidth = pageInfos.Max(pageInfo => pageInfo.Width);
+            var maxPageWidth = pageInfos.Max(pageInfo => pageInfo.Width);
             _pageStates = new PageViewControlState[Source.PageCount];
 
             for (uint i = 0; i < _pageStates.Length; i++)
@@ -162,6 +162,7 @@ namespace DjvuApp.Controls
         private void Unload()
         {
             _zoomFactorObserver = null;
+            _pageStates = null;
             listView.ItemsSource = null;
         }
 

@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include <cctype>
 
 namespace DjvuApp { namespace Djvu 
 {
@@ -90,14 +89,11 @@ namespace DjvuApp { namespace Djvu
         Platform::Array<PageInfo>^ GetPageInfos();
 	private:
 		ddjvu_context_t* context;
-		ddjvu_format_t* format;
 		ddjvu_document_t* document = nullptr;
         uint32_t pageCount = 0;
 		DocumentType doctype;
         Platform::Array<PageInfo>^ pageInfos;
 
 		DjvuDocument(const char* path);
-	internal:
-		ddjvu_format_t* GetFormat();
 	};
 } }
