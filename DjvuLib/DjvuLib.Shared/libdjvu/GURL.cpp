@@ -71,6 +71,7 @@
 #include "GOS.h"
 #include "GURL.h"
 #include "debug.h"
+#include "StringConversion.h"
 
 #include <stddef.h>
 #include <stdlib.h>
@@ -79,7 +80,7 @@
 #include <math.h>
 #include <string.h>
 
-#ifdef WIN32
+#ifdef _WIN32
 # include <tchar.h>
 # include <windows.h>
 # include <direct.h>
@@ -183,7 +184,7 @@ static const char nillchar=0;
 #if defined(UNIX)
   static const char tilde='~';
   static const char root[] = "/";
-#elif defined(WIN32) || defined(OS2)
+#elif defined(_WIN32) || defined(OS2)
   static const char root[] = "\\";
 #elif defined(macintosh)
   static char const * const root = &nillchar; 
@@ -232,7 +233,7 @@ void
 GURL::convert_slashes(void)
 {
    GUTF8String xurl(get_string());
-#if defined(WIN32)
+#if defined(_WIN32)
    const int protocol_length=protocol(xurl).length();
    for(char *ptr=(xurl.getbuf()+protocol_length);*ptr;ptr++)
      if(*ptr == backslash)
@@ -288,7 +289,7 @@ GURL::beautify_path(GUTF8String xurl)
   // Convert /./ stuff into plain /
   for(;(ptr=strstr(start, "/./"));collapse(ptr, 2))
     EMPTY_LOOP;
-#if defined(WIN32) || defined(OS2)
+#if defined(_WIN32) || defined(OS2)
   if(!xurl.cmp(filespec,sizeof(filespec)-1))
   {
 	int offset=1;
@@ -439,7 +440,7 @@ GURL::GURL(const GUTF8String & url_in)
 GURL::GURL(const GNativeString & url_in)
   : url(url_in.getNative2UTF8()), validurl(false)
 {
-#if defined(WIN32) || defined(OS2)
+#if defined(_WIN32) || defined(OS2)
   if(is_valid() && is_local_file_url())
   {
     GURL::Filename::UTF8 xurl(UTF8Filename());
@@ -483,8 +484,8 @@ GURL::protocol(const GUTF8String& url)
 {
   const char * const url_ptr=url;
   const char * ptr=url_ptr;
-  for(unsigned char c=*ptr;
-      c && (isalnum(c) || c == '+' || c == '-' || c == '.');
+  for(char c=*ptr;
+      c && isascii(c) && (isalnum(c) || c == '+' || c == '-' || c == '.');
       c=*(++ptr)) EMPTY_LOOP;
   if (ptr[0]==colon && ptr[1]=='/' && ptr[2]=='/')
     return GUTF8String(url_ptr, ptr-url_ptr);
@@ -1071,7 +1072,7 @@ GURL::encode_reserved(const GUTF8String &gs)
   for (; *s; s++,d++)
   {
     // Convert directory separator to slashes
-#if defined(WIN32) || defined(OS2)
+#if defined(_WIN32) || defined(OS2)
     if (*s == backslash || *s== slash)
 #else
 #ifdef macintosh
@@ -1245,7 +1246,7 @@ GURL::GURL(const GNativeString &xurl,const GURL &codebase)
   GURL retval(xurl.getNative2UTF8(),codebase);
   if(retval.is_valid())
   {
-#if defined(WIN32)
+#if defined(_WIN32)
     // Hack for IE to change \\ to /
     if(retval.is_local_file_url())
     {
@@ -1352,7 +1353,7 @@ GURL::UTF8Filename(void) const
     retval = expand_name(url_ptr,root);
 #endif
     
-#if defined(WIN32) || defined(OS2)
+#if defined(_WIN32) || defined(OS2)
     if (url_ptr[0] && url_ptr[1]=='|' && url_ptr[2]== slash)
     {
       if ((url_ptr[0]>='a' && url_ptr[0]<='z') 
@@ -1383,265 +1384,277 @@ urlstat(const GURL &url,struct stat &buf)
 }
 #endif
 
-//EDITED
-//// is_file(url) --
-//// -- returns true if filename denotes a regular file.
-//bool
-//GURL::is_file(void) const
-//{
-//  bool retval=false;
-//  if(is_local_file_url())
-//  {
-//#if defined(UNIX) || defined(macintosh) || defined(OS2)
-//    struct stat buf;
-//    if (!urlstat(*this,buf))
-//    {
-//      retval=!(buf.st_mode & S_IFDIR);
-//    }
-//#elif defined(WIN32)
-//    GUTF8String filename(UTF8Filename());
-//    if(filename.length() >= MAX_PATH)
-//      {
-//        if(!filename.cmp("\\\\",2))
-//          filename="\\\\?\\UNC"+filename.substr(1,-1);
-//        else
-//          filename="\\\\?\\"+filename;
-//      }
-//    wchar_t *wfilename;
-//    const size_t wfilename_size=filename.length()+1;
-//    GPBuffer<wchar_t> gwfilename(wfilename,wfilename_size);
-//    filename.ncopy(wfilename,wfilename_size);
-//    DWORD dwAttrib;
-//    dwAttrib = GetFileAttributesW(wfilename);
-//    if((dwAttrib|1) == 0xFFFFFFFF)
-//        dwAttrib = GetFileAttributesA(NativeFilename());
-//    retval=!( dwAttrib & FILE_ATTRIBUTE_DIRECTORY );
-//#else
-//# error "Define something here for your operating system"
-//#endif
-//  }
-//  return retval;
-//}
+// is_file(url) --
+// -- returns true if filename denotes a regular file.
+bool
+GURL::is_file(void) const
+{
+  bool retval=false;
+  if(is_local_file_url())
+  {
+#if defined(UNIX) || defined(macintosh) || defined(OS2)
+    struct stat buf;
+    if (!urlstat(*this,buf))
+    {
+      retval=!(buf.st_mode & S_IFDIR);
+    }
+#elif defined(_WIN32)
+    GUTF8String filename(UTF8Filename());
+    if(filename.length() >= MAX_PATH)
+      {
+        if(!filename.cmp("\\\\",2))
+          filename="\\\\?\\UNC"+filename.substr(1,-1);
+        else
+          filename="\\\\?\\"+filename;
+      }
+    wchar_t *wfilename;
+    const size_t wfilename_size=filename.length()+1;
+    GPBuffer<wchar_t> gwfilename(wfilename,wfilename_size);
+    filename.ncopy(wfilename,wfilename_size);
+	WIN32_FILE_ATTRIBUTE_DATA attributeData;
+    GetFileAttributesExW(wfilename, GET_FILEEX_INFO_LEVELS::GetFileExInfoStandard, &attributeData);
+	DWORD dwAttrib = attributeData.dwFileAttributes;
+	if ((dwAttrib | 1) == 0xFFFFFFFF)
+	{
+		GetFileAttributesExA(NativeFilename(), GET_FILEEX_INFO_LEVELS::GetFileExInfoStandard, &attributeData);
+		dwAttrib = attributeData.dwFileAttributes;
+	}
+    retval=!( dwAttrib & FILE_ATTRIBUTE_DIRECTORY );
+#else
+# error "Define something here for your operating system"
+#endif
+  }
+  return retval;
+}
 
-//bool
-//GURL::is_local_path(void) const
-//{
-//  bool retval=false;
-//  if(is_local_file_url())
-//  {
-//#if defined(UNIX) || defined(macintosh) || defined(OS2)
-//    struct stat buf;
-//    retval=!urlstat(*this,buf);
-//#else
-//    GUTF8String filename(UTF8Filename());
-//    if(filename.length() >= MAX_PATH)
-//      {
-//        if(!filename.cmp("\\\\",2))
-//          filename="\\\\?\\UNC"+filename.substr(1,-1);
-//        else
-//          filename="\\\\?\\"+filename;
-//      }
-//    wchar_t *wfilename;
-//    const size_t wfilename_size=filename.length()+1;
-//    GPBuffer<wchar_t> gwfilename(wfilename,wfilename_size);
-//    filename.ncopy(wfilename,wfilename_size);
-//    DWORD dwAttrib;
-//    dwAttrib = GetFileAttributesW(wfilename);
-//    if((dwAttrib|1) == 0xFFFFFFFF)
-//        dwAttrib = GetFileAttributesA(NativeFilename());
-//    retval=( (dwAttrib|1) != 0xFFFFFFFF);
-//#endif
-//  }
-//  return retval;
-//}
-//
-//// is_dir(url) --
-//// -- returns true if url denotes a directory.
-//bool 
-//GURL::is_dir(void) const
-//{
-//  bool retval=false;
-//  if(is_local_file_url())
-//  {
-//    // UNIX implementation
-//#if defined(UNIX) || defined(macintosh) || defined(OS2)
-//    struct stat buf;
-//    if (!urlstat(*this,buf))
-//    {
-//      retval=(buf.st_mode & S_IFDIR);
-//    }
-//#elif defined(WIN32)   // (either Windows or WCE)
-//    GUTF8String filename(UTF8Filename());
-//    if(filename.length() >= MAX_PATH)
-//      {
-//        if(!filename.cmp("\\\\",2))
-//          filename="\\\\?\\UNC"+filename.substr(1,-1);
-//        else
-//          filename="\\\\?\\"+filename;
-//      }
-//    wchar_t *wfilename;
-//    const size_t wfilename_size=filename.length()+1;
-//    GPBuffer<wchar_t> gwfilename(wfilename,wfilename_size);
-//    filename.ncopy(wfilename,wfilename_size);
-//    DWORD dwAttrib;
-//    dwAttrib = GetFileAttributesW(wfilename);
-//    if((dwAttrib|1) == 0xFFFFFFFF)
-//        dwAttrib = GetFileAttributesA(NativeFilename());
-//    retval=((dwAttrib != 0xFFFFFFFF)&&( dwAttrib & FILE_ATTRIBUTE_DIRECTORY ));
-//#else
-//# error "Define something here for your operating system"
-//#endif
-//  }
-//  return retval;
-//}
-//
-//// Follows symbolic links.
-//GURL 
-//GURL::follow_symlinks(void) const
-//{
-//  GURL ret = *this;
-//#if defined(S_IFLNK)
-//#if defined(UNIX) || defined(macintosh)
-//  int lnklen;
-//  char lnkbuf[MAXPATHLEN+1];
-//  struct stat buf;
-//  while ( (urlstat(ret, buf) >= 0) &&
-//          (buf.st_mode & S_IFLNK) &&
-//          ((lnklen = readlink(ret.NativeFilename(),lnkbuf,sizeof(lnkbuf))) > 0) )
-//    {
-//      lnkbuf[lnklen] = 0;
-//      GNativeString lnk(lnkbuf);
-//      ret = GURL(lnk, ret.base());
-//    }
-//#endif
-//#endif
-//  return ret;
-//}
-//
-//int
-//GURL::mkdir() const
-//{
-//  if(! is_local_file_url())
-//    return -1;
-//  int retval=0;
-//  const GURL baseURL=base();
-//  if (baseURL.get_string() != url && !baseURL.is_dir())
-//    retval = baseURL.mkdir();
-//  if(!retval)
-//    {
-//#if defined(UNIX)
-//      if (is_dir())
-//        retval = 0;
-//      else 
-//        retval = ::mkdir(NativeFilename(), 0755);
-//#elif defined(WIN32)
-//      if (is_dir())
-//        retval = 0;
-//      else 
-//        retval = CreateDirectoryA(NativeFilename(), NULL);
-//#else
-//# error "Define something here for your operating system"
-//#endif
-//    }
-//  return retval;
-//}
-//
-//// deletefile
-//// -- deletes a file or directory
-//  
-//int
-//GURL::deletefile(void) const
-//{
-//  int retval = -1;
-//  if(is_local_file_url())
-//    {
-//#if defined(UNIX)
-//      if (is_dir())
-//        retval = ::rmdir(NativeFilename());
-//      else
-//        retval = ::unlink(NativeFilename());
-//#elif defined(WIN32)
-//      if (is_dir())
-//        retval = ::RemoveDirectoryA(NativeFilename());
-//      else
-//        retval = ::DeleteFile(NativeFilename());
-//#else
-//# error "Define something here for your operating system"
-//#endif
-//  }
-//  return retval;
-//}
-//
-//GList<GURL>
-//GURL::listdir(void) const
-//{
-//  GList<GURL> retval;
-//  if(is_dir())
-//  {
-//#if defined(UNIX) || defined(OS2)
-//    DIR * dir=opendir(NativeFilename());//MBCS cvt
-//    for(dirent *de=readdir(dir);de;de=readdir(dir))
-//    {
-//      const int len = NAMLEN(de);
-//      if (de->d_name[0]== dot  && len==1)
-//        continue;
-//      if (de->d_name[0]== dot  && de->d_name[1]== dot  && len==2)
-//        continue;
-//      retval.append(GURL::Native(de->d_name,*this));
-//    }
-//    closedir(dir);
-//#elif defined (WIN32)
-//    GURL::UTF8 wildcard("*.*",*this);
-//    WIN32_FIND_DATA finddata;
-//    HANDLE handle = FindFirstFile(wildcard.NativeFilename(), &finddata);//MBCS cvt
-//    const GUTF8String gpathname=pathname();
-//    const GUTF8String gbase=base().pathname();
-//    if( handle != INVALID_HANDLE_VALUE)
-//    {
-//      do
-//      {
-//        GURL::UTF8 Entry(finddata.cFileName,*this);
-//        const GUTF8String gentry=Entry.pathname();
-//        if((gentry != gpathname) && (gentry != gbase))
-//          retval.append(Entry);
-//      } while( FindNextFile(handle, &finddata) );
-//
-//      FindClose(handle);
-//    }
-//#else
-//# error "Define something here for your operating system"
-//#endif
-//  }
-//  return retval;
-//}
-//
-//int
-//GURL::cleardir(const int timeout) const
-//{
-//  int retval=(-1);
-//  if(is_dir())
-//  {
-//    GList<GURL> dirlist=listdir();
-//    retval=0;
-//    for(GPosition pos=dirlist;pos&&!retval;++pos)
-//    {
-//      const GURL &Entry=dirlist[pos];
-//      if(Entry.is_dir())
-//      {
-//        if((retval=Entry.cleardir(timeout)) < 0)
-//        {
-//          break;
-//        }
-//      }
-//      if(((retval=Entry.deletefile())<0) && (timeout>0))
-//      {
-//        GOS::sleep(timeout);
-//        retval=Entry.deletefile();
-//      }
-//    }
-//  }
-//  return retval;
-//}
+bool
+GURL::is_local_path(void) const
+{
+  bool retval=false;
+  if(is_local_file_url())
+  {
+#if defined(UNIX) || defined(macintosh) || defined(OS2)
+    struct stat buf;
+    retval=!urlstat(*this,buf);
+#else
+    GUTF8String filename(UTF8Filename());
+    if(filename.length() >= MAX_PATH)
+      {
+        if(!filename.cmp("\\\\",2))
+          filename="\\\\?\\UNC"+filename.substr(1,-1);
+        else
+          filename="\\\\?\\"+filename;
+      }
+    wchar_t *wfilename;
+    const size_t wfilename_size=filename.length()+1;
+    GPBuffer<wchar_t> gwfilename(wfilename,wfilename_size);
+    filename.ncopy(wfilename,wfilename_size);
+	WIN32_FILE_ATTRIBUTE_DATA attributeData;
+	GetFileAttributesExW(wfilename, GET_FILEEX_INFO_LEVELS::GetFileExInfoStandard, &attributeData);
+	DWORD dwAttrib = attributeData.dwFileAttributes;
+	if ((dwAttrib | 1) == 0xFFFFFFFF)
+	{
+		GetFileAttributesExA(NativeFilename(), GET_FILEEX_INFO_LEVELS::GetFileExInfoStandard, &attributeData);
+		dwAttrib = attributeData.dwFileAttributes;
+	}
+    retval=( (dwAttrib|1) != 0xFFFFFFFF);
+#endif
+  }
+  return retval;
+}
+
+// is_dir(url) --
+// -- returns true if url denotes a directory.
+bool 
+GURL::is_dir(void) const
+{
+  bool retval=false;
+  if(is_local_file_url())
+  {
+    // UNIX implementation
+#if defined(UNIX) || defined(macintosh) || defined(OS2)
+    struct stat buf;
+    if (!urlstat(*this,buf))
+    {
+      retval=(buf.st_mode & S_IFDIR);
+    }
+#elif defined(_WIN32)   // (either Windows or WCE)
+    GUTF8String filename(UTF8Filename());
+    if(filename.length() >= MAX_PATH)
+      {
+        if(!filename.cmp("\\\\",2))
+          filename="\\\\?\\UNC"+filename.substr(1,-1);
+        else
+          filename="\\\\?\\"+filename;
+      }
+    wchar_t *wfilename;
+    const size_t wfilename_size=filename.length()+1;
+    GPBuffer<wchar_t> gwfilename(wfilename,wfilename_size);
+    filename.ncopy(wfilename,wfilename_size);
+	WIN32_FILE_ATTRIBUTE_DATA attributeData;
+	GetFileAttributesExW(wfilename, GET_FILEEX_INFO_LEVELS::GetFileExInfoStandard, &attributeData);
+	DWORD dwAttrib = attributeData.dwFileAttributes;
+	if ((dwAttrib | 1) == 0xFFFFFFFF)
+	{
+		GetFileAttributesExA(NativeFilename(), GET_FILEEX_INFO_LEVELS::GetFileExInfoStandard, &attributeData);
+		dwAttrib = attributeData.dwFileAttributes;
+	}
+    retval=((dwAttrib != 0xFFFFFFFF)&&( dwAttrib & FILE_ATTRIBUTE_DIRECTORY ));
+#else
+# error "Define something here for your operating system"
+#endif
+  }
+  return retval;
+}
+
+// Follows symbolic links.
+GURL 
+GURL::follow_symlinks(void) const
+{
+  GURL ret = *this;
+#if defined(S_IFLNK)
+#if defined(UNIX) || defined(macintosh)
+  int lnklen;
+  char lnkbuf[MAXPATHLEN+1];
+  struct stat buf;
+  while ( (urlstat(ret, buf) >= 0) &&
+          (buf.st_mode & S_IFLNK) &&
+          ((lnklen = readlink(ret.NativeFilename(),lnkbuf,sizeof(lnkbuf))) > 0) )
+    {
+      lnkbuf[lnklen] = 0;
+      GNativeString lnk(lnkbuf);
+      ret = GURL(lnk, ret.base());
+    }
+#endif
+#endif
+  return ret;
+}
+
+int
+GURL::mkdir() const
+{
+  if(! is_local_file_url())
+    return -1;
+  int retval=0;
+  const GURL baseURL=base();
+  if (baseURL.get_string() != url && !baseURL.is_dir())
+    retval = baseURL.mkdir();
+  if(!retval)
+    {
+#if defined(UNIX)
+      if (is_dir())
+        retval = 0;
+      else 
+        retval = ::mkdir(NativeFilename(), 0755);
+#elif defined(_WIN32)
+      if (is_dir())
+        retval = 0;
+      else 
+        retval = CreateDirectoryA(NativeFilename(), NULL);
+#else
+# error "Define something here for your operating system"
+#endif
+    }
+  return retval;
+}
+
+// deletefile
+// -- deletes a file or directory
+  
+int
+GURL::deletefile(void) const
+{
+  int retval = -1;
+  if(is_local_file_url())
+    {
+#if defined(UNIX)
+      if (is_dir())
+        retval = ::rmdir(NativeFilename());
+      else
+        retval = ::unlink(NativeFilename());
+#elif defined(_WIN32)
+      if (is_dir())
+        retval = ::RemoveDirectoryA(NativeFilename());
+      else
+        retval = ::DeleteFileA(NativeFilename());
+#else
+# error "Define something here for your operating system"
+#endif
+  }
+  return retval;
+}
+
+GList<GURL>
+GURL::listdir(void) const
+{
+  GList<GURL> retval;
+  if(is_dir())
+  {
+#if defined(UNIX) || defined(OS2)
+    DIR * dir=opendir(NativeFilename());//MBCS cvt
+    for(dirent *de=readdir(dir);de;de=readdir(dir))
+    {
+      const int len = NAMLEN(de);
+      if (de->d_name[0]== dot  && len==1)
+        continue;
+      if (de->d_name[0]== dot  && de->d_name[1]== dot  && len==2)
+        continue;
+      retval.append(GURL::Native(de->d_name,*this));
+    }
+    closedir(dir);
+#elif defined(_WIN32)
+    GURL::UTF8 wildcard("*.*",*this);
+    WIN32_FIND_DATA finddata;
+    HANDLE handle = FindFirstFileExA(wildcard.NativeFilename(), FINDEX_INFO_LEVELS::FindExInfoStandard, &finddata, FINDEX_SEARCH_OPS::FindExSearchNameMatch, nullptr, 0);//MBCS cvt
+    const GUTF8String gpathname=pathname();
+    const GUTF8String gbase=base().pathname();
+    if( handle != INVALID_HANDLE_VALUE)
+    {
+      do
+      {
+		std::string fileName = utf16_to_utf8(finddata.cFileName);
+        GURL::UTF8 Entry(fileName.c_str(),*this);
+        const GUTF8String gentry=Entry.pathname();
+        if((gentry != gpathname) && (gentry != gbase))
+          retval.append(Entry);
+      } while( FindNextFile(handle, &finddata) );
+
+      FindClose(handle);
+    }
+#else
+# error "Define something here for your operating system"
+#endif
+  }
+  return retval;
+}
+
+int
+GURL::cleardir(const int timeout) const
+{
+  int retval=(-1);
+  if(is_dir())
+  {
+    GList<GURL> dirlist=listdir();
+    retval=0;
+    for(GPosition pos=dirlist;pos&&!retval;++pos)
+    {
+      const GURL &Entry=dirlist[pos];
+      if(Entry.is_dir())
+      {
+        if((retval=Entry.cleardir(timeout)) < 0)
+        {
+          break;
+        }
+      }
+      if(((retval=Entry.deletefile())<0) && (timeout>0))
+      {
+        GOS::sleep(timeout);
+        retval=Entry.deletefile();
+      }
+    }
+  }
+  return retval;
+}
 
 int
 GURL::renameto(const GURL &newurl) const
@@ -1655,216 +1668,217 @@ GURL::renameto(const GURL &newurl) const
 // -- returns the full path name of filename interpreted
 //    relative to fromdirname.  Use current working dir when
 //    fromdirname is null.
-
-//EDITED
 GUTF8String 
 GURL::expand_name(const GUTF8String &xfname, const char *from)
 {
-	return xfname;
-//  const char *fname=xfname;
-//  GUTF8String retval;
-//  const size_t maxlen=xfname.length()*9+MAXPATHLEN+10;
-//  char * const string_buffer = retval.getbuf(maxlen);
-//  // UNIX implementation
-//#if defined(UNIX)
-//  // Perform tilde expansion
-//  GUTF8String senv;
-//  if (fname && fname[0]==tilde)
-//  {
-//    int n;
-//    for(n=1;fname[n] && fname[n]!= slash;n++) 
-//      EMPTY_LOOP;
-//    struct passwd *pw=0;
-//    if (n!=1)
-//    {
-//      GUTF8String user(fname+1, n-1);
-//      pw=getpwnam(user);
-//    }else if ((senv=GOS::getenv("HOME")).length())
-//    {
-//      from=(const char *)senv;
-//      fname = fname + n;
-//    }else if ((senv=GOS::getenv("LOGNAME")).length())
-//    {
-//      pw = getpwnam((const char *)senv.getUTF82Native());
-//    }else
-//    {
-//      pw=getpwuid(getuid());
-//    }
-//    if (pw)
-//    {
-//      senv=GNativeString(pw->pw_dir).getNative2UTF8();
-//      from = (const char *)senv;
-//      fname = fname + n;
-//    }
-//    for(;fname[0] == slash; fname++)
-//      EMPTY_LOOP;
-//  }
-//  // Process absolute vs. relative path
-//  if (fname && fname[0]== slash)
-//  {
-//    string_buffer[0]=slash;
-//    string_buffer[1]=0;
-//  }else if (from)
-//  {
-//    strcpy(string_buffer, expand_name(from));
-//  }else
-//  {
-//    strcpy(string_buffer, GOS::cwd());
-//  }
-//  char *s = string_buffer + strlen(string_buffer);
-//  if(fname)
-//  {
-//    for(;fname[0]== slash;fname++)
-//      EMPTY_LOOP;
-//    // Process path components
-//    while(fname[0])
-//    {
-//      if (fname[0] == dot )
-//      {
-//        if (!fname[1] || fname[1]== slash)
-//        {
-//          fname++;
-//          continue;
-//        }else if (fname[1]== dot && (fname[2]== slash || !fname[2]))
-//        {
-//          fname +=2;
-//          for(;s>string_buffer+1 && *(s-1)== slash; s--)
-//            EMPTY_LOOP;
-//          for(;s>string_buffer+1 && *(s-1)!= slash; s--)
-//            EMPTY_LOOP;
-//          continue;
-//        }
-//      }
-//      if ((s==string_buffer)||(*(s-1)!= slash))
-//      {
-//        *s = slash;
-//        s++;
-//      }
-//      while (*fname &&(*fname!= slash))
-//      {
-//        *s = *fname++;
-//        if ((size_t)((++s)-string_buffer) > maxlen)
-//        {
-//          G_THROW( ERR_MSG("GURL.big_name") );
-//        }
-//      }
-//      *s = 0;
-//      for(;fname[0]== slash;fname++)
-//        EMPTY_LOOP;
-//    }
-//  }
-//  if (!fname || !fname[0])
-//  {
-//    for(;s>string_buffer+1 && *(s-1) == slash; s--)
-//      EMPTY_LOOP;
-//    *s = 0;
-//  }
-//#elif defined (WIN32) // WIN32 implementation
-//  // Handle base
-//  strcpy(string_buffer, (char const *)(from ? expand_name(from) : GOS::cwd()));
-//  //  GNativeString native;
-//  if (fname)
-//  {
-//    char *s = string_buffer;
-//    char  drv[4];
-//    // Handle absolute part of fname
-//    //      Put absolute part of the file name in string_buffer, and
-//    //      the relative part pointed to by fname.
-//    if (fname[0]== slash || fname[0]== backslash)
-//    {
-//      if (fname[1]== slash || fname[1]== backslash)
-//      {       // Case "//abcd"
-//        s[0]=s[1]= backslash; s[2]=0;
-//      }
-//      else
-//      {       // Case "/abcd" or "/"
-//              //    File is at the root of the current drive. Delete the
-//              //    slash at the beginning of the filename and leave
-//              //    an explicit identification of the root of the drive in
-//              //    string_buffer.
-//        fname++;
-//        s[3] = '\0';
-//      }
-//    }
-//    else if (fname[0] && fname[1]==colon)
-//    {
-//      if (fname[2]!= slash && fname[2]!= backslash)
-//      {       // Case "x:abcd"
-//        if ( toupper((unsigned char)s[0]) != toupper((unsigned char)fname[0])
-//          || s[1]!=colon)
-//        {
-//          drv[0]=fname[0];
-//          drv[1]=colon;
-//          drv[2]= dot ;
-//          drv[3]=0;
-//          GetFullPathName(drv, maxlen, string_buffer, &s);
-//          strcpy(string_buffer,(const char *)GUTF8String(string_buffer).getNative2UTF8());
-//          s = string_buffer;
-//        }
-//        fname += 2;
-//      }
-//      else if (fname[3]!= slash && fname[3]!= backslash)
-//      {       // Case "x:/abcd"
-//        s[0]=toupper((unsigned char)fname[0]);
-//        s[1]=colon;
-//        s[2]=backslash;
-//        s[3]=0;
-//        fname += 3;
-//      }
-//      else
-//      {       // Case "x://abcd"
-//        s[0]=s[1]=backslash;
-//        s[2]=0;
-//        fname += 4;
-//      }
-//    }
-//    // Process path components
-//    while(*fname)
-//    {
-//      for(;*fname== slash || *fname==backslash;fname++)
-//        EMPTY_LOOP;
-//      if (fname[0]== dot )
-//      {
-//        if (fname[1]== slash || fname[1]==backslash || !fname[1])
-//        {
-//          fname++;
-//          continue;
-//        }
-//		else if ((fname[1] == dot)
-//                 && (fname[2]== slash || fname[2]==backslash || !fname[2]))
-//        {
-//          fname += 2;
-//          char *back=_tcsrchr(string_buffer,backslash);
-//          char *forward=_tcsrchr(string_buffer,slash);
-//          if(back>forward)
-//          {
-//            *back=0;
-//          }else if(forward)
-//          {
-//            *forward=0;
-//          }
-//          s = string_buffer;
-//          continue;
-//        }
-//      }
-//      char* s2=s;//MBCS DBCS
-//      for(;*s;s++) 
-//        EMPTY_LOOP;
-//	  if (s > string_buffer && s[-1] != slash && s[-1] != backslash)
-//        *s++ = backslash;
-//      while (*fname && (*fname!= slash) && (*fname!=backslash))
-//      {
-//        if (s > string_buffer + maxlen)
-//          G_THROW( ERR_MSG("GURL.big_name") );
-//        *s++ = *fname++;
-//      }
-//      *s = 0;
-//    }
-//  }
-//#else
-//# error "Define something here for your operating system"
-//#endif  
-//  return retval;
+  const char *fname=xfname;
+  GUTF8String retval;
+  const size_t maxlen=xfname.length()*9+MAXPATHLEN+10;
+  char * const string_buffer = retval.getbuf(maxlen);
+  // UNIX implementation
+#if defined(UNIX)
+  // Perform tilde expansion
+  GUTF8String senv;
+  if (fname && fname[0]==tilde)
+  {
+    int n;
+    for(n=1;fname[n] && fname[n]!= slash;n++) 
+      EMPTY_LOOP;
+    struct passwd *pw=0;
+    if (n!=1)
+    {
+      GUTF8String user(fname+1, n-1);
+      pw=getpwnam(user);
+    }else if ((senv=GOS::getenv("HOME")).length())
+    {
+      from=(const char *)senv;
+      fname = fname + n;
+    }else if ((senv=GOS::getenv("LOGNAME")).length())
+    {
+      pw = getpwnam((const char *)senv.getUTF82Native());
+    }else
+    {
+      pw=getpwuid(getuid());
+    }
+    if (pw)
+    {
+      senv=GNativeString(pw->pw_dir).getNative2UTF8();
+      from = (const char *)senv;
+      fname = fname + n;
+    }
+    for(;fname[0] == slash; fname++)
+      EMPTY_LOOP;
+  }
+  // Process absolute vs. relative path
+  if (fname && fname[0]== slash)
+  {
+    string_buffer[0]=slash;
+    string_buffer[1]=0;
+  }else if (from)
+  {
+    strcpy(string_buffer, expand_name(from));
+  }else
+  {
+    strcpy(string_buffer, GOS::cwd());
+  }
+  char *s = string_buffer + strlen(string_buffer);
+  if(fname)
+  {
+    for(;fname[0]== slash;fname++)
+      EMPTY_LOOP;
+    // Process path components
+    while(fname[0])
+    {
+      if (fname[0] == dot )
+      {
+        if (!fname[1] || fname[1]== slash)
+        {
+          fname++;
+          continue;
+        }else if (fname[1]== dot && (fname[2]== slash || !fname[2]))
+        {
+          fname +=2;
+          for(;s>string_buffer+1 && *(s-1)== slash; s--)
+            EMPTY_LOOP;
+          for(;s>string_buffer+1 && *(s-1)!= slash; s--)
+            EMPTY_LOOP;
+          continue;
+        }
+      }
+      if ((s==string_buffer)||(*(s-1)!= slash))
+      {
+        *s = slash;
+        s++;
+      }
+      while (*fname &&(*fname!= slash))
+      {
+        *s = *fname++;
+        if ((size_t)((++s)-string_buffer) > maxlen)
+        {
+          G_THROW( ERR_MSG("GURL.big_name") );
+        }
+      }
+      *s = 0;
+      for(;fname[0]== slash;fname++)
+        EMPTY_LOOP;
+    }
+  }
+  if (!fname || !fname[0])
+  {
+    for(;s>string_buffer+1 && *(s-1) == slash; s--)
+      EMPTY_LOOP;
+    *s = 0;
+  }
+#elif defined(_WIN32) // WIN32 implementation
+  // Handle base
+  strcpy(string_buffer, (char const *)(from ? expand_name(from) : GOS::cwd()));
+  //  GNativeString native;
+  if (fname)
+  {
+    char *s = string_buffer;
+    wchar_t  drv[4];
+    // Handle absolute part of fname
+    //      Put absolute part of the file name in string_buffer, and
+    //      the relative part pointed to by fname.
+    if (fname[0]== slash || fname[0]== backslash)
+    {
+      if (fname[1]== slash || fname[1]== backslash)
+      {       // Case "//abcd"
+        s[0]=s[1]= backslash; s[2]=0;
+      }
+      else
+      {       // Case "/abcd" or "/"
+              //    File is at the root of the current drive. Delete the
+              //    slash at the beginning of the filename and leave
+              //    an explicit identification of the root of the drive in
+              //    string_buffer.
+        fname++;
+        s[3] = '\0';
+      }
+    }
+    else if (fname[0] && fname[1]==colon)
+    {
+      if (fname[2]!= slash && fname[2]!= backslash)
+      {       // Case "x:abcd"
+        if ( toupper((unsigned char)s[0]) != toupper((unsigned char)fname[0])
+          || s[1]!=colon)
+        {
+          drv[0]=fname[0];
+          drv[1]=colon;
+          drv[2]= dot ;
+          drv[3]=0;
+		  wchar_t* utf16_string_buffer = new wchar_t[maxlen / 2];
+          GetFullPathName(drv, maxlen / 2, utf16_string_buffer, nullptr);
+		  std::string utf8_tmpstr = utf16_to_utf8(utf16_string_buffer);
+		  delete[] utf16_string_buffer;
+		  strcpy(string_buffer, utf8_tmpstr.c_str());
+          strcpy(string_buffer,(const char *)GUTF8String(string_buffer).getNative2UTF8());
+          s = string_buffer;
+        }
+        fname += 2;
+      }
+      else if (fname[3]!= slash && fname[3]!= backslash)
+      {       // Case "x:/abcd"
+        s[0]=toupper((unsigned char)fname[0]);
+        s[1]=colon;
+        s[2]=backslash;
+        s[3]=0;
+        fname += 3;
+      }
+      else
+      {       // Case "x://abcd"
+        s[0]=s[1]=backslash;
+        s[2]=0;
+        fname += 4;
+      }
+    }
+    // Process path components
+    while(*fname)
+    {
+      for(;*fname== slash || *fname==backslash;fname++)
+        EMPTY_LOOP;
+      if (fname[0]== dot )
+      {
+        if (fname[1]== slash || fname[1]==backslash || !fname[1])
+        {
+          fname++;
+          continue;
+        }
+		else if ((fname[1] == dot)
+                 && (fname[2]== slash || fname[2]==backslash || !fname[2]))
+        {
+          fname += 2;
+          char *back= strrchr(string_buffer,backslash);
+          char *forward= strrchr(string_buffer,slash);
+          if(back>forward)
+          {
+            *back=0;
+          }else if(forward)
+          {
+            *forward=0;
+          }
+          s = string_buffer;
+          continue;
+        }
+      }
+      char* s2=s;//MBCS DBCS
+      for(;*s;s++) 
+        EMPTY_LOOP;
+	  if (s > string_buffer && s[-1] != slash && s[-1] != backslash)
+        *s++ = backslash;
+      while (*fname && (*fname!= slash) && (*fname!=backslash))
+      {
+        if (s > string_buffer + maxlen)
+          G_THROW( ERR_MSG("GURL.big_name") );
+        *s++ = *fname++;
+      }
+      *s = 0;
+    }
+  }
+#else
+# error "Define something here for your operating system"
+#endif  
+  return retval;
 }
 
 unsigned int

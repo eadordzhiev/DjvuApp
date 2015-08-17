@@ -64,6 +64,7 @@
 #include "GThreads.h"
 #include "GOS.h"
 #include "GURL.h"
+#include "StringConversion.h"
 
 #include <stddef.h>
 #include <stdlib.h>
@@ -76,8 +77,9 @@
 # define UNIX 1
 #endif
 
-#if defined(WIN32) && !defined(UNIX)
+#if defined(_WIN32) && !defined(UNIX)
 # include <windows.h>
+# include <string.h>
 # include <direct.h>
 # define getcwd _getcwd
 #endif
@@ -148,7 +150,7 @@ strerror(int errno)
   extern char *sys_errlist[];
   if (errno>0 && errno<sys_nerr) 
     return sys_errlist[errno];
-  return "unknown stdio error";
+  return (char*) "unknown stdio error";
 }
 #endif
 
@@ -168,7 +170,7 @@ static const char nillchar=0;
 static inline int
 finddirsep(const GUTF8String &fname)
 {
-#if defined(WIN32)
+#if defined(_WIN32)
   return fname.rcontains("\\/",0);
 #elif defined(UNIX)
   return fname.rsearch('/',0);
@@ -190,7 +192,7 @@ GOS::basename(const GUTF8String &gfname, const char *suffix)
     return gfname;
 
   const char *fname=gfname;
-#if defined(WIN32) || defined(OS2)
+#if defined(_WIN32) || defined(OS2)
   // Special cases
   if (fname[1] == colon)
   {
@@ -271,9 +273,9 @@ GOS::ticks()
     G_THROW(errmsg());
   return (unsigned long)( ((tv.tv_sec & 0xfffff)*1000) 
                           + (tv.tv_usec/1000) );
-#elif defined(WIN32)
-  ULONGLONG tickCount = GetTickCount64();
-  return static_cast<unsigned long>(tickCount);
+#elif defined(_WIN32)
+  ULONGLONG clk = GetTickCount64();
+  return (unsigned long)clk;
 #elif defined(OS2)
   ULONG clk = 0;
   DosQuerySysInfo(QSV_MS_COUNT, QSV_MS_COUNT, (PVOID)&clk, sizeof(ULONG));
@@ -294,12 +296,8 @@ GOS::sleep(int milliseconds)
   struct timeval tv;
   tv.tv_sec = milliseconds / 1000;
   tv.tv_usec = (milliseconds - (tv.tv_sec * 1000)) * 1000;
-# if defined(THREADMODEL) && (THREADMODEL==COTHREADS)
-  GThread::select(0, NULL, NULL, NULL, &tv);
-# else
-  select(0, NULL, NULL, NULL, &tv);
-# endif
-#elif defined(WIN32)
+  ::select(0, NULL, NULL, NULL, &tv);
+#elif defined(_WIN32)
   Sleep(milliseconds);
 #elif defined(OS2)
   DosSleep(milliseconds);
@@ -322,33 +320,41 @@ GOS::sleep(int milliseconds)
 // cwd([dirname])
 // -- changes directory to dirname (when specified).
 //    returns the full path name of the current directory. 
-//EDITED
-//GUTF8String 
-//GOS::cwd(const GUTF8String &dirname)
-//{
-//#if defined(UNIX) || defined(macintosh) || defined(OS2)
-//  if (dirname.length() && chdir(dirname.getUTF82Native())==-1)//MBCS cvt
-//    G_THROW(errmsg());
-//  char *string_buffer;
-//  GPBuffer<char> gstring_buffer(string_buffer,MAXPATHLEN+1);
-//  char *result = getcwd(string_buffer,MAXPATHLEN);
-//  if (!result)
-//    G_THROW(errmsg());
-//  return GNativeString(result).getNative2UTF8();//MBCS cvt
-//#elif defined (WIN32)
-//  char drv[2];
-//  if (dirname.length() && _chdir(dirname.getUTF82Native())==-1)//MBCS cvt
-//    G_THROW(errmsg());
-//  drv[0]= dot ; drv[1]=0;
-//  char *string_buffer;
-//  GPBuffer<char> gstring_buffer(string_buffer,MAXPATHLEN+1);
-//  char *result = getcwd(string_buffer,MAXPATHLEN);
-//  GetFullPathName(drv, MAXPATHLEN, string_buffer, &result);
-//  return GNativeString(string_buffer).getNative2UTF8();//MBCS cvt
-//#else
-//# error "Define something here for your operating system"
-//#endif 
-//}
+GUTF8String 
+GOS::cwd(const GUTF8String &dirname)
+{
+#if defined(UNIX) || defined(macintosh) || defined(OS2)
+  if (dirname.length() && chdir(dirname.getUTF82Native())==-1)//MBCS cvt
+    G_THROW(errmsg());
+  char *string_buffer;
+  GPBuffer<char> gstring_buffer(string_buffer,MAXPATHLEN+1);
+  char *result = getcwd(string_buffer,MAXPATHLEN);
+  if (!result)
+    G_THROW(errmsg());
+  return GNativeString(result).getNative2UTF8();//MBCS cvt
+#elif defined (_WINRT_DLL)
+	wchar_t drv[2];
+	if (dirname.length() && _chdir(dirname.getUTF82Native()) == -1)//MBCS cvt
+		G_THROW(errmsg());
+	drv[0] = dot; drv[1] = 0;
+	wchar_t *string_buffer;
+	auto path = GetWorkingDirectory();
+	std::string utf8_path = utf16_to_utf8(path);
+	return GUTF8String(utf8_path.c_str());//MBCS cvt
+#elif defined (WIN32)
+  char drv[2];
+  if (dirname.length() && _chdir(dirname.getUTF82Native())==-1)//MBCS cvt
+    G_THROW(errmsg());
+  drv[0]= dot ; drv[1]=0;
+  char *string_buffer;
+  GPBuffer<char> gstring_buffer(string_buffer,MAXPATHLEN+1);
+  char *result = getcwd(string_buffer,MAXPATHLEN);
+  GetFullPathName(drv, MAXPATHLEN, string_buffer, &result);
+  return GNativeString(string_buffer).getNative2UTF8();//MBCS cvt
+#else
+# error "Define something here for your operating system"
+#endif 
+}
 
 GUTF8String
 GOS::getenv(const GUTF8String &name)
@@ -356,9 +362,7 @@ GOS::getenv(const GUTF8String &name)
   GUTF8String retval;
   if(name.length())
   {
-	//EDITED
-    //const char *env=::getenv(name.getUTF82Native());
-	const char *env=0;
+    const char *env=::getenv(name.getUTF82Native().getbuf());
     if(env)
     {
       retval=GNativeString(env);

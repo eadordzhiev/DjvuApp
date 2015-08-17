@@ -47,7 +47,7 @@ namespace DjvuApp.Controls
             }
 
             var state = State;
-            _page = State.Document.GetPage(State.PageNumber);
+            _page = await State.Document.GetPageAsync(State.PageNumber);
 
             if (state != State)
             {

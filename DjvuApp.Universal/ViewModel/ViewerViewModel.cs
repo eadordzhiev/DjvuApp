@@ -299,7 +299,7 @@ namespace DjvuApp.ViewModel
             }
 
             await _provider.UpdateLastOpeningTimeAsync(book);
-
+            
             Outline = document.GetOutline();
 
             _bookmarks = new ObservableCollection<IBookmark>(await _provider.GetBookmarksAsync(book));

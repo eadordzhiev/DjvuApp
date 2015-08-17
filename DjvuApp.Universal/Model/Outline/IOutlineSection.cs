@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DjvuApp.Djvu;
 using JetBrains.Annotations;
 
 namespace DjvuApp.Model.Outline
@@ -12,7 +13,7 @@ namespace DjvuApp.Model.Outline
 
         bool HasItems { get; }
 
-        IReadOnlyCollection<IOutlineSection> Items { get; }
+        IReadOnlyList<IOutlineSection> Items { get; }
 
         IOutlineSection Parent { get; }
     }

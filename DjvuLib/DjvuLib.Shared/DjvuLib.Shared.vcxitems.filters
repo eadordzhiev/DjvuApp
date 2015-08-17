@@ -148,11 +148,14 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Renderer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)VsisWrapper.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SisWrapper.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)config.h">
+      <Filter>djvulibre\Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-		<ClCompile Include="$(MSBuildThisFileDirectory)pch.cpp">
-			<PrecompiledHeader>Create</PrecompiledHeader>
-		</ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)pch.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)StringConversion.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)DebugHelper.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\GURL.cpp">
@@ -296,9 +299,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\DjVuMessage.cpp">
       <Filter>djvulibre\Source</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\IW44EncodeCodec.cpp">
-      <Filter>djvulibre\Source</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\BSEncodeByteStream.cpp">
       <Filter>djvulibre\Source</Filter>
     </ClCompile>
@@ -308,6 +308,12 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Renderer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)VsisWrapper.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SisWrapper.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)config.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\IW44EncodeCodec.cpp">
+      <Filter>djvulibre\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="djvulibre">

@@ -77,6 +77,9 @@ namespace DJVU {
 
 
 
+#ifdef min
+#undef min
+#endif
 template<class TYPE>
 static inline TYPE min(TYPE a,TYPE b) { return (a<b)?a:b; }
 

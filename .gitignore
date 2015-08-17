@@ -154,3 +154,6 @@ $RECYCLE.BIN/
 
 # Mac desktop service store files
 .DS_Store
+DjvuApp.Universal/project.lock.json
+DjvuApp.WindowsPhone/BundleArtifacts/arm.txt
+*.bak

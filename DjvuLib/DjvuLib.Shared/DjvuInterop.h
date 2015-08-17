@@ -12,13 +12,27 @@ namespace DjvuApp { namespace Djvu
 		SinglePage = DjVuDocument::DOC_TYPE::SINGLE_PAGE,
 		UnknownType = DjVuDocument::DOC_TYPE::UNKNOWN_TYPE
 	};
-
+	value struct PageInfo;
     [Windows::Foundation::Metadata::WebHostHidden]
-	public value struct DjvuBookmark sealed
+	public ref class DjvuBookmark sealed
 	{
-        Platform::String^ Name;
-        Platform::String^ Url;
-		unsigned int ChildrenCount;
+	public:
+		property Platform::String^ Name
+		{
+			Platform::String^ get() { return name; }
+		}
+		property uint32_t PageNumber
+		{
+			uint32_t get() { return pageNumber; }
+		}
+		property Windows::Foundation::Collections::IVectorView<DjvuBookmark^>^ Items
+		{
+			Windows::Foundation::Collections::IVectorView<DjvuBookmark^>^ get() { return items; }
+		}
+	internal:
+        Platform::String^ name;
+		uint32_t pageNumber;
+		Windows::Foundation::Collections::IVectorView<DjvuBookmark^>^ items;
 	};
 
     [Windows::Foundation::Metadata::WebHostHidden]
@@ -83,7 +97,7 @@ namespace DjvuApp { namespace Djvu
         static Windows::Foundation::IAsyncOperation<DjvuDocument^>^ LoadAsync(Platform::String^ path);
         [Windows::Foundation::Metadata::DefaultOverloadAttribute]
         static Windows::Foundation::IAsyncOperation<DjvuDocument^>^ LoadAsync(Windows::Storage::IStorageFile^ file);
-        Platform::Array<DjvuBookmark>^ GetBookmarks();
+		Windows::Foundation::Collections::IVectorView<DjvuBookmark^>^ GetBookmarks();
         DjvuPage^ GetPage(uint32_t pageNumber);
         Windows::Foundation::IAsyncOperation<DjvuPage^>^ GetPageAsync(uint32_t pageNumber);
         Platform::Array<PageInfo>^ GetPageInfos();
@@ -95,5 +109,6 @@ namespace DjvuApp { namespace Djvu
         Platform::Array<PageInfo>^ pageInfos;
 
 		DjvuDocument(const char* path);
+		Windows::Foundation::Collections::IVectorView<DjvuBookmark^>^ ProcessOutlineExpression(miniexp_t current);
 	};
 } }

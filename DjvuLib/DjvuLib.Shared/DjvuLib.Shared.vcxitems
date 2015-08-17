@@ -16,6 +16,7 @@
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)DebugHelper.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)DjvuInterop.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)config.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)IBufferUtilities.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\Arrays.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\atomic.h" />
@@ -71,6 +72,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)VsisWrapper.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)config.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)DebugHelper.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)DjvuInterop.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)IBufferUtilities.cpp" />
@@ -274,9 +278,7 @@
       <CompileAsWinRT>false</CompileAsWinRT>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\IW44EncodeCodec.cpp">
-      <SDLCheck>false</SDLCheck>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <CompileAsWinRT>false</CompileAsWinRT>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\IW44Image.cpp">
       <SDLCheck>false</SDLCheck>
@@ -324,7 +326,9 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Renderer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SisWrapper.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)StringConversion.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)StringConversion.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)VsisWrapper.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -62,26 +62,16 @@
 # pragma interface
 #endif
 
-#define NOMINMAX
-#include <windows.h>
-
-#if defined(DEBUGLVL)
-#undef DEBUGLVL
-#define DEBUGLVL 0
-#endif
-
-#if defined(UNDER_CE)
-# ifndef __WCEALT_H__
-inline void * operator new(size_t, void * ptr) { return ptr; }
-# endif
-#elif defined(AUTOCONF) && defined(HAVE_STDINCLUDES)
+#if defined(HAVE_STDINCLUDES)
 # include <new>
-#else
+#elif defined(HAVE_NEW_H)
 # include <new.h>
+#else
+# include <new> // try standard c++ anyway!
 #endif
 
-//#ifdef WIN32
-//# ifdef DLL_EXPORT
+//#ifdef _WIN32
+//# ifdef DJVUAPI_EXPORT
 //#  define DJVUAPI __declspec(dllexport)
 //# else
 //#  define DJVUAPI __declspec(dllimport)
@@ -110,10 +100,111 @@ inline void * operator new(size_t, void * ptr) { return ptr; }
 //@{
 
 
+/** @name DjVu Memory 
+
+    This section is enabled when compilation symbol #NEED_DJVU_MEMORY# is
+    defined.  Function #_djvu_memory_callback# can be used to redefine the C++
+    memory allocation operators.  Some operating systems (e.g. Macintoshes)
+    require very peculiar memory allocation in shared objects.  We redefine
+    the operators #new# and #delete# as #STATIC_INLINE# because we do not
+    want to export these redefined versions to other libraries.  */
+//@{
+//@}
+
+#ifdef NEED_DJVU_MEMORY
+
+# include "DjVu.h"
+
+// These define the two callbacks needed for C++
+typedef void djvu_delete_callback(void *);
+typedef void *djvu_new_callback(size_t);
+
+// These functions allow users to set the callbacks.
+int djvu_memoryObject_callback ( djvu_delete_callback*, djvu_new_callback*);
+int djvu_memoryArray_callback ( djvu_delete_callback*, djvu_new_callback*);
+
+// We need to use this inline function in all modules, but we never want it to
+// appear in the symbol table.  It seems different compilers need different
+// directives to do this...
+# ifndef STATIC_INLINE
+#  ifdef __GNUC__
+#   define STATIC_INLINE extern inline
+#  else /* !__GNUC__ */
+#   define STATIC_INLINE static inline
+#  endif /* __GNUC__ */
+# endif /* STATIC_INLINE */
+
+// This clause is used when overriding operator new
+// because the standard has slightly changed.
+# if defined( __GNUC__ ) && ( __GNUC__*1000 + __GNUC_MINOR__ >= 2091 )
+#  ifndef new_throw_spec
+#   define new_throw_spec throw(std::bad_alloc)
+#  endif /* new_throw_spec */
+#  ifndef delete_throw_spec
+#   define delete_throw_spec throw()
+#  endif /* delete_throw_spec */
+# endif /* __GNUC__ ... */
+// Old style
+# ifndef new_throw_spec
+#  define new_throw_spec
+# endif /* new_throw_spec */
+# ifndef delete_throw_spec
+#  define delete_throw_spec
+# endif  /* delete_throw_spec */
+
+# ifdef UNIX
+extern djvu_new_callback *_djvu_new_ptr;
+extern djvu_new_callback *_djvu_newArray_ptr;
+extern djvu_delete_callback *_djvu_delete_ptr;
+extern djvu_delete_callback *_djvu_deleteArray_ptr;
+
+#  ifndef NEED_DJVU_MEMORY_IMPLEMENTATION
+void *operator new (size_t) new_throw_spec;
+void *operator new[] (size_t) new_throw_spec;
+void operator delete (void *) delete_throw_spec;
+void operator delete[] (void *) delete_throw_spec;
+
+STATIC_INLINE void *
+operator new(size_t sz) new_throw_spec
+{ return (*_djvu_new_ptr)(sz); }
+STATIC_INLINE void
+operator delete(void *addr) delete_throw_spec
+{ return (*_djvu_delete_ptr)(addr); }
+STATIC_INLINE void *
+operator new [] (size_t sz) new_throw_spec
+{ return (*_djvu_newArray_ptr)(sz); }
+STATIC_INLINE void
+operator delete [] (void *addr) delete_throw_spec
+{ return (*_djvu_deleteArray_ptr)(addr); }
+#  endif /* NEED_DJVU_MEMORY_IMPLEMENTATION */
+
+# else /* UNIX */
+
+#  ifndef NEED_DJVU_MEMORY_IMPLEMENTATION
+STATIC_INLINE void *
+operator new(size_t sz) new_throw_spec
+{ return _djvu_new(sz); }
+inline_as_macro void
+operator delete(void *addr) delete_throw_spec
+{ return _djvu_delete(addr); }
+inline_as_macro void *
+operator new [] (size_t sz) new_throw_spec
+{ return _djvu_new(sz); }
+inline_as_macro void
+operator delete [] (void *addr) delete_throw_spec
+{ _djvu_deleteArray(addr); }
+#  endif /* !NEED_DJVU_MEMORY_IMPLEMENTATION */
+
+# endif /* UNIX */
+
+#else
+
 # define _djvu_free(ptr) free((ptr))
 # define _djvu_malloc(siz) malloc((siz))
 # define _djvu_realloc(ptr,siz) realloc((ptr),(siz))
 # define _djvu_calloc(siz,items) calloc((siz),(items))
+
+#endif /* NEED_DJVU_MEMORY */
 
 /** @name DjVu Progress  
 

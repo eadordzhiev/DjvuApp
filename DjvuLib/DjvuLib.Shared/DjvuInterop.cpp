@@ -40,9 +40,9 @@ static void RethrowToWinRtException(const GException& ex)
 	}
 
 	std::wstringstream message;
-	message << L"Exception in function " << utf16_from_utf8(functionName) << std::endl;
-	message << L"Message: " << utf16_from_utf8(cause) << std::endl;
-	message << L"In file " << utf16_from_utf8(fileName) << std::endl;
+	message << L"Exception in function " << utf8_to_utf16(functionName) << std::endl;
+	message << L"Message: " << utf8_to_utf16(cause) << std::endl;
+	message << L"In file " << utf8_to_utf16(fileName) << std::endl;
 	message << L"At line " << ex.get_line();
     
 	throw ref new FailureException(ref new String(message.str().c_str()));
@@ -60,7 +60,8 @@ IAsyncOperation<DjvuDocument^>^ DjvuDocument::LoadAsync(String^ path)
 				throw ref new Exception(E_UNEXPECTED);
 			}
 
-			auto utf8_path = ConvertCxStringToUTF8(path);
+			wstring utf16_path(begin(path), end(path));
+			auto utf8_path = utf16_to_utf8(utf16_path);
 			return ref new DjvuDocument(utf8_path.c_str());
 		});
 	});
@@ -132,39 +133,53 @@ Platform::Array<PageInfo>^ DjvuDocument::GetPageInfos()
 	return ref new Array<PageInfo>(pageInfos);
 }
 
-Array<DjvuBookmark>^ DjvuDocument::GetBookmarks()
+IVectorView<DjvuBookmark^>^ DjvuDocument::ProcessOutlineExpression(miniexp_t current)
 {
-	try
+	vector<DjvuBookmark^> result;
+
+	while (current != miniexp_nil)
 	{
-		auto djvuDoc = ddjvu_get_DjVuDocument(document);
-		auto navm = djvuDoc->get_djvm_nav();
+		auto itemExp = miniexp_car(current);
+		auto item = ref new DjvuBookmark();
 
-		if (navm == nullptr)
-			return nullptr;
+		item->name = utf8tows(miniexp_to_str(miniexp_car(itemExp)));
+		itemExp = miniexp_cdr(itemExp);
 
-		auto count = navm->getBookMarkCount();
-		auto result = ref new Array<DjvuBookmark>(count);
+		auto url = miniexp_to_str(miniexp_car(itemExp));
+		itemExp = miniexp_cdr(itemExp);
 
-		for (int i = 0; i < count; i++)
+		if (url[0] == '#' && url[1] != '\0')
 		{
-			GP<DjVmNav::DjVuBookMark> bookmark;
-			if (!navm->getBookMark(bookmark, i))
-			{
-				DBGPRINT(L"Can't get bookmark at index %d, getBookMark() returned false", i);
-				throw ref new Exception(E_FAIL, "getBookMark() failed");
-			}
-
-			result[i].Name = utf8tows(bookmark->displayname);
-			result[i].Url = utf8tows(bookmark->url);
-			result[i].ChildrenCount = bookmark->count;
+			item->pageNumber = ddjvu_document_search_pageno(document, &url[1]) + 1;
 		}
 
-		return result;
+		item->items = ProcessOutlineExpression(itemExp);
+
+		result.push_back(item);
+
+		current = miniexp_cdr(current);
 	}
-	catch (const GException& ex)
+
+	return ref new VectorView<DjvuBookmark^>(std::move(result));
+}
+
+IVectorView<DjvuBookmark^>^ DjvuDocument::GetBookmarks()
+{
+	auto outline = ddjvu_document_get_outline(document);
+
+	if (outline == miniexp_nil)
 	{
-		RethrowToWinRtException(ex);
+		return nullptr;
 	}
+
+	if (!miniexp_consp(outline) || miniexp_car(outline) != miniexp_symbol("bookmarks"))
+	{
+		throw ref new FailureException("Outline data is corrupted.");
+	}
+
+	outline = miniexp_cdr(outline);
+
+	return ProcessOutlineExpression(outline);
 }
 
 DjvuPage^ DjvuDocument::GetPage(uint32 pageNumber)

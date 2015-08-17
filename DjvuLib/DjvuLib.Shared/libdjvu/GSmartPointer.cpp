@@ -101,126 +101,38 @@ GPEnabled::destroy()
   // If yes, set the counter to -0x7fff to mark 
   // the object as doomed and make sure things
   // will work if the destructor uses a GP...
-  if (atomicCompareAndSwap(&count, 0, -0x7fff))
+  if (! atomicCompareAndSwap(&count, 0, -0x7fff))
     delete this;
 }
 
 
 // ------ GPBASE
 
-#define CRITSEC
-#ifdef CRITSEC
-class CriticalSection
-{
-public:
-	CriticalSection()
-	{
-		::InitializeCriticalSectionEx(&m_rep, 4000, 0);
-	}
-	~CriticalSection()
-	{
-		::DeleteCriticalSection(&m_rep);
-	}
-
-	void Enter()
-	{
-		::EnterCriticalSection(&m_rep);
-	}
-	void Leave()
-	{
-		::LeaveCriticalSection(&m_rep);
-	}
-
-private:
-	// copy ops are private to prevent copying
-	CriticalSection(const CriticalSection&);
-	CriticalSection& operator=(const CriticalSection&);
-
-	CRITICAL_SECTION m_rep;
-};
-
-
-#define LOCKMASK 0x3f
-#define LOCKIDX(addr) ((((size_t)(addr))/sizeof(void*))&LOCKMASK)
-static CriticalSection locks[LOCKMASK+1];
-
 
 GPBase&
 GPBase::assign (const GPBase &sptr)
 {
-  CriticalSection *lockb = locks + LOCKIDX(&sptr);
-  lockb->Enter();
   GPEnabled *nptr = sptr.ptr;
-  if (nptr)
-    nptr->ref();
-  lockb->Leave();
-  CriticalSection *locka = locks + LOCKIDX(this);
-  locka->Enter();
-  GPEnabled *old = ptr;
-  ptr = nptr;
-  locka->Leave();
-  if (old)
-    old->unref();
+  if (nptr && atomicIncrement(&nptr->count) <= 0)
+    nptr = 0;
+  GPEnabled *optr = (GPEnabled*)atomicExchangePointer((void**)&ptr, (void*)nptr);
+  if (optr)
+    optr->unref();
   return *this;
 }
 
 GPBase&
 GPBase::assign (GPEnabled *nptr)
 {
-  if (nptr)
-    nptr->ref();
-  CriticalSection *locka = locks + LOCKIDX(this);
-  locka->Enter();
-  GPEnabled *old = ptr;
-  ptr = nptr;
-  locka->Leave();
-  if (old)
-    old->unref();
+  if (nptr && atomicIncrement(&nptr->count) <= 0)
+    nptr = 0;
+  GPEnabled *optr = (GPEnabled*)atomicExchangePointer((void**)&ptr, (void*)nptr);
+  if (optr)
+    optr->unref();
   return *this;
 }
 
-#else
 
-#define LOCKMASK 0x3f
-#define LOCKIDX(addr) ((((size_t)(addr))/sizeof(void*))&LOCKMASK)
-static int volatile locks[LOCKMASK+1];
-
-
-GPBase&
-GPBase::assign (const GPBase &sptr)
-{
-  int volatile *lockb = locks+LOCKIDX(&sptr);
-  atomicAcquireOrSpin(lockb);
-  GPEnabled *nptr = sptr.ptr;
-  if (nptr)
-    nptr->ref();
-  atomicRelease(lockb);
-  int volatile *locka = locks+LOCKIDX(this);
-  atomicAcquireOrSpin(locka);
-  GPEnabled *old = ptr;
-  ptr = nptr;
-  atomicRelease(locka);
-  if (old)
-    old->unref();
-  return *this;
-}
-
-GPBase&
-GPBase::assign (GPEnabled *nptr)
-{
-  if (nptr)
-    nptr->ref();
-  int volatile *locka = locks+LOCKIDX(this);
-  atomicAcquireOrSpin(locka);
-  GPEnabled *old = ptr;
-  ptr = nptr;
-  atomicRelease(locka);
-  if (old)
-    old->unref();
-  return *this;
-}
-
-#endif
 
 
 // ------ GPBUFFERBASE

@@ -112,6 +112,12 @@ extern "C" {
 
    Version   Change
    -----------------------------
+     23    Added:
+              miniexp_mutate()
+     22    Changed
+              miniexp strings accept unicode escapes
+              deprecated miniexp_io_t::p_print7bits
+              added miniexp_io_t::p_flags
      21    Added:
               reentrant version of miniexp input/output
      20    Added:
@@ -141,7 +147,7 @@ extern "C" {
      14    Initial version.
 */
 
-#define DDJVUAPI_VERSION 21
+#define DDJVUAPI_VERSION 23
 
 typedef struct ddjvu_context_s    ddjvu_context_t;
 typedef union  ddjvu_message_s    ddjvu_message_t;
@@ -1331,6 +1337,301 @@ ddjvu_thumbnail_render(ddjvu_document_t *document, int pagenum,
                        char *imagebuffer);
 
 
+
+/* -------------------------------------------------- */
+/* SAVE AND PRINT JOBS                                */
+/* -------------------------------------------------- */
+
+
+/* ddjvu_message_t::m_progress ---
+   These messages are generated to indicate progress 
+   towards the completion of a print or save job. */
+
+struct ddjvu_message_progress_s {
+  ddjvu_message_any_t any;
+  ddjvu_status_t status;
+  int percent;
+};
+
+/* ddjvu_document_print ---
+   Converts specified pages of a djvu document into postscript.  
+   This function works asynchronously in a separate thread.
+   You can use the following idiom for synchronous operation:
+
+     ddjvu_job_t *job = ddjvu_document_print(....);
+     while (! ddjvu_job_done(job) )
+       handle_ddjvu_messages(context, TRUE);
+       
+   The postscript data is written to stdio file <output>.
+   Arguments <optc> and <optv> specify printing options.
+   All options described on the <djvups> man page are 
+   recognized, except <"-help"> and <"-verbose">.
+*/
+
+DDJVUAPI ddjvu_job_t *
+ddjvu_document_print(ddjvu_document_t *document, FILE *output,
+                     int optc, const char * const * optv);
+
+
+/* ddjvu_document_save ---
+   Saves the djvu document as a bundled djvu file.
+   This function works asynchronously in a separate thread.
+   You can use the following idiom for synchronous operation:
+
+     ddjvu_job_t *job = ddjvu_document_save(....);
+     while (! ddjvu_job_done(job) )
+       handle_ddjvu_messages(context, TRUE);
+     
+   The bundled djvu data is written to file <output>
+   which must be seekable. Arguments <optc> and <optv>
+   can be used to pass the following options:
+   * Option "-pages=<pagespec>" specify a subset of pages
+     using the same syntax as program <ddjvu>.
+     Reordering or duplicating pages is prohibited. 
+   * Option "-indirect=<filename>" causes the creation
+     of an indirect document with index file <filename>
+     and auxiliary files in the same directory.
+     The file name is UTF-8 encoded.
+     When this option is specified, the argument <output>
+     is ignored and should be NULL.
+*/
+DDJVUAPI ddjvu_job_t *
+ddjvu_document_save(ddjvu_document_t *document, FILE *output, 
+                    int optc, const char * const * optv);
+
+
+
+
+/* -------------------------------------------------- */
+/* S-EXPRESSIONS                                      */
+/* -------------------------------------------------- */
+
+
+/* DjVu files can contain ancillary information such as
+   document outline, hidden text, hyperlinks, and metadata.
+   Program <djvused> provides for manipulating such
+   information.  Like <djvused>, the DDJVU API represents
+   this information using a lisp s-expressions.  See file
+   <"libdjvu/miniexp.h"> for the s-expression documentation
+   and manipulation functions.  See the <djvused> man page
+   for the specification of the s-expressions representing
+   outlines, hidden text and annotations. It often help 
+   to print s-expressions using function <miniexp_pprint>.
+
+   WARNING: All strings in s-expression are UTF-8 encoded.  
+   Strings returned by miniexp_to_str might have to be 
+   converted to the locale encoding. */
+
+
+/* miniexp_t --
+   Opaque type representing s-expressions.
+   The same definition also appears in 
+   file <"libdjvu/miniexp.h">. */
+
+#ifndef MINIEXP_H
+typedef struct miniexp_s* miniexp_t;
+#endif
+
+/* ddjvu_miniexp_release -- 
+   This function controls the allocation of the
+   s-expressions returned by functions from the DDJVU
+   API. It indicates that the s-expression <expr> is no
+   longer needed and can be deallocated as soon as
+   necessary. Otherwise the s-expression remains allocated
+   as long as the document object exists. */
+
+DDJVUAPI void
+ddjvu_miniexp_release(ddjvu_document_t *document, miniexp_t expr);
+
+
+/* ddjvu_document_get_outline -- 
+   This function tries to obtain the document outline.  
+   If this information is available, it returns a
+   s-expression with the same syntax as function
+   <print-outline> of program <djvused>.  
+   Otherwise it returns <miniexp_dummy> until 
+   the document header gets fully decoded.
+   Typical synchronous usage:
+
+    miniexp_t r;
+    while ((r=ddjvu_document_get_outline(doc))==miniexp_dummy)
+      handle_ddjvu_messages(ctx, TRUE); 
+
+   This function returns the empty list <miniexp_nil> when
+   the document contains no outline information. It can also
+   return symbols <failed> or <stopped> when an error occurs
+   while accessing the desired information. */
+
+DDJVUAPI miniexp_t
+ddjvu_document_get_outline(ddjvu_document_t *document);
+
+
+/* ddjvu_document_get_anno --
+   This function returns the document-wide annotations.
+   This corresponds to a proposed change in the djvu format.
+   When no new-style document-wide annotations are available
+   and <compat> is true, this function searches a shared 
+   annotation chunk and returns its contents.
+
+   This function returns <miniexp_dummy> if the information
+   is not yet available. It may then cause the emission 
+   of <m_pageinfo> messages with null <m_any.page>.
+
+   This function returns the empty list <miniexp_nil> when
+   the document does not contain page annotations. It can also
+   return symbols <failed> or <stopped> when an error occurs
+   while accessing the desired information. */
+
+DDJVUAPI miniexp_t
+ddjvu_document_get_anno(ddjvu_document_t *document, int compat);
+
+
+/* ddjvu_document_get_pagetext -- 
+   This function tries to obtain the text information for
+   page <pageno>. If this information is available, it
+   returns a s-expression with the same syntax as function
+   <print-txt> of program <djvused>.  Otherwise it starts
+   fetching the page data and returns <miniexp_dummy>.
+   This function causes the emission of <m_pageinfo> messages 
+   with zero in the <m_any.page> field.
+   Typical synchronous usage:
+
+    miniexp_t r;
+    while ((r=ddjvu_document_get_pagetext(doc,pageno,0))==miniexp_dummy)
+      handle_ddjvu_messages(ctx, TRUE); 
+
+   This function returns the empty list <miniexp_nil> when
+   the page contains no text information. It can also return
+   symbols <failed> or <stopped> when an error occurs while
+   accessing the desired information. 
+
+   Argument <maxdetail> controls the level of detail in the
+   returned s-expression. Values "page", "column", "region", "para", 
+   "line", and "word" restrict the output to the specified granularity.
+   All other values produce a s-expression that represents
+   the hidden text data as finely as possible. */
+
+DDJVUAPI miniexp_t
+ddjvu_document_get_pagetext(ddjvu_document_t *document, int pageno, 
+                            const char *maxdetail);
+
+
+/* ddjvu_document_get_pageanno -- 
+   This function tries to obtain the annotations for
+   page <pageno>. If this information is available, it
+   returns a s-expression with the same syntax as function
+   <print-ant> of program <djvused>.  Otherwise it starts
+   fetching the page data and returns <miniexp_dummy>.
+   This function causes the emission of <m_pageinfo> messages 
+   with zero in the <m_any.page> field.
+   Typical synchronous usage:
+
+     miniexp_t r;
+     while ((r = ddjvu_document_get_pageanno(doc,pageno))==miniexp_dummy)
+       handle_ddjvu_messages(ctx, TRUE); 
+
+   This function returns the empty list <miniexp_nil> when
+   the page contains no annotations. It can also return
+   symbols <failed> or <stopped> when an error occurs while
+   accessing the desired information. */
+
+DDJVUAPI miniexp_t
+ddjvu_document_get_pageanno(ddjvu_document_t *document, int pageno);
+
+
+/* --- Helper functions to parse annotations --- */
+
+/* ddjvu_anno_get_bgcolor --
+   Parse the annotations and extracts the desired 
+   background color as a color string ("#FFFFFF"). 
+   See <(background ...)> in the djvused man page.
+   Returns zero if this information is not specified. */
+
+DDJVUAPI const char *
+ddjvu_anno_get_bgcolor(miniexp_t annotations);
+
+
+/* ddjvu_anno_get_zoom --
+   Parse the annotations and extracts the desired zoom factor.
+   See <(zoom ...)> in the djvused man page.
+   Returns zero if this information is not specified. */
+
+DDJVUAPI const char *
+ddjvu_anno_get_zoom(miniexp_t annotations);
+
+
+/* ddjvu_anno_get_mode --
+   Parse the annotations and extracts the desired display mode.
+   See <(mode ...)> in the djvused man page.
+   Returns zero if this information is not specified. */
+
+DDJVUAPI const char *
+ddjvu_anno_get_mode(miniexp_t annotations);
+
+
+/* ddjvu_anno_get_horizalign --
+   Parse the annotations and extracts how the page
+   image should be aligned horizontally.
+   See <(align ...)> in the djvused man page.
+   Returns zero if this information is not specified. */
+
+DDJVUAPI const char *
+ddjvu_anno_get_horizalign(miniexp_t annotations);
+
+
+/* ddjvu_anno_get_vertalign --
+   Parse the annotations and extracts how the page
+   image should be aligned vertically.
+   See <(align ...)> in the djvused man page.
+   Returns zero if this information is not specified. */
+
+DDJVUAPI const char *
+ddjvu_anno_get_vertalign(miniexp_t annotations);
+
+
+/* ddjvu_anno_get_hyperlinks --
+   Parse the annotations and returns a zero terminated 
+   array of <(maparea ...)> s-expressions.
+   The caller should free this array with function <free>.
+   These s-expressions remain allocated as long
+   as the annotations remain allocated.
+   See also <(maparea ...)> in the djvused man page. */
+
+DDJVUAPI miniexp_t *
+ddjvu_anno_get_hyperlinks(miniexp_t annotations);
+
+
+/* ddjvu_anno_get_metadata_keys --
+   Parse the annotations and returns a zero terminated 
+   array of key symbols for the page metadata.
+   The caller should free this array with function <free>.
+   See also <(metadata ...)> in the djvused man page. */
+
+DDJVUAPI miniexp_t *
+ddjvu_anno_get_metadata_keys(miniexp_t annotations);
+
+
+/* ddjvu_anno_get_metadata --
+   Parse the annotations and returns the metadata string
+   corresponding to the metadata key symbol <key>.
+   The string remains allocated as long as the 
+   annotations s-expression remain allocated.
+   Returns zero if no such key is present. */
+
+DDJVUAPI const char *
+ddjvu_anno_get_metadata(miniexp_t annotations, miniexp_t key);
+
+
+/* ddjvu_anno_get_xmp --
+   Parse the annotations and returns the xmp metadata string.
+   The string remains allocated as long as the 
+   annotations s-expression remain allocated.
+   Returns zero if no such key is present. */
+
+DDJVUAPI const char *
+ddjvu_anno_get_xmp(miniexp_t annotations);
+
+
 /* -------------------------------------------------- */
 /* DJVU_MESSAGE_T                                     */
 /* -------------------------------------------------- */
@@ -1349,7 +1650,7 @@ union ddjvu_message_s {
   struct ddjvu_message_relayout_s   m_relayout;
   struct ddjvu_message_redisplay_s  m_redisplay;
   struct ddjvu_message_thumbnail_s  m_thumbnail;
-  //struct ddjvu_message_progress_s   m_progress;
+  struct ddjvu_message_progress_s   m_progress;
 };
 
 

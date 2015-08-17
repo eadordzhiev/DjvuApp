@@ -21,7 +21,7 @@ namespace DjvuApp.Djvu
 
             public bool HasItems { get { return Items.Count > 0; } }
 
-            public IReadOnlyCollection<IOutlineSection> Items { get; set; }
+            public IReadOnlyList<IOutlineSection> Items { get; set; }
 
             public IOutlineSection Parent { get; set; }
         }
@@ -31,37 +31,20 @@ namespace DjvuApp.Djvu
             var outline = document.GetBookmarks();
             if (outline == null)
                 return null;
-            return PickSections(outline.AsEnumerable().GetEnumerator(), (uint) outline.Length, null);
+            return PickSections(outline, null);
         }
 
-        private static IReadOnlyCollection<IOutlineSection> PickSections(IEnumerator<DjvuBookmark> enumerator, uint count, IOutlineSection parent)
+        private static IReadOnlyList<IOutlineSection> PickSections(IEnumerable<DjvuBookmark> bookmarks, IOutlineSection parent)
         {
             var result = new List<IOutlineSection>();
 
-            for (uint i = 0; i < count; i++)
+            foreach (var bookmark in bookmarks)
             {
-                if (!enumerator.MoveNext())
-                    break;
-
-                var bookmark = enumerator.Current;
-
-                var url = bookmark.Url;
-                uint pageNumber = 0;
-                if (url.StartsWith("#"))
-                {
-                    uint.TryParse(url.Substring(1), out pageNumber);
-                }
-
-                var item = new OutlineSection
-                {
-                    Title = bookmark.Name,
-                    PageNumber = pageNumber > 0 ? (uint?) pageNumber : null,
-                    Parent = parent
-                };
-
-                item.Items = bookmark.ChildrenCount > 0
-                    ? PickSections(enumerator, bookmark.ChildrenCount, item)
-                    : new IOutlineSection[0];
+                var item = new OutlineSection();
+                item.PageNumber = bookmark.PageNumber;
+                item.Title = bookmark.Name;
+                item.Items = PickSections(bookmark.Items, item);
+                item.Parent = parent;
 
                 result.Add(item);
             }

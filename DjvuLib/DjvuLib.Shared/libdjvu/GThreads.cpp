@@ -76,15 +76,24 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#ifndef _DEBUG
-#if defined(DEBUG) 
-#define _DEBUG /* */
-#elif DEBUGLVL >= 1
-#define _DEBUG /* */
-#endif
+// ----------------------------------------
+// Consistency check
+
+#ifdef USE_EXCEPTION_EMULATION
+# if defined(WINTHREADS) || defined(POSIXTHREADS)
+#  warning "Compiler must support thread safe exceptions"
+# endif
 #endif
 
-#if THREADMODEL==WINTHREADS
+#ifndef _DEBUG
+# if defined(DEBUG) 
+#  define _DEBUG /* */
+# elif DEBUGLVL >= 1
+#  define _DEBUG /* */
+# endif
+#endif
+
+#if WINTHREADS
 # include <process.h>
 #endif
 
@@ -98,24 +107,10 @@ namespace DJVU {
 
 
 // ----------------------------------------
-// NOTHREADS
-// ----------------------------------------
-
-#if THREADMODEL==NOTHREADS
-int
-GThread::create( void (*entry)(void*), void *arg)
-{
-  (*entry)(arg);
-  return 0;
-}
-#endif
-
-
-// ----------------------------------------
 // WIN32 IMPLEMENTATION
 // ----------------------------------------
 
-#if THREADMODEL==WINTHREADS
+#if WINTHREADS
 
 static unsigned __stdcall 
 start(void *arg)
@@ -131,18 +126,14 @@ start(void *arg)
         {
           ex.perror();
           DjVuMessageLite::perror( ERR_MSG("GThreads.uncaught") );
-#ifdef _DEBUG
           abort();
-#endif
         }
       G_ENDCATCH;
     }
   catch(...)
     {
       DjVuMessageLite::perror( ERR_MSG("GThreads.unrecognized") );
-#ifdef _DEBUG
       abort();
-#endif
     }
   return 0;
 }
@@ -178,9 +169,9 @@ GThread::create(void (*entry)(void*), void *arg)
 void 
 GThread::terminate()
 {
-  OutputDebugString(TEXT("Terminating thread.\n"));
-  if (hthr)
-    TerminateThread(hthr,0);
+  OutputDebugString(L"Terminating thread.\n");
+  //if (hthr)
+  //  TerminateThread(hthr,0);
 }
 
 int
@@ -359,6 +350,271 @@ GMonitor::wait(unsigned long timeout)
 
 
 // ----------------------------------------
+// POSIXTHREADS IMPLEMENTATION
+// ----------------------------------------
+
+#if POSIXTHREADS
+
+#if defined(CMA_INCLUDE)
+# define DCETHREADS 1
+# define pthread_key_create pthread_keycreate
+#else
+# define pthread_mutexattr_default  NULL
+# define pthread_condattr_default   NULL
+#endif
+
+static pthread_t pthread_null; // portable zero initialization!
+
+void *
+GThread::start(void *arg)
+{
+  GThread *gt = (GThread*)arg;
+#if DCETHREADS
+# ifdef CANCEL_ON
+  pthread_setcancel(CANCEL_ON);
+  pthread_setasynccancel(CANCEL_ON);
+# endif
+#else // !DCETHREADS
+# ifdef PTHREAD_CANCEL_ENABLE
+  pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, 0);
+# endif
+# ifdef PTHREAD_CANCEL_ASYNCHRONOUS
+  pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, 0);
+# endif
+#endif
+  // Catch exceptions
+#ifdef __EXCEPTIONS
+  try 
+    {
+#endif 
+      G_TRY
+        {
+          (gt->xentry)(gt->xarg);
+        }
+      G_CATCH(ex)
+        {
+          ex.perror();
+          DjVuMessageLite::perror( ERR_MSG("GThreads.uncaught") );
+          abort();
+        }
+      G_ENDCATCH;
+#ifdef __EXCEPTIONS
+    }
+  catch(...)
+    {
+      DjVuMessageLite::perror( ERR_MSG("GThreads.unrecognized") );
+      abort();
+    }
+#endif
+  return 0;
+}
+
+
+// GThread
+
+GThread::GThread(int stacksize) : 
+  hthr(pthread_null), xentry(0), xarg(0)
+{
+}
+
+GThread::~GThread()
+{
+  hthr = pthread_null;
+}
+
+int  
+GThread::create(void (*entry)(void*), void *arg)
+{
+  if (xentry || xarg)
+    return -1;
+  xentry = entry;
+  xarg = arg;
+#if DCETHREADS
+  int ret = pthread_create(&hthr, pthread_attr_default, GThread::start, (void*)this);
+  if (ret >= 0)
+    pthread_detach(hthr);
+#else
+  pthread_attr_t attr;
+  pthread_attr_init(&attr);
+  pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+  int ret = pthread_create(&hthr, &attr, start, (void*)this);
+  pthread_attr_destroy(&attr);
+#endif
+  return ret;
+}
+
+void 
+GThread::terminate()
+{
+  if (xentry || xarg)
+    pthread_cancel(hthr);
+}
+
+int
+GThread::yield()
+{
+#if DCETHREADS
+  pthread_yield();
+#else
+  // should use sched_yield() when available.
+  static struct timeval timeout = { 0, 0 };
+  ::select(0, 0,0,0, &timeout);
+#endif
+  return 0;
+}
+
+void*
+GThread::current()
+{
+  pthread_t self = pthread_self();
+#if defined(pthread_getunique_np)
+  return (void*) pthread_getunique_np( & self );
+#elif defined(cma_thread_get_unique)
+  return (void*) cma_thread_get_unique( & self );  
+#else
+  return (void*) self;
+#endif
+}
+
+// -- GMonitor
+
+GMonitor::GMonitor()
+  : ok(0), count(1), locker(pthread_null)
+{
+  // none of this should be necessary ... in theory.
+#ifdef PTHREAD_MUTEX_INITIALIZER
+  static pthread_mutex_t tmutex=PTHREAD_MUTEX_INITIALIZER;
+  memcpy(&mutex,&tmutex,sizeof(mutex));
+#endif
+#ifdef PTHREAD_COND_INITIALIZER
+  static pthread_cond_t tcond=PTHREAD_COND_INITIALIZER;
+  memcpy(&cond,&tcond,sizeof(cond));
+#endif
+  // standard
+  pthread_mutex_init(&mutex, pthread_mutexattr_default);
+  pthread_cond_init(&cond, pthread_condattr_default); 
+  locker = pthread_self();
+  ok = 1;
+}
+
+GMonitor::~GMonitor()
+{
+  ok = 0;
+  pthread_cond_destroy(&cond);
+  pthread_mutex_destroy(&mutex); 
+}
+
+
+void 
+GMonitor::enter()
+{
+  pthread_t self = pthread_self();
+  if (count>0 || !pthread_equal(locker, self))
+    {
+      if (ok)
+        pthread_mutex_lock(&mutex);
+      locker = self;
+      count = 1;
+    }
+  count -= 1;
+}
+
+void 
+GMonitor::leave()
+{
+  pthread_t self = pthread_self();
+  if (ok && (count>0 || !pthread_equal(locker, self)))
+    G_THROW( ERR_MSG("GThreads.not_acq_broad") );
+  count += 1;
+  if (count > 0)
+    {
+      count = 1;
+      locker = pthread_null;
+      if (ok)
+        pthread_mutex_unlock(&mutex);
+    }
+}
+
+void
+GMonitor::signal()
+{
+  if (ok)
+    {
+      pthread_t self = pthread_self();
+      if (count>0 || !pthread_equal(locker, self))
+        G_THROW( ERR_MSG("GThreads.not_acq_signal") );
+      pthread_cond_signal(&cond);
+    }
+}
+
+void
+GMonitor::broadcast()
+{
+  if (ok)
+    {
+      pthread_t self = pthread_self();
+      if (count>0 || !pthread_equal(locker, self))
+        G_THROW( ERR_MSG("GThreads.not_acq_broad") );
+      pthread_cond_broadcast(&cond);
+    }
+}
+
+void
+GMonitor::wait()
+{
+  // Check
+  pthread_t self = pthread_self();
+  if (count>0 || !pthread_equal(locker, self))
+    G_THROW( ERR_MSG("GThreads.not_acq_wait") );
+  // Wait
+  if (ok)
+    {
+      // Release
+      int sav_count = count;
+      count = 1;
+      // Wait
+      pthread_cond_wait(&cond, &mutex);
+      // Re-acquire
+      count = sav_count;
+      locker = self;
+    }      
+}
+
+void
+GMonitor::wait(unsigned long timeout) 
+{
+  // Check
+  pthread_t self = pthread_self();
+  if (count>0 || !pthread_equal(locker, self))
+    G_THROW( ERR_MSG("GThreads.not_acq_wait") );
+  // Wait
+  if (ok)
+    {
+      // Release
+      int sav_count = count;
+      count = 1;
+      // Wait
+      struct timeval  abstv;
+      struct timespec absts;
+      gettimeofday(&abstv, NULL); // grrr
+      absts.tv_sec = abstv.tv_sec + timeout/1000;
+      absts.tv_nsec = abstv.tv_usec*1000  + (timeout%1000)*1000000;
+      if (absts.tv_nsec > 1000000000) {
+        absts.tv_nsec -= 1000000000;
+        absts.tv_sec += 1;
+      }
+      pthread_cond_timedwait(&cond, &mutex, &absts);
+      // Re-acquire
+      count = sav_count;
+      locker = self;
+    }      
+}
+
+#endif
+
+
+
+// ----------------------------------------
 // GSAFEFLAGS 
 // ----------------------------------------
 
@@ -428,248 +684,6 @@ GSafeFlags::wait_and_modify(long set_mask, long clr_mask,
 }
 
 
-// ----------------------------------------
-// WINRT IMPLEMENTATION
-// ----------------------------------------
-
-#if THREADMODEL==WINRTTHREADS
-
-using namespace Platform;
-using namespace Windows::Foundation;
-using namespace Windows::System::Threading;
-
-static void start(GThread *gt)
-{
-    try
-    {
-        G_TRY
-        {
-            gt->xentry(gt->xarg);
-        }
-            G_CATCH(ex)
-        {
-            ex.perror();
-            DjVuMessageLite::perror(ERR_MSG("GThreads.uncaught"));
-#ifdef _DEBUG
-            abort();
-#endif
-        }
-        G_ENDCATCH;
-    }
-    catch (...)
-    {
-        DjVuMessageLite::perror(ERR_MSG("GThreads.unrecognized"));
-#ifdef _DEBUG
-        abort();
-#endif
-    }
-}
-
-GThread::GThread(int stacksize)
-    : xentry(0), xarg(0)
-{
-}
-
-GThread::~GThread()
-{
-}
-
-int
-GThread::create(void(*entry)(void*), void *arg)
-{
-    xentry = entry;
-    xarg = arg;
-
-    auto workItemHandler = ref new WorkItemHandler([=](IAsyncAction^)
-    {
-        start(this);
-    });
-
-    ThreadPool::RunAsync(workItemHandler);
-
-    return 0;
-}
-
-void
-GThread::terminate()
-{
-    OutputDebugString(TEXT("Terminating thread.\n"));
-    throw ref new Platform::NotImplementedException();
-}
-
-int
-GThread::yield()
-{
-    Sleep(0);
-    return 0;
-}
-
-void *
-GThread::current()
-{
-    return (void*)GetCurrentThreadId();
-}
-
-struct thr_waiting {
-    struct thr_waiting *next;
-    struct thr_waiting *prev;
-    BOOL   waiting;
-    HANDLE gwait;
-};
-
-GMonitor::GMonitor()
-    : ok(0), count(1), head(0), tail(0)
-{
-    InitializeCriticalSectionEx(&cs, 4000, 0);
-    locker = GetCurrentThreadId();
-    ok = 1;
-}
-
-GMonitor::~GMonitor()
-{
-    ok = 0;
-    EnterCriticalSection(&cs);
-    for (struct thr_waiting *w = head; w; w = w->next)
-        SetEvent(w->gwait);
-    LeaveCriticalSection(&cs);
-    DeleteCriticalSection(&cs);
-}
-
-void
-GMonitor::enter()
-{
-    DWORD self = GetCurrentThreadId();
-    if (count>0 || self != locker)
-    {
-        if (ok)
-            EnterCriticalSection(&cs);
-        locker = self;
-        count = 1;
-    }
-    count -= 1;
-}
-
-void
-GMonitor::leave()
-{
-    DWORD self = GetCurrentThreadId();
-    if (ok && (count>0 || self != locker))
-        G_THROW(ERR_MSG("GThreads.not_acq_broad"));
-    count += 1;
-    if (count > 0)
-    {
-        count = 1;
-        if (ok)
-            LeaveCriticalSection(&cs);
-    }
-}
-
-void
-GMonitor::signal()
-{
-    if (ok)
-    {
-        DWORD self = GetCurrentThreadId();
-        if (count>0 || self != locker)
-            G_THROW(ERR_MSG("GThreads.not_acq_signal"));
-        for (struct thr_waiting *w = head; w; w = w->next)
-            if (w->waiting)
-            {
-                SetEvent(w->gwait);
-                w->waiting = FALSE;
-                break; // Only one thread is allowed to run!
-            }
-    }
-}
-
-void
-GMonitor::broadcast()
-{
-    if (ok)
-    {
-        DWORD self = GetCurrentThreadId();
-        if (count>0 || self != locker)
-            G_THROW(ERR_MSG("GThreads.not_acq_broad"));
-        for (struct thr_waiting *w = head; w; w = w->next)
-            if (w->waiting)
-            {
-                SetEvent(w->gwait);
-                w->waiting = FALSE;
-            }
-    }
-}
-
-void
-GMonitor::wait()
-{
-    // Check state
-    DWORD self = GetCurrentThreadId();
-    if (count>0 || self != locker)
-        G_THROW(ERR_MSG("GThreads.not_acq_wait"));
-    // Wait
-    if (ok)
-    {
-        // Prepare wait record
-        struct thr_waiting waitrec;
-        waitrec.waiting = TRUE;
-        waitrec.gwait = CreateEventEx(nullptr, nullptr, 0, EVENT_ALL_ACCESS);
-        waitrec.next = 0;
-        waitrec.prev = tail;
-        // Link wait record (protected by critical section)
-        *(waitrec.next ? &waitrec.next->prev : &tail) = &waitrec;
-        *(waitrec.prev ? &waitrec.prev->next : &head) = &waitrec;
-        // Start wait
-        int sav_count = count;
-        count = 1;
-        LeaveCriticalSection(&cs);
-        WaitForSingleObjectEx(waitrec.gwait, INFINITE, false);
-        // Re-acquire
-        EnterCriticalSection(&cs);
-        count = sav_count;
-        locker = self;
-        // Unlink wait record
-        *(waitrec.next ? &waitrec.next->prev : &tail) = waitrec.prev;
-        *(waitrec.prev ? &waitrec.prev->next : &head) = waitrec.next;
-        CloseHandle(waitrec.gwait);
-    }
-}
-
-void
-GMonitor::wait(unsigned long timeout)
-{
-    // Check state
-    DWORD self = GetCurrentThreadId();
-    if (count>0 || self != locker)
-        G_THROW(ERR_MSG("GThreads.not_acq_wait"));
-    // Wait
-    if (ok)
-    {
-        // Prepare wait record
-        struct thr_waiting waitrec;
-        waitrec.waiting = TRUE;
-        waitrec.gwait = CreateEventEx(nullptr, nullptr, 0, EVENT_ALL_ACCESS);
-        waitrec.next = 0;
-        waitrec.prev = tail;
-        // Link wait record (protected by critical section)
-        *(waitrec.prev ? &waitrec.prev->next : &head) = &waitrec;
-        *(waitrec.next ? &waitrec.next->prev : &tail) = &waitrec;
-        // Start wait
-        int sav_count = count;
-        count = 1;
-        LeaveCriticalSection(&cs);
-        WaitForSingleObjectEx(waitrec.gwait, timeout, false);
-        // Re-acquire
-        EnterCriticalSection(&cs);
-        count = sav_count;
-        locker = self;
-        // Unlink wait record
-        *(waitrec.next ? &waitrec.next->prev : &tail) = waitrec.prev;
-        *(waitrec.prev ? &waitrec.prev->next : &head) = waitrec.next;
-        CloseHandle(waitrec.gwait);
-    }
-}
-
-#endif
 
 #ifdef HAVE_NAMESPACES
 }

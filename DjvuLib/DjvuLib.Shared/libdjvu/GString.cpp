@@ -88,16 +88,12 @@
 #endif
 #include <ctype.h>
 
+#ifndef LC_NUMERIC          //MingW
+# undef DO_CHANGELOCALE
+# define LC_NUMERIC 0
+#endif
 #ifndef DO_CHANGELOCALE
-#define DO_CHANGELOCALE 1
-#ifdef UNIX
-#if THREADMODEL != COTHREADS
-#if THREADMODEL != NOTHREADS
-#undef DO_CHANGELOCALE
-#define DO_CHANGELOCALE 0
-#endif
-#endif 
-#endif
+# define DO_CHANGELOCALE 0
 #endif
 
 
@@ -1584,7 +1580,7 @@ GStringRep::setat(int n, char ch) const
 
 #if defined(AUTOCONF) && defined(HAVE_VSNPRINTF)
 # define USE_VSNPRINTF vsnprintf
-#elif defined(WIN32) && !defined(__CYGWIN32__)
+#elif defined(_WIN32) && !defined(__CYGWIN32__)
 # define USE_VSNPRINTF _vsnprintf
 #elif defined(linux)
 # define USE_VSNPRINTF vsnprintf
@@ -2149,19 +2145,6 @@ GStringRep::concat(const GP<GStringRep> &s1,const GP<GStringRep> &s2) const
   return retval;
 }
 
-#ifdef WIN32
-static const char *setlocale_win32(void)
-{
-  static const char *locale=setlocale(LC_ALL,0);
-  if(! locale || (locale[0] == 'C' && !locale[1]))
-  {
-    locale=setlocale(LC_ALL,"");
-  }
-  return locale;
-}
-const char *setlocale_win32_var = setlocale_win32();
-#endif
-
 GStringRep::GStringRep(void)
 {
   size=0;
@@ -2276,8 +2259,9 @@ GStringRep::UTF8::toLong(
     endpos=edata-data;
   }else
   {
+    GP<GStringRep> ptr = GStringRep::UTF8::create();
     endpos=(-1);
-    GP<GStringRep> ptr=ptr->strdup(data+pos);
+    ptr=ptr->strdup(data+pos);
     if(ptr)
       ptr=ptr->toNative(NOT_ESCAPED);
     if(ptr)
@@ -2321,8 +2305,9 @@ GStringRep::UTF8::toULong(
     endpos=edata-data;
   }else
   {
+    GP<GStringRep> ptr = GStringRep::UTF8::create();
     endpos=(-1);
-    GP<GStringRep> ptr=ptr->strdup(data+pos);
+    ptr=ptr->strdup(data+pos);
     if(ptr)
       ptr=ptr->toNative(NOT_ESCAPED);
     if(ptr)
@@ -2365,8 +2350,9 @@ GStringRep::UTF8::toDouble(const int pos, int &endpos) const
     endpos=edata-data;
   }else
   {
+    GP<GStringRep> ptr = GStringRep::UTF8::create();
     endpos=(-1);
-    GP<GStringRep> ptr=ptr->strdup(data+pos);
+    ptr=ptr->strdup(data+pos);
     if(ptr)
       ptr=ptr->toNative(NOT_ESCAPED);
     if(ptr)
