@@ -94,9 +94,6 @@
     <None Include="SampleData\MainPageSampleDataSource\MainPageSampleDataSource.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="SampleData\OutlineSampleDataSource\OutlineSampleDataSource.xsd">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="SampleData\SelectBookmarkDialogSampleDataSource\SelectBookmarkDialogSampleDataSource.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -145,7 +142,6 @@
     <Compile Include="Dialogs\OutlineDialog.cs" />
     <Compile Include="Dialogs\RenameDialog.cs" />
     <Compile Include="Dialogs\SelectBookmarkDialog.cs" />
-    <Compile Include="Djvu\DjvuDocumentExtensions.cs" />
     <Compile Include="Misc\IocContainer.cs" />
     <Compile Include="Misc\SQLite.cs" />
     <Compile Include="Misc\SQLiteAsync.cs" />
@@ -157,7 +153,6 @@
     <Compile Include="Model\Books\IBookmark.cs" />
     <Compile Include="Model\Books\IBookProvider.cs" />
     <Compile Include="Model\Books\SqliteBookProvider.cs" />
-    <Compile Include="Model\Outline\IOutlineSection.cs" />
     <Compile Include="Pages\AboutPage.xaml.cs">
       <DependentUpon>AboutPage.xaml</DependentUpon>
     </Compile>
@@ -170,9 +165,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SampleData\MainPageSampleDataSource\MainPageSampleDataSource.xaml.cs">
       <DependentUpon>MainPageSampleDataSource.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="SampleData\OutlineSampleDataSource\OutlineSampleDataSource.xaml.cs">
-      <DependentUpon>OutlineSampleDataSource.xaml</DependentUpon>
     </Compile>
     <Compile Include="SampleData\SelectBookmarkDialogSampleDataSource\SelectBookmarkDialogSampleDataSource.xaml.cs">
       <DependentUpon>SelectBookmarkDialogSampleDataSource.xaml</DependentUpon>
@@ -262,11 +254,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="SampleData\MainPageSampleDataSource\MainPageSampleDataSource.xaml">
+    <DesignData Include="SampleData\DjvuOutlineItemSampleData.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="SampleData\OutlineSampleDataSource\OutlineSampleDataSource.xaml">
+    </DesignData>
+    <Page Include="SampleData\MainPageSampleDataSource\MainPageSampleDataSource.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

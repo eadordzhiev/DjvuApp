@@ -4,11 +4,14 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:djvu="using:DjvuApp.Djvu"
     mc:Ignorable="d"
-    Title="{Binding Title}"
+    Title="{Binding Name}"
+    SecondaryButtonText="back"
+    SecondaryButtonClick="BackButtonClickHandler"
     FullSizeDesired="True"
-    Style="{StaticResource FullScreenContentDialogStyle}"
-	d:DataContext="{d:DesignData /SampleData/OutlineSampleDataSource/OutlineSampleDataSource.xaml}">
+    Style="{StaticResource FullScreenContentDialogStyle}" 
+    d:DataContext="{d:DesignData /SampleData/DjvuOutlineItemSampleData.xaml}">
 
     <ListView
         Margin="-20,0"
@@ -21,7 +24,7 @@
             </Style>
         </ItemsControl.ItemContainerStyle>
         <ItemsControl.ItemTemplate>
-            <DataTemplate>
+            <DataTemplate x:DataType="djvu:DjvuOutlineItem">
                 <Grid MinHeight="57.5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
@@ -30,14 +33,14 @@
                     <TextBlock
 						Grid.Column="0"
                         Margin="10"
-                        Text="{Binding Title}"
+                        Text="{x:Bind Name}"
                         TextWrapping="Wrap"
                         VerticalAlignment="Center" />
                     <Button
                         Grid.Column="1"
                         Padding="10"
-                        Visibility="{Binding HasItems, Converter={StaticResource BooleanToVisibilityConverter}}"
-                        Click="ButtonBase_OnClick" 
+                        Visibility="{x:Bind Items, Converter={StaticResource IsNullOrEmptyToVisibilityConverter}}"
+                        Click="MoreButtonClickHandler" 
                         Style="{StaticResource CircleButtonStyle}">
 						<SymbolIcon Symbol="Forward"/>
 					</Button>

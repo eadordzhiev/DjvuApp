@@ -18,6 +18,12 @@ using namespace DjvuApp;
 using namespace DjvuApp::Djvu;
 using namespace DjvuApp::Misc;
 
+DjvuOutlineItem::DjvuOutlineItem(String^ name, uint32_t pageNumber, IVectorView<DjvuOutlineItem^>^ items) :
+	name(name),
+	pageNumber(pageNumber),
+	items(items)
+{ }
+
 IAsyncOperation<DjvuDocument^>^ DjvuDocument::LoadAsync(String^ path)
 {
 	return create_async([path]()
@@ -53,8 +59,8 @@ DjvuDocument::DjvuDocument(const char* path)
 		throw ref new FailureException(L"Failed to decode the document.");
 	}
 
-	doctype = static_cast<DocumentType>(djvuDocument->get_doc_type());
-	if (doctype != DocumentType::SinglePage && doctype != DocumentType::Bundled)
+	auto doctype = djvuDocument->get_doc_type();
+	if (doctype != DjVuDocument::DOC_TYPE::SINGLE_PAGE && doctype != DjVuDocument::DOC_TYPE::BUNDLED)
 	{
 		throw ref new InvalidArgumentException("Unsupported document type. Only bundled and single page documents are supported.");
 	}
@@ -71,7 +77,6 @@ DjvuDocument::DjvuDocument(const char* path)
 		pageInfo.Width = ddjvuinfo.width;
 		pageInfo.Height = ddjvuinfo.height;
 		pageInfo.Dpi = ddjvuinfo.dpi;
-		pageInfo.PageNumber = i + 1;
 
 		pageInfos[i] = pageInfo;
 	}
@@ -96,9 +101,9 @@ Platform::Array<PageInfo>^ DjvuDocument::GetPageInfos()
 	return ref new Array<PageInfo>(pageInfos);
 }
 
-IVectorView<DjvuBookmark^>^ DjvuDocument::ProcessOutlineExpression(miniexp_t current)
+IVectorView<DjvuOutlineItem^>^ DjvuDocument::ProcessOutlineExpression(miniexp_t current)
 {
-	vector<DjvuBookmark^> result;
+	vector<DjvuOutlineItem^> result;
 
 	while (current != miniexp_nil)
 	{
@@ -116,17 +121,17 @@ IVectorView<DjvuBookmark^>^ DjvuDocument::ProcessOutlineExpression(miniexp_t cur
 			pageNumber = ddjvu_document_search_pageno(document, &url[1]) + 1;
 		}
 
-		auto item = ref new DjvuBookmark(utf8_to_ps(name), pageNumber, items);
+		auto item = ref new DjvuOutlineItem(utf8_to_ps(name), pageNumber, items);
 		
 		result.push_back(item);
 
 		current = miniexp_cdr(current);
 	}
 
-	return ref new VectorView<DjvuBookmark^>(std::move(result));
+	return ref new VectorView<DjvuOutlineItem^>(std::move(result));
 }
 
-IVectorView<DjvuBookmark^>^ DjvuDocument::GetBookmarks()
+IVectorView<DjvuOutlineItem^>^ DjvuDocument::GetOutline()
 {
 	auto outline = ddjvu_document_get_outline(document);
 
@@ -145,7 +150,7 @@ IVectorView<DjvuBookmark^>^ DjvuDocument::GetBookmarks()
 	return ProcessOutlineExpression(outline);
 }
 
-DjvuPage^ DjvuDocument::GetPage(uint32 pageNumber)
+DjvuPage^ DjvuDocument::GetPage(uint32_t pageNumber)
 {
 	if (pageNumber < 1 || pageNumber > pageCount)
 	{
@@ -164,7 +169,7 @@ DjvuPage^ DjvuDocument::GetPage(uint32 pageNumber)
 	return ref new DjvuPage(page, this, pageNumber);
 }
 
-IAsyncOperation<DjvuPage^>^ DjvuDocument::GetPageAsync(uint32 pageNumber)
+IAsyncOperation<DjvuPage^>^ DjvuDocument::GetPageAsync(uint32_t pageNumber)
 {
 	return create_async([=]() -> DjvuPage^
 	{
@@ -172,7 +177,7 @@ IAsyncOperation<DjvuPage^>^ DjvuDocument::GetPageAsync(uint32 pageNumber)
 	});
 }
 
-DjvuPage::DjvuPage(ddjvu_page_t* page, DjvuDocument^ document, uint32 pageNumber)
+DjvuPage::DjvuPage(ddjvu_page_t* page, DjvuDocument^ document, uint32_t pageNumber)
 {
 	this->page = page;
 	this->document = document;

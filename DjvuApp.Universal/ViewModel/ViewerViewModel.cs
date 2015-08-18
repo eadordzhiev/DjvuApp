@@ -23,7 +23,6 @@ using DjvuApp.ViewModel.Messages;
 using DjvuApp.Common;
 using DjvuApp.Dialogs;
 using DjvuApp.Model.Books;
-using DjvuApp.Model.Outline;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 
@@ -101,7 +100,7 @@ namespace DjvuApp.ViewModel
             }
         }
 
-        public IEnumerable<IOutlineSection> Outline
+        public IReadOnlyList<DjvuOutlineItem> Outline
         {
             get
             {
@@ -138,7 +137,7 @@ namespace DjvuApp.ViewModel
         private bool _isCurrentPageBookmarked;
         private DjvuDocument _currentDocument;
         private uint _currentPageNumber;
-        private IEnumerable<IOutlineSection> _outline;
+        private IReadOnlyList<DjvuOutlineItem> _outline;
 
         private readonly DataTransferManager _dataTransferManager;
         private readonly IBookProvider _provider;
