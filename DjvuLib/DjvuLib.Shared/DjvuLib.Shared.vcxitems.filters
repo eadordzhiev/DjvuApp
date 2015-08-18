@@ -143,7 +143,6 @@
       <Filter>djvulibre\Headers</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)LicenseValidator.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)IBufferUtilities.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)DjvuInterop.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Renderer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)VsisWrapper.h" />
@@ -303,7 +302,6 @@
       <Filter>djvulibre\Source</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)LicenseValidator.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)IBufferUtilities.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)DjvuInterop.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Renderer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)VsisWrapper.cpp" />

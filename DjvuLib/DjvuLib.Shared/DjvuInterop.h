@@ -12,11 +12,16 @@ namespace DjvuApp { namespace Djvu
 		SinglePage = DjVuDocument::DOC_TYPE::SINGLE_PAGE,
 		UnknownType = DjVuDocument::DOC_TYPE::UNKNOWN_TYPE
 	};
-	value struct PageInfo;
+
     [Windows::Foundation::Metadata::WebHostHidden]
 	public ref class DjvuBookmark sealed
 	{
 	public:
+		DjvuBookmark(Platform::String^ name, uint32_t pageNumber, Windows::Foundation::Collections::IVectorView<DjvuBookmark^>^ items) :
+			name(name),
+			pageNumber(pageNumber),
+			items(items)
+		{ }
 		property Platform::String^ Name
 		{
 			Platform::String^ get() { return name; }
@@ -29,7 +34,7 @@ namespace DjvuApp { namespace Djvu
 		{
 			Windows::Foundation::Collections::IVectorView<DjvuBookmark^>^ get() { return items; }
 		}
-	internal:
+	private:
         Platform::String^ name;
 		uint32_t pageNumber;
 		Windows::Foundation::Collections::IVectorView<DjvuBookmark^>^ items;
@@ -63,11 +68,6 @@ namespace DjvuApp { namespace Djvu
 		{
             uint32_t get() { return pageNumber; }
 		}
-        Windows::Foundation::IAsyncAction^ RenderRegionAsync(
-            Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ bitmap,
-            Windows::Foundation::Size rescaledPageSize,
-            Windows::Foundation::Rect renderRegion
-            );
 	internal:
         DjvuPage(ddjvu_page_t* page, DjvuDocument^ document, uint32_t pageNumber);
         void RenderRegion(

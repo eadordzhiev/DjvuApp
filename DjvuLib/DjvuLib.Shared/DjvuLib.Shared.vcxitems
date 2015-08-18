@@ -17,7 +17,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)DebugHelper.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)DjvuInterop.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)config.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)IBufferUtilities.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\Arrays.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\atomic.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\BSByteStream.h" />
@@ -77,7 +76,6 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)DebugHelper.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)DjvuInterop.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)IBufferUtilities.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\Arrays.cpp">
       <SDLCheck>false</SDLCheck>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>

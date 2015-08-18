@@ -1,7 +1,6 @@
 ﻿#include "pch.h"
 #include "DjvuInterop.h"
 #include "LicenseValidator.h"
-#include "IBufferUtilities.h"
 
 using namespace concurrency;
 using namespace std;
@@ -18,35 +17,6 @@ using namespace Windows::UI::Xaml::Media::Imaging;
 using namespace DjvuApp;
 using namespace DjvuApp::Djvu;
 using namespace DjvuApp::Misc;
-
-static void RethrowToWinRtException(const GException& ex)
-{
-	auto functionName = ex.get_function();
-	if (functionName == nullptr)
-	{
-		functionName = "?";
-	}
-
-	auto cause = ex.get_cause();
-	if (cause == nullptr)
-	{
-		cause = "?";
-	}
-
-	auto fileName = ex.get_file();
-	if (fileName == nullptr)
-	{
-		fileName = "?";
-	}
-
-	std::wstringstream message;
-	message << L"Exception in function " << utf8_to_utf16(functionName) << std::endl;
-	message << L"Message: " << utf8_to_utf16(cause) << std::endl;
-	message << L"In file " << utf8_to_utf16(fileName) << std::endl;
-	message << L"At line " << ex.get_line();
-    
-	throw ref new FailureException(ref new String(message.str().c_str()));
-}
 
 IAsyncOperation<DjvuDocument^>^ DjvuDocument::LoadAsync(String^ path)
 {
@@ -74,43 +44,36 @@ IAsyncOperation<DjvuDocument^>^ DjvuDocument::LoadAsync(IStorageFile^ file)
 
 DjvuDocument::DjvuDocument(const char* path)
 {
-	try
+	context = ddjvu_context_create(nullptr);
+	document = ddjvu_document_create_by_filename_utf8(context, path, false);
+
+	auto djvuDocument = ddjvu_get_DjVuDocument(document);
+	if (!djvuDocument->wait_for_complete_init())
 	{
-		context = ddjvu_context_create(nullptr);
-		document = ddjvu_document_create_by_filename_utf8(context, path, false);
-		
-		auto djvuDocument = ddjvu_get_DjVuDocument(document);
-		if (!djvuDocument->wait_for_complete_init())
-		{
-			throw ref new FailureException(L"Failed to decode the document.");
-		}
-
-		doctype = static_cast<DocumentType>(djvuDocument->get_doc_type());
-        if (doctype != DocumentType::SinglePage && doctype != DocumentType::Bundled)
-        {
-            throw ref new InvalidArgumentException("Unsupported document type. Only bundled and single page documents are supported.");
-        }
-
-		pageCount = djvuDocument->get_pages_num();
-		pageInfos = ref new Platform::Array<PageInfo>(pageCount);
-		
-		for (unsigned int i = 0; i < pageCount; i++)
-		{
-			ddjvu_pageinfo_t ddjvuinfo;
-			ddjvu_document_get_pageinfo(document, i, &ddjvuinfo);
-
-			PageInfo pageInfo;
-			pageInfo.Width = ddjvuinfo.width;
-			pageInfo.Height = ddjvuinfo.height;
-			pageInfo.Dpi = ddjvuinfo.dpi;
-			pageInfo.PageNumber = i + 1;
-
-			pageInfos[i] = pageInfo;
-		}
+		throw ref new FailureException(L"Failed to decode the document.");
 	}
-	catch (const GException& ex)
+
+	doctype = static_cast<DocumentType>(djvuDocument->get_doc_type());
+	if (doctype != DocumentType::SinglePage && doctype != DocumentType::Bundled)
 	{
-		RethrowToWinRtException(ex);
+		throw ref new InvalidArgumentException("Unsupported document type. Only bundled and single page documents are supported.");
+	}
+
+	pageCount = djvuDocument->get_pages_num();
+	pageInfos = ref new Platform::Array<PageInfo>(pageCount);
+
+	for (unsigned int i = 0; i < pageCount; i++)
+	{
+		ddjvu_pageinfo_t ddjvuinfo;
+		ddjvu_document_get_pageinfo(document, i, &ddjvuinfo);
+
+		PageInfo pageInfo;
+		pageInfo.Width = ddjvuinfo.width;
+		pageInfo.Height = ddjvuinfo.height;
+		pageInfo.Dpi = ddjvuinfo.dpi;
+		pageInfo.PageNumber = i + 1;
+
+		pageInfos[i] = pageInfo;
 	}
 }
 
@@ -140,21 +103,21 @@ IVectorView<DjvuBookmark^>^ DjvuDocument::ProcessOutlineExpression(miniexp_t cur
 	while (current != miniexp_nil)
 	{
 		auto itemExp = miniexp_car(current);
-		auto item = ref new DjvuBookmark();
 
-		item->name = utf8tows(miniexp_to_str(miniexp_car(itemExp)));
+		auto name = miniexp_to_str(miniexp_car(itemExp));
 		itemExp = miniexp_cdr(itemExp);
-
 		auto url = miniexp_to_str(miniexp_car(itemExp));
 		itemExp = miniexp_cdr(itemExp);
+		auto items = ProcessOutlineExpression(itemExp);
 
+		uint32_t pageNumber = 0;
 		if (url[0] == '#' && url[1] != '\0')
 		{
-			item->pageNumber = ddjvu_document_search_pageno(document, &url[1]) + 1;
+			pageNumber = ddjvu_document_search_pageno(document, &url[1]) + 1;
 		}
 
-		item->items = ProcessOutlineExpression(itemExp);
-
+		auto item = ref new DjvuBookmark(utf8_to_ps(name), pageNumber, items);
+		
 		result.push_back(item);
 
 		current = miniexp_cdr(current);
@@ -188,25 +151,15 @@ DjvuPage^ DjvuDocument::GetPage(uint32 pageNumber)
 	{
 		throw ref new InvalidArgumentException("pageNumber is out of range");
 	}
-    
-	ddjvu_page_t* page;
 
-	try
+	auto page = ddjvu_page_create_by_pageno(document, pageNumber - 1);
+	assert(page != nullptr);
+
+	auto djvuImage = ddjvu_get_DjVuImage(page);
+	if (!djvuImage->wait_for_complete_decode())
 	{
-		page = ddjvu_page_create_by_pageno(document, pageNumber - 1);
-
-		auto djvuImage = ddjvu_get_DjVuImage(page);
-		if (!djvuImage->wait_for_complete_decode())
-		{
-			throw ref new FailureException("Failed to decode the page.");
-		}
+		throw ref new FailureException("Failed to decode the page.");
 	}
-	catch (const GException& ex)
-	{
-		RethrowToWinRtException(ex);
-	}
-
-    assert(page != nullptr);
 
 	return ref new DjvuPage(page, this, pageNumber);
 }
@@ -272,35 +225,11 @@ void DjvuPage::RenderRegion(void* bufferPtr, Size rescaledPageSize, Rect renderR
 	ddjvu_format_set_row_order(format, 1);
 	ddjvu_format_set_y_direction(format, 1);
 
-	try
+	if (!ddjvu_page_render(page, DDJVU_RENDER_COLOR, &prect, &rrect, format, rowsize, (char*)bufferPtr))
 	{
-		if (!ddjvu_page_render(page, DDJVU_RENDER_COLOR, &prect, &rrect, format, rowsize, (char*)bufferPtr))
-		{
-			DBGPRINT(L"Cannot render page, no data.");
-			memset(bufferPtr, UINT_MAX, rowsize * rrect.h);
-		}
-	}
-	catch (const GException& ex)
-	{
-		RethrowToWinRtException(ex);
+		DBGPRINT(L"Cannot render page, no data.");
+		memset(bufferPtr, UINT_MAX, rowsize * rrect.h);
 	}
 
 	ddjvu_format_release(format);
-}
-
-IAsyncAction^ DjvuPage::RenderRegionAsync(WriteableBitmap^ bitmap, Size rescaledPageSize, Rect renderRegion)
-{
-    auto buffer = bitmap->PixelBuffer;
-    
-	if (buffer->Length < renderRegion.Width * renderRegion.Height)
-	{
-		throw ref new InvalidArgumentException("Buffer is too small.");
-	}
-
-    auto bufferPtr = IBufferUtilities::GetPointer(buffer);
-
-	return create_async([=]
-	{
-        RenderRegion(bufferPtr, rescaledPageSize, renderRegion);
-	});
 }

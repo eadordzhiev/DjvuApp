@@ -22,21 +22,23 @@
         </ItemsControl.ItemContainerStyle>
         <ItemsControl.ItemTemplate>
             <DataTemplate>
-                <Grid Margin="10,10,0,10" MinHeight="57.5">
+                <Grid MinHeight="57.5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock
 						Grid.Column="0"
+                        Margin="10"
                         Text="{Binding Title}"
                         TextWrapping="Wrap"
                         VerticalAlignment="Center" />
                     <Button
                         Grid.Column="1"
-						Padding="20,10"
+                        Padding="10"
                         Visibility="{Binding HasItems, Converter={StaticResource BooleanToVisibilityConverter}}"
-                        Click="ButtonBase_OnClick" Style="{StaticResource CircleButtonStyle}">
+                        Click="ButtonBase_OnClick" 
+                        Style="{StaticResource CircleButtonStyle}">
 						<SymbolIcon Symbol="Forward"/>
 					</Button>
                 </Grid>

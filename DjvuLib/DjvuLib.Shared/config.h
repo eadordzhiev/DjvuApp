@@ -4,6 +4,7 @@
 
 #define HAVE_EXCEPTIONS
 #define HAVE_STDINCLUDES
+#define DDJVUAPI
 #define MINILISPAPI
 #define DEBUGLVL 0
 
