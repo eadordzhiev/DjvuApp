@@ -158,12 +158,14 @@ GThread::create(void (*entry)(void*), void *arg)
     return -1;
   xentry = entry;
   xarg = arg;
-  unsigned uthread = 0;
-  hthr = (HANDLE)_beginthreadex(NULL, 0, start, (void*)this, 0, &uthread);
-  thrid = (DWORD) uthread;
-  if (hthr)
-    return 0;
-  return -1;
+  //auto workItemHandler = ref new Windows::System::Threading::WorkItemHandler([=](Windows::Foundation::IAsyncAction^)
+  //{
+	  start(this);
+  //});
+
+  //Windows::System::Threading::ThreadPool::RunAsync(workItemHandler);
+
+  return 0;
 }
 
 void 

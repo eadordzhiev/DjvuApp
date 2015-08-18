@@ -66,7 +66,7 @@ static task<bool> CheckLicenseStealthily()
 #endif
 }
 
-static enum class LicenseStatus
+enum class LicenseStatus
 {
 	NotChecked,
 	NoLicense,

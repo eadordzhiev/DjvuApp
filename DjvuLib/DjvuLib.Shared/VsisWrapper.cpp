@@ -24,7 +24,7 @@ namespace DjvuApp
         {
             auto wrapper = reference.Resolve<VsisWrapper>();
 
-            if (wrapper != nullptr)
+			if (wrapper != nullptr && wrapper->Source != nullptr)
             {
                 wrapper->UpdatesNeeded();
             }
@@ -62,12 +62,12 @@ namespace DjvuApp
 
     VsisWrapper::~VsisWrapper()
     {
-        if (vsisNative != nullptr)
-        {
-            DX::ThrowIfFailed(
-                vsisNative->RegisterForUpdatesNeeded(nullptr)
-                );
-        }
+        //if (vsisNative != nullptr)
+        //{
+        //    DX::ThrowIfFailed(
+        //        vsisNative->RegisterForUpdatesNeeded(nullptr)
+        //        );
+        //}
 
         vsis = nullptr;
         vsisNative = nullptr;
@@ -116,13 +116,6 @@ namespace DjvuApp
         for (ULONG i = 0; i < rectCount; ++i)
         {
             RenderRegion(updateRects[i]);
-        }
-
-        DBGPRINT(L"\npage%d", page->PageNumber);
-        for (size_t i = 0; i < rectCount; i++)
-        {
-            RECT rect = updateRects[i];
-            DBGPRINT(L"%d %d %d %d", rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top);
         }
     }
 

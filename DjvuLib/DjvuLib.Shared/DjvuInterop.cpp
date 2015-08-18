@@ -52,7 +52,7 @@ DjvuDocument::DjvuDocument(const char* path)
 {
 	context = ddjvu_context_create(nullptr);
 	document = ddjvu_document_create_by_filename_utf8(context, path, false);
-
+	
 	auto djvuDocument = ddjvu_get_DjVuDocument(document);
 	if (!djvuDocument->wait_for_complete_init())
 	{
@@ -84,15 +84,15 @@ DjvuDocument::DjvuDocument(const char* path)
 
 DjvuDocument::~DjvuDocument()
 {
-	if (context != nullptr)
-	{
-		ddjvu_context_release(context);
-		context = nullptr;
-	}
 	if (document != nullptr)
 	{
 		ddjvu_document_release(document);
 		document = nullptr;
+	}
+	if (context != nullptr)
+	{
+		ddjvu_context_release(context);
+		context = nullptr;
 	}
 }
 
@@ -159,7 +159,7 @@ DjvuPage^ DjvuDocument::GetPage(uint32_t pageNumber)
 
 	auto page = ddjvu_page_create_by_pageno(document, pageNumber - 1);
 	assert(page != nullptr);
-
+	
 	auto djvuImage = ddjvu_get_DjVuImage(page);
 	if (!djvuImage->wait_for_complete_decode())
 	{
@@ -204,7 +204,6 @@ void DjvuPage::RenderRegion(void* bufferPtr, Size rescaledPageSize, Rect renderR
 		throw ref new ObjectDisposedException();
 	}
 
-	DBGPRINT(L"width = %f, height = %f", rescaledPageSize.Width, rescaledPageSize.Height);
 	if (rescaledPageSize.Width < 1 || rescaledPageSize.Height < 1)
 	{
 		throw ref new InvalidArgumentException("The dimensions are out of the range.");

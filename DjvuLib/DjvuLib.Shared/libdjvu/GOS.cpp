@@ -337,7 +337,6 @@ GOS::cwd(const GUTF8String &dirname)
 	if (dirname.length() && _chdir(dirname.getUTF82Native()) == -1)//MBCS cvt
 		G_THROW(errmsg());
 	drv[0] = dot; drv[1] = 0;
-	wchar_t *string_buffer;
 	auto path = GetWorkingDirectory();
 	std::string utf8_path = utf16_to_utf8(path);
 	return GUTF8String(utf8_path.c_str());//MBCS cvt

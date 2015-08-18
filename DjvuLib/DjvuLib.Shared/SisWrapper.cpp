@@ -61,7 +61,7 @@ namespace DjvuApp
         renderRegion.Height = static_cast<float>(regionHeight);
         renderRegion.X = static_cast<float>(updateRect.left);
         renderRegion.Y = static_cast<float>(height - updateRect.bottom);
-        Size pageSize(width, height);
+        Size pageSize(static_cast<float>(width), static_cast<float>(height));
 
         void* buffer = new char[regionHeight * rowSize];
 

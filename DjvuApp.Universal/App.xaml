@@ -55,14 +55,15 @@
                                         </Grid.RowDefinitions>
                                         <ScrollViewer x:Name="ContentScrollViewer"
                                             HorizontalScrollBarVisibility="Disabled"
-                                            VerticalScrollBarVisibility="Auto"
+                                            VerticalScrollBarVisibility="Disabled"
                                             ZoomMode="Disabled"
                                             Margin="{ThemeResource ContentDialogContentScrollViewerMargin}"
                                             IsTabStop="False">
                                             <Grid>
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto" />
-                                                    <RowDefinition Height="Auto" />
+                                                    <!--Here, I delete 'Height="Auto"' of RowDefinition.-->
+                                                    <RowDefinition />
                                                 </Grid.RowDefinitions>
                                                 <ContentControl x:Name="Title"
                                                 Margin="{ThemeResource ContentDialogTitleMargin}"

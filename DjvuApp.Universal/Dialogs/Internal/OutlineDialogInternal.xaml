@@ -12,6 +12,18 @@
     FullSizeDesired="True"
     Style="{StaticResource FullScreenContentDialogStyle}" 
     d:DataContext="{d:DesignData /SampleData/DjvuOutlineItemSampleData.xaml}">
+    
+    <ContentDialog.TitleTemplate>
+        <DataTemplate>
+            <TextBlock Text="{Binding}">
+                <TextBlock.Transitions>
+                    <TransitionCollection>
+                        <ContentThemeTransition/>
+                    </TransitionCollection>
+                </TextBlock.Transitions>
+            </TextBlock>
+        </DataTemplate>
+    </ContentDialog.TitleTemplate>
 
     <ListView
         Margin="-20,0"

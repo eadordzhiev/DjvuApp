@@ -19,6 +19,11 @@
             ScrollViewer.ZoomMode="Enabled"
             ScrollViewer.IsZoomInertiaEnabled="False"
             Padding="0">
+            <ListView.ItemContainerTransitions>
+                <TransitionCollection>
+                    <EntranceThemeTransition/>
+                </TransitionCollection>
+            </ListView.ItemContainerTransitions>
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="controls:PageViewControlState">
                     <controls:PageViewControl

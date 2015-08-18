@@ -1498,9 +1498,9 @@ ddjvu_page_create(ddjvu_document_t *document, ddjvu_job_t *job,
         job = p;
       p->job = job;
       if (pageid)
-        p->img = doc->get_page(GNativeString(pageid), false, job);
+        p->img = doc->get_page(GNativeString(pageid));
       else
-        p->img = doc->get_page(pageno, false, job);
+        p->img = doc->get_page(pageno);
     }
   G_CATCH(ex)
     {

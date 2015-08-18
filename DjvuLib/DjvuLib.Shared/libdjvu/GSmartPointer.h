@@ -368,9 +368,17 @@ GPBase::GPBase(GPEnabled *nptr)
 inline
 GPBase::GPBase(const GPBase &sptr)
 {
-  if (sptr.ptr)
-    sptr.ptr->ref();
-  ptr = sptr.ptr;
+	//EDITED
+	//if (sptr.ptr)
+	// sptr.ptr->ref();
+	//ptr = sptr.ptr;
+
+	auto tmp = sptr.ptr;
+	if (tmp)
+	{
+		tmp->ref();
+	}
+	ptr = tmp;
 }
 
 inline
