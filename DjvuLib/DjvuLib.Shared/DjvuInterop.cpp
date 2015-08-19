@@ -2,18 +2,17 @@
 #include "DjvuInterop.h"
 #include "LicenseValidator.h"
 #include "IBufferUtilities.h"
+#include "WinrtByteStream.h"
 
 using namespace concurrency;
 using namespace std;
 
-using namespace Microsoft::WRL;
 using namespace Platform;
 using namespace Platform::Collections;
 using namespace Windows::Foundation;
 using namespace Windows::Foundation::Collections;
 using namespace Windows::Storage;
 using namespace Windows::Storage::Streams;
-using namespace Windows::Graphics::Imaging;
 using namespace Windows::UI::Xaml::Media::Imaging;
 using namespace DjvuApp;
 using namespace DjvuApp::Djvu;
@@ -25,11 +24,11 @@ DjvuOutlineItem::DjvuOutlineItem(String^ name, uint32_t pageNumber, IVectorView<
 	items(items)
 { }
 
-IAsyncOperation<DjvuDocument^>^ DjvuDocument::LoadAsync(String^ path)
+IAsyncOperation<DjvuDocument^>^ DjvuDocument::LoadAsync(IStorageFile^ file)
 {
-	return create_async([path]()
+	return create_async([file]()
 	{
-        return LicenseValidator::GetLicenseStatusStealthily()
+		return LicenseValidator::GetLicenseStatusStealthily()
 			.then([=](bool isLicenseValid)
 		{
 			if (!isLicenseValid)
@@ -37,30 +36,30 @@ IAsyncOperation<DjvuDocument^>^ DjvuDocument::LoadAsync(String^ path)
 				throw ref new Exception(E_UNEXPECTED);
 			}
 
-			wstring utf16_path(begin(path), end(path));
-			auto utf8_path = utf16_to_utf8(utf16_path);
-			return ref new DjvuDocument(utf8_path.c_str());
+			return create_task(file->OpenReadAsync())
+				.then([file](IRandomAccessStreamWithContentType^ stream)
+			{
+				return ref new DjvuDocument(stream);
+			});
 		});
 	});
 }
 
-IAsyncOperation<DjvuDocument^>^ DjvuDocument::LoadAsync(IStorageFile^ file)
+DjvuDocument::DjvuDocument(IRandomAccessStream^ stream)
 {
-    return DjvuDocument::LoadAsync(file->Path);
-}
+	GP<ByteStream> bs = new WinrtByteStream(stream);
 
-DjvuDocument::DjvuDocument(const char* path)
-{
 	context = ddjvu_context_create(nullptr);
-	document = ddjvu_document_create_by_filename_utf8(context, path, false);
+	document = ddjvu_document_create_by_bytestream(context, bs, false);
 	
-	auto djvuDocument = ddjvu_get_DjVuDocument(document);
-	if (!djvuDocument->wait_for_complete_init())
+	if (document == nullptr)
 	{
 		throw ref new FailureException(L"Failed to decode the document.");
 	}
 
+	auto djvuDocument = ddjvu_get_DjVuDocument(document);
 	auto doctype = djvuDocument->get_doc_type();
+
 	if (doctype != DjVuDocument::DOC_TYPE::SINGLE_PAGE && doctype != DjVuDocument::DOC_TYPE::BUNDLED)
 	{
 		throw ref new InvalidArgumentException("Unsupported document type. Only bundled and single page documents are supported.");
@@ -97,7 +96,7 @@ DjvuDocument::~DjvuDocument()
 	}
 }
 
-Platform::Array<PageInfo>^ DjvuDocument::GetPageInfos()
+Array<PageInfo>^ DjvuDocument::GetPageInfos()
 {
 	return ref new Array<PageInfo>(pageInfos);
 }
@@ -129,35 +128,33 @@ IVectorView<DjvuOutlineItem^>^ DjvuDocument::ProcessOutlineExpression(miniexp_t 
 		current = miniexp_cdr(current);
 	}
 
-	return ref new VectorView<DjvuOutlineItem^>(std::move(result));
+	return ref new VectorView<DjvuOutlineItem^>(move(result));
 }
 
-IVectorView<DjvuOutlineItem^>^ DjvuDocument::GetOutline()
+IAsyncOperation<IVectorView<DjvuOutlineItem^>^>^ DjvuDocument::GetOutlineAsync()
 {
-	auto outline = ddjvu_document_get_outline(document);
-
-	if (outline == miniexp_nil)
+	return create_async([=]() -> IVectorView<DjvuOutlineItem^>^
 	{
-		return nullptr;
-	}
+		auto outline = ddjvu_document_get_outline(document);
 
-	if (!miniexp_consp(outline) || miniexp_car(outline) != miniexp_symbol("bookmarks"))
-	{
-		throw ref new FailureException("Outline data is corrupted.");
-	}
+		if (outline == miniexp_nil)
+		{
+			return nullptr;
+		}
 
-	outline = miniexp_cdr(outline);
+		if (!miniexp_consp(outline) || miniexp_car(outline) != miniexp_symbol("bookmarks"))
+		{
+			throw ref new FailureException("Outline data is corrupted.");
+		}
 
-	return ProcessOutlineExpression(outline);
+		outline = miniexp_cdr(outline);
+
+		return ProcessOutlineExpression(outline);
+	});
 }
 
 DjvuPage^ DjvuDocument::GetPage(uint32_t pageNumber)
 {
-	if (pageNumber < 1 || pageNumber > pageCount)
-	{
-		throw ref new InvalidArgumentException("pageNumber is out of range");
-	}
-
 	auto page = ddjvu_page_create_by_pageno(document, pageNumber - 1);
 	assert(page != nullptr);
 	
@@ -172,6 +169,11 @@ DjvuPage^ DjvuDocument::GetPage(uint32_t pageNumber)
 
 IAsyncOperation<DjvuPage^>^ DjvuDocument::GetPageAsync(uint32_t pageNumber)
 {
+	if (pageNumber < 1 || pageNumber > pageCount)
+	{
+		throw ref new InvalidArgumentException("pageNumber is out of range");
+	}
+
 	return create_async([=]() -> DjvuPage^
 	{
 		return GetPage(pageNumber);

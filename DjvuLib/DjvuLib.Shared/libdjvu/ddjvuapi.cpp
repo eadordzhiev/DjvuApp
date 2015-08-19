@@ -1053,6 +1053,37 @@ ddjvu_document_create_by_filename_utf8(ddjvu_context_t *ctx,
   return ddjvu_document_create_by_filename_imp(ctx,filename,cache,1);
 }
 
+ddjvu_document_t *
+ddjvu_document_create_by_bytestream(ddjvu_context_t *ctx, const GP<ByteStream>& bs, int cache)
+{
+	ddjvu_document_t *d = 0;
+	G_TRY
+	{
+		DjVuFileCache *xcache = ctx->cache;
+	if (!cache) xcache = 0;
+	d = new ddjvu_document_s;
+	ref(d);
+	GMonitorLock lock(&d->monitor);
+	d->streamid = -1;
+	d->fileflag = true;
+	d->pageinfoflag = false;
+	d->urlflag = false;
+	d->docinfoflag = false;
+	d->myctx = ctx;
+	d->mydoc = 0;
+	d->doc = DjVuDocument::create(bs, d, xcache);
+	}
+		G_CATCH(ex)
+	{
+		if (d)
+			unref(d);
+		d = 0;
+		ERROR1(ctx, ex);
+	}
+	G_ENDCATCH;
+	return d;
+}
+
 ddjvu_job_t *
 ddjvu_document_job(ddjvu_document_t *document)
 {

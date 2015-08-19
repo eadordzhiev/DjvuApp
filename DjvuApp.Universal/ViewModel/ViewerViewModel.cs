@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -167,7 +168,7 @@ namespace DjvuApp.ViewModel
                 () => CurrentPageNumber--, 
                 () => CurrentPageNumber > 1);
 
-            MessengerInstance.Register<LoadedHandledMessage<IBook>>(this, message => LoadedHandler(message.Parameter));
+            MessengerInstance.Register<LoadedHandledMessage<object>>(this, message => LoadedHandler(message.Parameter));
             MessengerInstance.Register<OnNavigatedFromMessage>(this,
                 async message =>
                 {
@@ -273,16 +274,30 @@ namespace DjvuApp.ViewModel
             _navigationService.GoBack();
         }
 
-        private async void LoadedHandler(IBook book)
+        private async void LoadedHandler(object navigationParameter)
         {
             IsProgressVisible = true;
 
-            _book = book;
+            IStorageFile file;
+            if (navigationParameter is IBook)
+            {
+                _book = (IBook) navigationParameter;
+                file = await StorageFile.GetFileFromPathAsync(_book.Path);
+            }
+            else if (navigationParameter is IStorageFile)
+            {
+                file = (IStorageFile) navigationParameter;
+            }
+            else
+            {
+                throw new Exception("Invalid parameter.");
+            }
+            
             DjvuDocument document;
 
             try
             {
-                document = await DjvuDocument.LoadAsync(book.Path);
+                document = await DjvuDocument.LoadAsync(file);
             }
             catch (Exception ex)
             {
@@ -292,24 +307,28 @@ namespace DjvuApp.ViewModel
                 }
 
                 IsProgressVisible = false;
-                ShowFileOpeningError(book);
+                //ShowFileOpeningError(book);
                 //App.TelemetryClient.TrackException(ex);
                 return;
             }
-
-            await _provider.UpdateLastOpeningTimeAsync(book);
             
-            Outline = document.GetOutline();
-
-            _bookmarks = new ObservableCollection<IBookmark>(await _provider.GetBookmarksAsync(book));
-            _bookmarks.CollectionChanged += (sender, e) => UpdateIsCurrentPageBookmarked();
-
             CurrentDocument = document;
-            var lastOpenedPage = _book.LastOpenedPage;
-            if (lastOpenedPage != null)
+
+            if (_book != null)
             {
-                CurrentPageNumber = (uint)lastOpenedPage;
+                await _provider.UpdateLastOpeningTimeAsync(_book);
+
+                _bookmarks = new ObservableCollection<IBookmark>(await _provider.GetBookmarksAsync(_book));
+                _bookmarks.CollectionChanged += (sender, e) => UpdateIsCurrentPageBookmarked();
+
+                var lastOpenedPage = _book.LastOpenedPage;
+                if (lastOpenedPage != null)
+                {
+                    CurrentPageNumber = (uint)lastOpenedPage;
+                }
             }
+
+            Outline = await document.GetOutlineAsync();
 
             IsProgressVisible = false;
         }
@@ -323,6 +342,11 @@ namespace DjvuApp.ViewModel
 
         private void UpdateIsCurrentPageBookmarked()
         {
+            if (_book == null)
+            {
+                return;
+            }
+
             IsCurrentPageBookmarked = _bookmarks.Any(bookmark => bookmark.PageNumber == CurrentPageNumber);
         }
     }

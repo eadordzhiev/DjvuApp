@@ -16,7 +16,7 @@ namespace DjvuApp.Pages
     public sealed partial class ViewerPage : Page
     {
         private readonly NavigationHelper _navigationHelper;
-        private IBook _book;
+        private object _navigationParameter;
 
         public ViewerPage()
         {
@@ -34,14 +34,15 @@ namespace DjvuApp.Pages
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             _navigationHelper.OnNavigatedTo(e);
+
+            _navigationParameter = e.Parameter;
             
-            _book = (IBook) e.Parameter;
             Messenger.Default.Send(new OnNavigatedToMessage(null));
         }
 
         private void LoadedHandler(object sender, RoutedEventArgs e)
         {
-            Messenger.Default.Send(new LoadedHandledMessage<IBook>(_book));
+            Messenger.Default.Send(new LoadedHandledMessage<object>(_navigationParameter));
         }
     }
 }

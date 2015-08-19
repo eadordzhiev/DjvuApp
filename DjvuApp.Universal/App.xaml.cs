@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.Resources;
 using Windows.Storage;
 using Windows.System;
@@ -39,6 +40,20 @@ namespace DjvuApp
             IocContainer.Init();
         }
 
+        private Frame CreateRootFrame()
+        {
+            var rootFrame = new Frame();
+            rootFrame.NavigationFailed += OnNavigationFailed;
+
+            Window.Current.Content = rootFrame;
+
+            var titleBar = ApplicationView.GetForCurrentView().TitleBar;
+            titleBar.BackgroundColor = (Color) Resources["SystemChromeMediumColor"];
+            titleBar.ButtonBackgroundColor = (Color) Resources["SystemChromeMediumColor"];
+
+            return rootFrame;
+        }
+
         /// <summary>
         /// Invoked when the application is launched normally by the end user.  Other entry points
         /// will be used when the application is launched to open a specific file, to display
@@ -56,22 +71,9 @@ namespace DjvuApp
 
             Frame rootFrame = Window.Current.Content as Frame;
 
-            // Do not repeat app initialization when the Window already has content,
-            // just ensure that the window is active
             if (rootFrame == null)
             {
-                // Create a Frame to act as the navigation context and navigate to the first page
-                rootFrame = new Frame();
-
-                rootFrame.NavigationFailed += OnNavigationFailed;
-
-                if (e?.PreviousExecutionState == ApplicationExecutionState.Terminated)
-                {
-                    //TODO: Load state from previously suspended application
-                }
-
-                // Place the frame in the current Window
-                Window.Current.Content = rootFrame;
+                rootFrame = CreateRootFrame();
             }
 
             if (rootFrame.Content == null)
@@ -81,10 +83,6 @@ namespace DjvuApp
                 // parameter
                 rootFrame.Navigate(typeof(MainPage), e?.Arguments);
             }
-            
-            var titleBar = ApplicationView.GetForCurrentView().TitleBar;
-            titleBar.BackgroundColor = (Color) Resources["SystemChromeMediumColor"];
-            titleBar.ButtonBackgroundColor = (Color)Resources["SystemChromeMediumColor"];
 
             // Ensure the current window is active
             Window.Current.Activate();
@@ -115,13 +113,17 @@ namespace DjvuApp
             deferral.Complete();
         }
 
-        protected override async void OnFileActivated(FileActivatedEventArgs args)
+        protected override void OnFileActivated(FileActivatedEventArgs args)
         {
             base.OnFileActivated(args);
 
             var file = (IStorageFile) args.Files.First();
-            
-            await OpenFile(file);
+
+            var rootFrame = CreateRootFrame();
+            rootFrame.Navigate(typeof(ViewerPage), file);
+
+            Window.Current.Activate();
+            //await OpenFile(file);
         }
 
         public async Task OpenFile(IStorageFile file)

@@ -81,11 +81,8 @@ namespace DjvuApp { namespace Djvu
 		{
             uint32_t get() { return pageCount; }
 		}
-        static Windows::Foundation::IAsyncOperation<DjvuDocument^>^ LoadAsync(Platform::String^ path);
-        [Windows::Foundation::Metadata::DefaultOverloadAttribute]
         static Windows::Foundation::IAsyncOperation<DjvuDocument^>^ LoadAsync(Windows::Storage::IStorageFile^ file);
-		Windows::Foundation::Collections::IVectorView<DjvuOutlineItem^>^ GetOutline();
-        DjvuPage^ GetPage(uint32_t pageNumber);
+		Windows::Foundation::IAsyncOperation<Windows::Foundation::Collections::IVectorView<DjvuOutlineItem^>^>^ GetOutlineAsync();
         Windows::Foundation::IAsyncOperation<DjvuPage^>^ GetPageAsync(uint32_t pageNumber);
         Platform::Array<PageInfo>^ GetPageInfos();
 	private:
@@ -94,7 +91,8 @@ namespace DjvuApp { namespace Djvu
         uint32_t pageCount = 0;
         Platform::Array<PageInfo>^ pageInfos;
 
-		DjvuDocument(const char* path);
+		DjvuDocument(Windows::Storage::Streams::IRandomAccessStream^ stream);
+		DjvuPage^ GetPage(uint32_t pageNumber);
 		Windows::Foundation::Collections::IVectorView<DjvuOutlineItem^>^ ProcessOutlineExpression(miniexp_t current);
 	};
 } }

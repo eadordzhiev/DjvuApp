@@ -151,6 +151,7 @@
       <Filter>djvulibre\Headers</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)IBufferUtilities.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)WinrtByteStream.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)pch.cpp">
@@ -314,6 +315,7 @@
       <Filter>djvulibre\Source</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)IBufferUtilities.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)WinrtByteStream.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="djvulibre">
