@@ -168,9 +168,13 @@ namespace DjvuApp.Controls
 
         private void SizeChangedHandler(object sender, SizeChangedEventArgs e)
         {
+            var oldContainerSize = _containerSize;
             _containerSize = new Size(ActualWidth, ActualHeight);
 
-            Load();
+            if (ActualWidth != oldContainerSize?.Width)
+            {
+                Load();
+            }
         }
 
         private static void SourceChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)

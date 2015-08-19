@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "DjvuInterop.h"
 #include "LicenseValidator.h"
+#include "IBufferUtilities.h"
 
 using namespace concurrency;
 using namespace std;
@@ -236,4 +237,21 @@ void DjvuPage::RenderRegion(void* bufferPtr, Size rescaledPageSize, Rect renderR
 	}
 
 	ddjvu_format_release(format);
+}
+
+IAsyncAction^ DjvuPage::RenderRegionAsync(WriteableBitmap^ bitmap, Size rescaledPageSize, Rect renderRegion)
+{
+	auto buffer = bitmap->PixelBuffer;
+
+	if (buffer->Length < renderRegion.Width * renderRegion.Height)
+	{
+		throw ref new InvalidArgumentException("Buffer is too small.");
+	}
+
+	auto bufferPtr = IBufferUtilities::GetPointer(buffer);
+
+	return create_async([=]
+	{
+		RenderRegion(bufferPtr, rescaledPageSize, renderRegion);
+	});
 }

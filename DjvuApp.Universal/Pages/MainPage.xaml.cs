@@ -8,6 +8,7 @@ using Windows.Graphics.Display;
 using Windows.Storage;
 using Windows.System;
 using Windows.UI;
+using Windows.UI.Core;
 using Windows.UI.Input;
 using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
@@ -35,6 +36,8 @@ namespace DjvuApp.Pages
 
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
+            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+            
             _navigationHelper.OnNavigatedTo(e);
 
             if (_hasLicense == null)
@@ -49,6 +52,13 @@ namespace DjvuApp.Pages
             }
 
             ShowRateAppDialog();
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+
+            _navigationHelper.OnNavigatedFrom(e);
         }
 
         private async void ShowRateAppDialog()
@@ -83,11 +93,6 @@ namespace DjvuApp.Pages
 
                 await dialog.ShowAsync();
             }
-        }
-
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
-        {
-            _navigationHelper.OnNavigatedFrom(e);
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)

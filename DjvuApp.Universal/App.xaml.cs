@@ -65,7 +65,7 @@ namespace DjvuApp
 
                 rootFrame.NavigationFailed += OnNavigationFailed;
 
-                if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
+                if (e?.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
                     //TODO: Load state from previously suspended application
                 }
@@ -79,15 +79,12 @@ namespace DjvuApp
                 // When the navigation stack isn't restored navigate to the first page,
                 // configuring the new page by passing required information as a navigation
                 // parameter
-                rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                rootFrame.Navigate(typeof(MainPage), e?.Arguments);
             }
-
-            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+            
             var titleBar = ApplicationView.GetForCurrentView().TitleBar;
-            titleBar.BackgroundColor = Color.FromArgb(0xFF, 0x6A, 0x00, 0xFF);
-            titleBar.ForegroundColor = Colors.White;
-            titleBar.ButtonBackgroundColor = Color.FromArgb(0xFF, 0x6A, 0x00, 0xFF);
-            titleBar.ButtonForegroundColor = Colors.White;
+            titleBar.BackgroundColor = (Color) Resources["SystemChromeMediumColor"];
+            titleBar.ButtonBackgroundColor = (Color)Resources["SystemChromeMediumColor"];
 
             // Ensure the current window is active
             Window.Current.Activate();

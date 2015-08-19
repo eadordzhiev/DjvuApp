@@ -11,32 +11,18 @@
     d:DataContext="{d:DesignData /SampleData/MainPageSampleDataSource/MainPageSampleDataSource.xaml}"
     x:Name="page">
 
-    <Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
-        
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- TitlePanel -->
-        <Grid Grid.Row="0" Margin="19,0,0,0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <TextBlock
-                x:Uid="ApplicationTitle"
-                Grid.Row="0" 
-                Margin="0,12,0,0"
-                Text="DJVU READER" 
-                Style="{ThemeResource TitleTextBlockStyle}"/>
+        <Grid Grid.Row="0" Margin="36,0">
             <TextBlock
                 x:Uid="MainPage_Title"
-                Grid.Row="1" 
-                Margin="0,-6.5,0,26.5"
-                Text="my library"
-                Style="{ThemeResource HeaderTextBlockStyle}"
-                CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
+                Text="My library"
+                Style="{ThemeResource HeaderTextBlockStyle}"/>
         </Grid>
 
         <Grid Grid.Row="1">
@@ -44,76 +30,67 @@
                 x:Uid="MainPage_BookListEmptyHint"
                 Margin="19,0,19,0"
                 Text="Tap the plus sign to add a new book."
+                Style="{ThemeResource TitleTextBlockStyle}"
                 Visibility="{Binding Books, Converter={StaticResource IsNullOrEmptyToVisibilityConverter}, ConverterParameter=negate}"/>
-            <ListView
+            <GridView
                 ItemsSource="{Binding Books}"
                 ItemClick="ItemClickHandler"
-                IsItemClickEnabled="True">
-                <ItemsControl.ItemContainerTransitions>
-                    <TransitionCollection>
-                        <AddDeleteThemeTransition/>
-                    </TransitionCollection>
-                </ItemsControl.ItemContainerTransitions>
-                <ItemsControl.ItemContainerStyle>
-                    <Style TargetType="ContentControl">
-                        <Setter 
-                            Property="HorizontalContentAlignment" 
-                            Value="Stretch"/>
-                    </Style>
-                </ItemsControl.ItemContainerStyle>
+                IsItemClickEnabled="True"
+                Padding="24">
                 <ItemsControl.ItemTemplate>
-                    <DataTemplate x:DataType="books:IBook">
-                        <Grid Margin="12">
-                            <common:MenuFlyoutService.MenuFlyout>
-                                <MenuFlyout>
-                                    <MenuFlyoutItem 
+                    <DataTemplate>
+                        <RelativePanel Margin="12">
+                            <Border 
+                                x:Name="thumbnail"
+                                RelativePanel.AlignLeftWithPanel="True"
+                                Width="140"
+                                Height="140"
+                                Background="{ThemeResource SystemControlBackgroundChromeWhiteBrush}">
+                                <Image Source="{Binding ThumbnailPath}" Stretch="Uniform"/>
+                            </Border>
+                            <TextBlock
+                                x:Name="title"
+                                RelativePanel.Below="thumbnail"
+                                RelativePanel.AlignLeftWith="thumbnail"
+                                Margin="0,6,0,0"
+                                Text="{Binding Title}"
+                                Style="{ThemeResource BodyTextBlockStyle}"
+                                TextTrimming="CharacterEllipsis"
+                                TextWrapping="NoWrap"/>
+                            <TextBlock
+                                RelativePanel.Below="title"
+                                RelativePanel.AlignLeftWith="title"
+                                Text="{Binding LastOpeningTime}"
+                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
+                                TextTrimming="CharacterEllipsis"
+                                TextWrapping="NoWrap"/>
+                        </RelativePanel>
+
+                        <common:MenuFlyoutService.MenuFlyout>
+                            <MenuFlyout Placement="Bottom">
+                                <MenuFlyoutItem 
                                         x:Uid="MainPage_RenameMenuItem"
                                         Command="{Binding DataContext.RenameBookCommand, ElementName=page}"
-                                        CommandParameter="{x:Bind}"
+                                        CommandParameter="{Binding}"
                                         Text="rename..."/>
-                                    <MenuFlyoutItem
+                                <MenuFlyoutItem
                                         x:Uid="MainPage_RemoveMenuItem"
                                         Command="{Binding DataContext.RemoveBookCommand, ElementName=page}"
-                                        CommandParameter="{x:Bind}"
+                                        CommandParameter="{Binding}"
                                         Text="remove"/>
-                                    <MenuFlyoutItem
+                                <MenuFlyoutItem
                                         x:Uid="MainPage_ShareMenuItem"
                                         Command="{Binding DataContext.ShareBookCommand, ElementName=page}"
-                                        CommandParameter="{x:Bind}"
+                                        CommandParameter="{Binding}"
                                         Text="share..."/>
-                                </MenuFlyout>
-                            </common:MenuFlyoutService.MenuFlyout>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-                            <Image
-                                Height="42.5"
-                                Width="33"
-                                Stretch="Uniform"
-                                Margin="0,-3,16,3"
-                                Grid.RowSpan="2"
-                                VerticalAlignment="Bottom"
-                                Source="/Assets/PageIcon.png"/>
-                            <TextBlock
-                                Grid.Row="0"
-                                Grid.Column="1"
-                                TextLineBounds="TrimToCapHeight"
-                                Text="{x:Bind Title}"/>
-                            <TextBlock
-                                Grid.Column="1"
-                                Grid.Row="1"
-                                TextLineBounds="TrimToBaseline"
-                                Text="{x:Bind LastOpeningTime}"/>
-                        </Grid>
+                            </MenuFlyout>
+                        </common:MenuFlyoutService.MenuFlyout>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
-            </ListView>
+            </GridView>
         </Grid>
+
     </Grid>
 
     <Page.BottomAppBar>
@@ -122,8 +99,14 @@
                 <AppBarButton
                     x:Uid="MainPage_AddAppBarButton"
                     Icon="Add"
-                    Label="add"
+                    Label="Add"
                     Command="{Binding AddBookCommand}"/>
+                <AppBarButton
+                    Label="Manage">
+                    <AppBarButton.Icon>
+                        <FontIcon Glyph="&#57651;"/>
+                    </AppBarButton.Icon>
+                </AppBarButton>
             </CommandBar.PrimaryCommands>
             <CommandBar.SecondaryCommands>
                 <AppBarButton

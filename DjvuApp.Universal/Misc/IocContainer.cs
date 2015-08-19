@@ -25,18 +25,11 @@ namespace DjvuApp.Misc
 
         private static void ConfigureContainer(IUnityContainer container)
         {
-            if (DesignMode.DesignModeEnabled)
-            {
-                container.RegisterInstance<IBookProvider>(new DataContractBookProvider(), new ContainerControlledLifetimeManager());
-            }
-            else
-            {
-                var provider = CachedSqliteBookProvider.CreateNewAsync().Result;
-                container.RegisterInstance<IBookProvider>(provider, new ContainerControlledLifetimeManager());
-            }
+            var provider = CachedSqliteBookProvider.CreateNewAsync().Result;
+            container.RegisterInstance<IBookProvider>(provider, new ContainerControlledLifetimeManager());
 
             container.RegisterInstance<INavigationService>(new NavigationService());
-            
+
             container.RegisterType<MainViewModel>();
             container.RegisterType<ViewerViewModel>();
         }

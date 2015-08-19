@@ -148,7 +148,6 @@
     <Compile Include="Misc\TextBoxExtensions.cs" />
     <Compile Include="Misc\ViewModelLocator.cs" />
     <Compile Include="Model\Books\CachedSqliteBookProvider.cs" />
-    <Compile Include="Model\Books\DataContractBookProvider.cs" />
     <Compile Include="Model\Books\IBook.cs" />
     <Compile Include="Model\Books\IBookmark.cs" />
     <Compile Include="Model\Books\IBookProvider.cs" />

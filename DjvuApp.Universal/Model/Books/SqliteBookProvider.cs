@@ -5,8 +5,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using Windows.Foundation;
+using Windows.Graphics.Display;
+using Windows.Graphics.Imaging;
 using Windows.Storage;
+using Windows.UI.Xaml.Media.Imaging;
 using DjvuApp.Djvu;
 using JetBrains.Annotations;
 using SQLite;
@@ -60,6 +65,9 @@ namespace DjvuApp.Model.Books
 
             [MaxLength(255)]
             public string Path { get; set; }
+
+            [MaxLength(255)]
+            public string ThumbnailPath { get; set; }
 
             public event PropertyChangedEventHandler PropertyChanged;
 
@@ -122,12 +130,28 @@ namespace DjvuApp.Model.Books
             return items;
         }
 
+        private static async Task<WriteableBitmap> RenderThumbnail(DjvuPage page)
+        {
+            var maxWidth = 140 * DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+            var aspectRatio = (double)page.Width / page.Height;
+
+            var width = (int)Math.Min(maxWidth, page.Width);
+            var height = (int)(width / aspectRatio);
+            var size = new Size(width, height);
+
+            var bitmap = new WriteableBitmap(width, height);
+            await page.RenderRegionAsync(bitmap, size, new Rect(new Point(), size));
+
+            return bitmap;
+        }
+
         public async Task<IBook> AddBookAsync(IStorageFile file)
         {
             if (file == null)
-                throw new ArgumentNullException("file");
+                throw new ArgumentNullException(nameof(file));
 
             var document = await DjvuDocument.LoadAsync(file.Path);
+            var page = await document.GetPageAsync(1);
 
             var guid = Guid.NewGuid();
             var properties = await file.GetBasicPropertiesAsync();
@@ -137,6 +161,29 @@ namespace DjvuApp.Model.Books
             var djvuFolder = await booksFolder.CreateFolderAsync("Djvu", CreationCollisionOption.OpenIfExists);
             var djvuFile = await file.CopyAsync(djvuFolder, string.Format("{0}.djvu", guid));
 
+            var thumbnailBitmap = await RenderThumbnail(page);
+            var thumbnailFile = await djvuFolder.CreateFileAsync($"{guid}.jpg");
+
+            using (var thumbnailStream = await thumbnailFile.OpenAsync(FileAccessMode.ReadWrite))
+            {
+                var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.JpegEncoderId, thumbnailStream);
+
+                var pixelStream = thumbnailBitmap.PixelBuffer.AsStream();
+                var pixels = new byte[pixelStream.Length];
+                await pixelStream.ReadAsync(pixels, 0, pixels.Length);
+
+                encoder.SetPixelData(
+                    pixelFormat: BitmapPixelFormat.Bgra8,
+                    alphaMode: BitmapAlphaMode.Ignore, 
+                    width: (uint)thumbnailBitmap.PixelWidth, 
+                    height: (uint)thumbnailBitmap.PixelHeight, 
+                    dpiX: 96.0,
+                    dpiY: 96.0,
+                    pixels: pixels);
+
+                await encoder.FlushAsync();
+            }
+
             var book = new SqliteBook
             {
                 Guid = guid,
@@ -145,7 +192,8 @@ namespace DjvuApp.Model.Books
                 Size = (uint) properties.Size,
                 Title = title,
                 LastOpeningTime = DateTime.Now,
-                Path = djvuFile.Path
+                Path = djvuFile.Path,
+                ThumbnailPath = thumbnailFile.Path
             };
 
             var connection = await GetConnectionAsync();

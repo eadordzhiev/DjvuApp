@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -25,34 +29,82 @@ namespace DjvuApp.Controls
         private SisWrapper _thumbnailSis;
         private DjvuPage _page;
         private IZoomFactorObserver _zoomFactorObserver;
+        static PageLoadObserver observer = new PageLoadObserver();
 
         private static void StateChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var sender = (PageViewControl) d;
-            sender.OnStateChanged();
+            sender.OnStateChanged((PageViewControlState) e.OldValue, (PageViewControlState)e.NewValue);
         }
 
         public PageViewControl()
         {
             this.InitializeComponent();
+
+            observer.Start();
         }
 
-        private async void OnStateChanged()
+        class PageLoadObserver
         {
-            CleanUp();
+            private Dictionary<PageViewControlState, Action<DjvuPage>> states = new Dictionary<PageViewControlState, Action<DjvuPage>>();
 
-            if (State == null)
+            readonly DispatcherTimer _timer = new DispatcherTimer();
+
+            public PageLoadObserver()
             {
-                return;
+                _timer.Interval = TimeSpan.FromMilliseconds(30);
+                _timer.Tick += Timer_Tick;
             }
 
-            var state = State;
-            _page = await State.Document.GetPageAsync(State.PageNumber);
-
-            if (state != State)
+            public void Subscribe(PageViewControlState state, Action<DjvuPage> callback)
             {
-                return;
+                states[state] = callback;
             }
+
+            public void Unsubscribe(PageViewControlState state)
+            {
+                if (states.ContainsKey(state))
+                {
+                    states.Remove(state);
+                }
+            }
+
+            public void Start()
+            {
+                _timer.Start();
+            }
+
+            public void Stop()
+            {
+                _timer.Stop();
+            }
+
+            private async void Timer_Tick(object sender, object e)
+            {
+                if (!states.Any())
+                {
+                    return;
+                }
+
+                var pair = states.Last();
+                var state = pair.Key;
+                var callback = pair.Value;
+
+                Stop();
+                var page = await state.Document.GetPageAsync(state.PageNumber);
+                Start();
+
+                if (states.ContainsKey(state))
+                {
+                    states.Remove(state);
+                    callback(page);
+                }
+            }
+        }
+
+        private void PageDecodedHandler(DjvuPage page)
+        {
+            _page = page;
 
             _zoomFactorObserver = State.ZoomFactorObserver;
             _zoomFactorObserver.ZoomFactorChanging += HandleZoomFactorChanging;
@@ -60,13 +112,27 @@ namespace DjvuApp.Controls
 
             Width = State.Width;
             Height = State.Height;
-                      
 
             CreateThumbnailSurface();
 
             if (!_zoomFactorObserver.IsZooming)
             {
                 CreateContentSurface();
+            }
+        }
+
+        private void OnStateChanged(PageViewControlState oldValue, PageViewControlState newValue)
+        {
+            CleanUp();
+
+            if (oldValue != null)
+            {
+                observer.Unsubscribe(oldValue);
+            }
+            
+            if (newValue != null)
+            {
+                observer.Subscribe(newValue, PageDecodedHandler);
             }
         }
 

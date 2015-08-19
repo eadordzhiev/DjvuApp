@@ -53,6 +53,11 @@ namespace DjvuApp { namespace Djvu
 		{
             uint32_t get() { return pageNumber; }
 		}
+		Windows::Foundation::IAsyncAction^ RenderRegionAsync(
+			Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ bitmap,
+			Windows::Foundation::Size rescaledPageSize,
+			Windows::Foundation::Rect renderRegion
+			);
 	internal:
         void RenderRegion(
             void* bufferPtr,

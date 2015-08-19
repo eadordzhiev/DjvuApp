@@ -24,5 +24,8 @@ namespace DjvuApp.Model.Books
 
         [NotNull]
         string Path { get; }
+
+        [NotNull]
+        string ThumbnailPath { get; }
     }
 }
