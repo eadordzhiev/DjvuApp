@@ -15,11 +15,22 @@ namespace DjvuApp.Dialogs
         {
             var resourceLoader = ResourceLoader.GetForCurrentView();
             var title = resourceLoader.GetString("OutlineDialog_Title");
-
-            var head = new DjvuOutlineItem(title, 0, outline);
-
-            var dialog = new OutlineDialogInternal { DataContext = head };
-            await dialog.ShowAsync();
+            
+            var dialog = new OutlineDialogInternal
+            {
+                DataContext = new DjvuOutlineItem(title, 0, outline)
+            };
+            var task = dialog.ShowAsync();
+            using (App.AddPendingDialog(task))
+            {
+                try
+                {
+                    await task;
+                }
+                catch (OperationCanceledException)
+                {
+                }
+            }
 
             return dialog.TargetPageNumber;
         }

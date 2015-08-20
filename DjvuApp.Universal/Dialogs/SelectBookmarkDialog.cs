@@ -13,7 +13,17 @@ namespace DjvuApp.Dialogs
         public static async Task<IBookmark> ShowAsync(IEnumerable<IBookmark> bookmarks)
         {
             var dialog = new SelectBookmarkDialogInternal(bookmarks);
-            await dialog.ShowAsync();
+            var task = dialog.ShowAsync();
+            using (App.AddPendingDialog(task))
+            {
+                try
+                {
+                    await task;
+                }
+                catch (OperationCanceledException)
+                {
+                }
+            }
 
             return dialog.SelectedBookmark;
         }

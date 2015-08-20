@@ -13,11 +13,18 @@ namespace DjvuApp.Dialogs
         public static async Task<string> ShowAsync()
         {
             var dialog = new CreateBookmarkDialogInternal();
-            var result = await dialog.ShowAsync();
-
-            return result == ContentDialogResult.Primary 
-                ? dialog.BookmarkTitle
-                : null;
+            var task = dialog.ShowAsync();
+            using (App.AddPendingDialog(task))
+            {
+                try
+                {
+                    return await task == ContentDialogResult.Primary ? dialog.BookmarkTitle : null;
+                }
+                catch (OperationCanceledException)
+                {
+                    return null;
+                }
+            }
         }
     }
 }

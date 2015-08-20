@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,6 +7,7 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.Resources;
+using Windows.Foundation;
 using Windows.Storage;
 using Windows.System;
 using Windows.UI;
@@ -23,6 +25,8 @@ namespace DjvuApp
 {
     public sealed partial class App : Application
     {
+        private static readonly List<WeakReference<IAsyncInfo>> _pendingDialogs = new List<WeakReference<IAsyncInfo>>(); 
+
         public App()
         {
             this.InitializeComponent();
@@ -79,7 +83,46 @@ namespace DjvuApp
             rootFrame.Navigate(typeof(ViewerPage), file);
             rootFrame.BackStack.Clear();
 
+            DismissPendingDialogs();
+
             Window.Current.Activate();
+        }
+
+        private class PendingDialogAwaiter : IDisposable
+        {
+            public WeakReference<IAsyncInfo> Reference { get; }
+
+            public PendingDialogAwaiter(WeakReference<IAsyncInfo> reference)
+            {
+                Reference = reference;
+            }
+
+            public void Dispose()
+            {
+                _pendingDialogs.Remove(Reference);
+            }
+        }
+
+        public static IDisposable AddPendingDialog(IAsyncInfo asyncInfo)
+        {
+            var weakReference = new WeakReference<IAsyncInfo>(asyncInfo);
+            _pendingDialogs.Add(weakReference);
+
+            return new PendingDialogAwaiter(weakReference);
+        }
+
+        private static void DismissPendingDialogs()
+        {
+            foreach (var weakReference in _pendingDialogs)
+            {
+                IAsyncInfo asyncInfo;
+                if (weakReference.TryGetTarget(out asyncInfo))
+                {
+                    asyncInfo.Cancel();
+                }
+            }
+
+            _pendingDialogs.Clear();
         }
         
         public static async Task RateApp()

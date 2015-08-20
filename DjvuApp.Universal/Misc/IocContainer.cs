@@ -27,11 +27,7 @@ namespace DjvuApp.Misc
         {
             var provider = CachedSqliteBookProvider.CreateNewAsync().Result;
             container.RegisterInstance<IBookProvider>(provider, new ContainerControlledLifetimeManager());
-
             container.RegisterInstance<INavigationService>(new NavigationService());
-
-            container.RegisterType<MainViewModel>();
-            container.RegisterType<ViewerViewModel>();
         }
     }
 }

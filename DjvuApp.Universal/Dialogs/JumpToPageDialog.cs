@@ -11,8 +11,22 @@ namespace DjvuApp.Dialogs
     {
         public static async Task<uint?> ShowAsync(uint currentPageNumber, uint pageCount)
         {
-            var dialog = new JumpToPageDialogInternal {CurrentPageNumber = currentPageNumber, PageCount = pageCount};
-            await dialog.ShowAsync();
+            var dialog = new JumpToPageDialogInternal
+            {
+                CurrentPageNumber = currentPageNumber,
+                PageCount = pageCount
+            };
+            var task = dialog.ShowAsync();
+            using (App.AddPendingDialog(task))
+            {
+                try
+                {
+                    await task;
+                }
+                catch (OperationCanceledException)
+                {
+                }
+            }
             return dialog.PageNumber;
         }
     }

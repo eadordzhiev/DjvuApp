@@ -27,9 +27,9 @@
                 Margin="19,0,19,0"
                 Text="Tap the plus sign to add a new book."
                 Style="{ThemeResource TitleTextBlockStyle}"
-                Visibility="{x:Bind ViewModel.Books, Converter={StaticResource IsNullOrEmptyToVisibilityConverter}, ConverterParameter=negate}"/>
+                Visibility="{x:Bind ViewModel.Books, Mode=OneWay, Converter={StaticResource IsNullOrEmptyToVisibilityConverter}, ConverterParameter=negate}"/>
             <GridView
-                ItemsSource="{x:Bind ViewModel.Books}"
+                ItemsSource="{x:Bind ViewModel.Books, Mode=OneWay}"
                 ItemClick="ItemClickHandler"
                 IsItemClickEnabled="True"
                 Padding="24">
@@ -50,7 +50,7 @@
                                 RelativePanel.AlignLeftWith="thumbnail"
                                 Margin="0,6,0,0"
                                 Width="140"
-                                Text="{x:Bind Title}"
+                                Text="{x:Bind Title, Mode=OneWay}"
                                 Style="{ThemeResource BodyTextBlockStyle}"
                                 TextTrimming="CharacterEllipsis"
                                 TextWrapping="NoWrap"/>
