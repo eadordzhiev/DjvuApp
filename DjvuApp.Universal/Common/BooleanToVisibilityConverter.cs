@@ -22,7 +22,7 @@ namespace DjvuApp.Common
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             var val = value is bool && (bool) value;
-            if (string.Compare((string) parameter, "Invert", StringComparison.OrdinalIgnoreCase) == 0)
+            if ((string) parameter == "negate")
                 val = !val;
             return val ? Visibility.Visible : Visibility.Collapsed;
         }

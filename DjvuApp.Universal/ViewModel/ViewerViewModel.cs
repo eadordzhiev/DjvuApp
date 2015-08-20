@@ -118,15 +118,15 @@ namespace DjvuApp.ViewModel
             }
         }
 
-        public ICommand ShowOutlineCommand { get; }
+        public RelayCommand ShowOutlineCommand { get; }
 
         public ICommand JumpToPageCommand { get; }
 
-        public ICommand AddBookmarkCommand { get; }
+        public RelayCommand AddBookmarkCommand { get; }
 
-        public ICommand RemoveBookmarkCommand { get; }
+        public RelayCommand RemoveBookmarkCommand { get; }
 
-        public ICommand ShowBookmarksCommand { get; }
+        public RelayCommand ShowBookmarksCommand { get; }
 
         public RelayCommand GoToNextPageCommand { get; }
 
@@ -146,6 +146,7 @@ namespace DjvuApp.ViewModel
         private readonly ResourceLoader _resourceLoader;
         private ObservableCollection<IBookmark> _bookmarks;
         private IBook _book;
+        private IStorageFile _file;
 
         public ViewerViewModel(IBookProvider provider, INavigationService navigationService)
         {
@@ -154,11 +155,11 @@ namespace DjvuApp.ViewModel
             _navigationService = navigationService;
             _resourceLoader = ResourceLoader.GetForCurrentView();
 
-            ShowOutlineCommand = new RelayCommand(ShowOutline);
+            ShowOutlineCommand = new RelayCommand(ShowOutline, () => Outline != null);
             JumpToPageCommand = new RelayCommand(ShowJumpToPageDialog);
-            AddBookmarkCommand = new RelayCommand(AddBookmark);
-            RemoveBookmarkCommand = new RelayCommand(RemoveBookmark);
-            ShowBookmarksCommand = new RelayCommand(ShowBookmarks);
+            AddBookmarkCommand = new RelayCommand(AddBookmark, () => _book != null);
+            RemoveBookmarkCommand = new RelayCommand(RemoveBookmark, () => _book != null);
+            ShowBookmarksCommand = new RelayCommand(ShowBookmarks, () => _book != null);
             ShareCommand = new RelayCommand(DataTransferManager.ShowShareUI);
 
             GoToNextPageCommand = new RelayCommand(
@@ -193,19 +194,18 @@ namespace DjvuApp.ViewModel
 
         private async Task SaveLastOpenedPageAsync()
         {
-            if (CurrentPageNumber == 0)
+            if (_book == null || CurrentPageNumber == 0)
                 return;
 
             await _provider.UpdateLastOpenedPageAsync(_book, CurrentPageNumber);
         }
 
-        private async void DataRequestedHandler(DataTransferManager sender, DataRequestedEventArgs e)
+        private void DataRequestedHandler(DataTransferManager sender, DataRequestedEventArgs e)
         {
             var deferral = e.Request.GetDeferral();
 
-            e.Request.Data.Properties.Title = _book.Title;
-            var file = await StorageFile.GetFileFromPathAsync(_book.Path);
-            e.Request.Data.SetStorageItems(new IStorageItem[] {file}, true);
+            e.Request.Data.Properties.Title = _book?.Title ?? _file.Name;
+            e.Request.Data.SetStorageItems(new IStorageItem[] {_file}, true);
 
             deferral.Complete();
         }
@@ -261,32 +261,31 @@ namespace DjvuApp.ViewModel
             }
         }
 
-        private async void ShowFileOpeningError(IBook book)
+        private async void ShowFileOpeningError()
         {
-            var title = _resourceLoader.GetString("FileDamagedDialog_Title");
-            var content = _resourceLoader.GetString("FileDamagedDialog_Content");
-            var removeButtonCaption = _resourceLoader.GetString("FileDamagedDialog_RemoveButton_Caption");
+            var title = _resourceLoader.GetString("DocumentOpeningErrorDialog_Title");
+            var content = _resourceLoader.GetString("DocumentOpeningErrorDialog_Content");
+            var buttonCaption = _resourceLoader.GetString("DocumentOpeningErrorDialog_OkButton_Caption");
 
             var dialog = new MessageDialog(content, title);
-            dialog.Commands.Add(new UICommand(removeButtonCaption));
+            dialog.Commands.Add(new UICommand(buttonCaption));
             await dialog.ShowAsync();
-            await _provider.RemoveBookAsync(book);
+
             _navigationService.GoBack();
         }
 
         private async void LoadedHandler(object navigationParameter)
         {
             IsProgressVisible = true;
-
-            IStorageFile file;
+            
             if (navigationParameter is IBook)
             {
                 _book = (IBook) navigationParameter;
-                file = await StorageFile.GetFileFromPathAsync(_book.Path);
+                _file = await StorageFile.GetFileFromPathAsync(_book.Path);
             }
             else if (navigationParameter is IStorageFile)
             {
-                file = (IStorageFile) navigationParameter;
+                _file = (IStorageFile) navigationParameter;
             }
             else
             {
@@ -297,9 +296,9 @@ namespace DjvuApp.ViewModel
 
             try
             {
-                document = await DjvuDocument.LoadAsync(file);
+                document = await DjvuDocument.LoadAsync(_file);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 if (Debugger.IsAttached)
                 {
@@ -307,8 +306,7 @@ namespace DjvuApp.ViewModel
                 }
 
                 IsProgressVisible = false;
-                //ShowFileOpeningError(book);
-                //App.TelemetryClient.TrackException(ex);
+                ShowFileOpeningError();
                 return;
             }
             
@@ -331,6 +329,11 @@ namespace DjvuApp.ViewModel
             Outline = await document.GetOutlineAsync();
 
             IsProgressVisible = false;
+            
+            ShowOutlineCommand.RaiseCanExecuteChanged();
+            AddBookmarkCommand.RaiseCanExecuteChanged();
+            RemoveBookmarkCommand.RaiseCanExecuteChanged();
+            ShowBookmarksCommand.RaiseCanExecuteChanged();
         }
 
         private void OnCurrentPageNumberChanged()
@@ -342,12 +345,10 @@ namespace DjvuApp.ViewModel
 
         private void UpdateIsCurrentPageBookmarked()
         {
-            if (_book == null)
+            if (_bookmarks != null)
             {
-                return;
+                IsCurrentPageBookmarked = _bookmarks.Any(bookmark => bookmark.PageNumber == CurrentPageNumber);
             }
-
-            IsCurrentPageBookmarked = _bookmarks.Any(bookmark => bookmark.PageNumber == CurrentPageNumber);
         }
     }
 }

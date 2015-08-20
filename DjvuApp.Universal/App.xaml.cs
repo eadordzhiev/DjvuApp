@@ -35,21 +35,25 @@ namespace DjvuApp
         public App()
         {
             this.InitializeComponent();
-            this.Suspending += this.OnSuspending;
 
             IocContainer.Init();
         }
 
-        private Frame CreateRootFrame()
+        private Frame GetRootFrame()
         {
-            var rootFrame = new Frame();
-            rootFrame.NavigationFailed += OnNavigationFailed;
+            var rootFrame = Window.Current.Content as Frame;
 
-            Window.Current.Content = rootFrame;
+            if (rootFrame == null)
+            {
+                rootFrame = new Frame();
+                rootFrame.NavigationFailed += OnNavigationFailed;
 
-            var titleBar = ApplicationView.GetForCurrentView().TitleBar;
-            titleBar.BackgroundColor = (Color) Resources["SystemChromeMediumColor"];
-            titleBar.ButtonBackgroundColor = (Color) Resources["SystemChromeMediumColor"];
+                Window.Current.Content = rootFrame;
+
+                var titleBar = ApplicationView.GetForCurrentView().TitleBar;
+                titleBar.BackgroundColor = (Color)Resources["SystemChromeMediumColor"];
+                titleBar.ButtonBackgroundColor = (Color)Resources["SystemChromeMediumColor"];
+            }
 
             return rootFrame;
         }
@@ -69,22 +73,9 @@ namespace DjvuApp
             }
 #endif
 
-            Frame rootFrame = Window.Current.Content as Frame;
+            var rootFrame = GetRootFrame();
+            rootFrame.Navigate(typeof(MainPage), null);
 
-            if (rootFrame == null)
-            {
-                rootFrame = CreateRootFrame();
-            }
-
-            if (rootFrame.Content == null)
-            {
-                // When the navigation stack isn't restored navigate to the first page,
-                // configuring the new page by passing required information as a navigation
-                // parameter
-                rootFrame.Navigate(typeof(MainPage), e?.Arguments);
-            }
-
-            // Ensure the current window is active
             Window.Current.Activate();
         }
 
@@ -98,68 +89,37 @@ namespace DjvuApp
             throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
         }
 
-        /// <summary>
-        /// Invoked when application execution is being suspended.  Application state is saved
-        /// without knowing whether the application will be terminated or resumed with the contents
-        /// of memory still intact.
-        /// </summary>
-        /// <param name="sender">The source of the suspend request.</param>
-        /// <param name="e">Details about the suspend request.</param>
-        private void OnSuspending(object sender, SuspendingEventArgs e)
-        {
-            var deferral = e.SuspendingOperation.GetDeferral();
-
-            // TODO: Save application state and stop any background activity
-            deferral.Complete();
-        }
-
         protected override void OnFileActivated(FileActivatedEventArgs args)
         {
             base.OnFileActivated(args);
 
             var file = (IStorageFile) args.Files.First();
 
-            var rootFrame = CreateRootFrame();
+            var rootFrame = GetRootFrame();
             rootFrame.Navigate(typeof(ViewerPage), file);
+            rootFrame.BackStack.Clear();
 
             Window.Current.Activate();
-            //await OpenFile(file);
         }
 
         public async Task OpenFile(IStorageFile file)
         {
-            var tmpFile = await file.CopyAsync(
-                destinationFolder: ApplicationData.Current.TemporaryFolder,
-                desiredNewName: file.Name,
-                option: NameCollisionOption.ReplaceExisting);
-
             var provider = ServiceLocator.Current.GetInstance<IBookProvider>();
 
             IBook book;
             try
             {
-                book = await provider.AddBookAsync(tmpFile);
+                book = await provider.AddBookAsync(file);
             }
-            catch (ArgumentException ex)
+            catch (NotImplementedException)
             {
                 ShowDocumentTypeIsNotSupportedMessage();
-                //TelemetryClient.TrackException(ex);
                 return;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 ShowDocumentOpeningErrorMessage();
-                //TelemetryClient.TrackException(ex);
                 return;
-            }
-
-            try
-            {
-                await tmpFile.DeleteAsync();
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                //TelemetryClient.TrackException(ex);
             }
 
             OnLaunched(null);
@@ -176,7 +136,7 @@ namespace DjvuApp
             var okButtonCaption = resourceLoader.GetString("DocumentOpeningErrorDialog_OkButton_Caption");
 
             var dialog = new MessageDialog(content, title);
-            dialog.Commands.Add(new UICommand(okButtonCaption, a => { }));
+            dialog.Commands.Add(new UICommand(okButtonCaption));
             await dialog.ShowAsync();
             Exit();
         }
@@ -189,7 +149,7 @@ namespace DjvuApp
             var okButtonCaption = resourceLoader.GetString("DocumentTypeIsNotSupportedDialog_OkButton_Caption");
 
             var dialog = new MessageDialog(content, title);
-            dialog.Commands.Add(new UICommand(okButtonCaption, a => { }));
+            dialog.Commands.Add(new UICommand(okButtonCaption));
             await dialog.ShowAsync();
             Exit();
         }

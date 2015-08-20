@@ -155,7 +155,8 @@ namespace DjvuApp.Controls
                     height: height,
                     zoomFactorObserver: _zoomFactorObserver);
             }
-
+            
+            SetPageNumberWithoutNotification(1);
             listView.ItemsSource = _pageStates;
         }
 

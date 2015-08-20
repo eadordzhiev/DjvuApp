@@ -22,8 +22,6 @@ namespace DjvuApp.Pages
 {
     public sealed partial class MainPage : Page
     {
-        private static bool? _hasLicense = null;
-
         private readonly NavigationHelper _navigationHelper;
         private readonly ResourceLoader _resourceLoader;
 
@@ -34,30 +32,15 @@ namespace DjvuApp.Pages
             _resourceLoader = ResourceLoader.GetForCurrentView();
         }
 
-        protected async override void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
-            
             _navigationHelper.OnNavigatedTo(e);
-
-            if (_hasLicense == null)
-            {
-                _hasLicense = await LicenseValidator.GetLicenseStatusAsync();
-            }
-            if (_hasLicense != true)
-            {
-                var dialog = new MessageDialog("I don't like being pirated...");
-                await dialog.ShowAsync();
-                Application.Current.Exit();
-            }
 
             ShowRateAppDialog();
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
-
             _navigationHelper.OnNavigatedFrom(e);
         }
 

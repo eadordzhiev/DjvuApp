@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Windows.Graphics.Display;
+using Windows.Storage;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -42,7 +43,24 @@ namespace DjvuApp.Pages
 
         private void LoadedHandler(object sender, RoutedEventArgs e)
         {
+            if (_navigationParameter is IStorageFile)
+            {
+                notificationGrid.Visibility = Visibility.Visible;
+            }
+
             Messenger.Default.Send(new LoadedHandledMessage<object>(_navigationParameter));
+        }
+
+        private void CloseNotificationButtonClickHandler(object sender, RoutedEventArgs e)
+        {
+            notificationGrid.Visibility = Visibility.Collapsed;
+        }
+
+        private void ViewLibraryButtonClickHandler(object sender, RoutedEventArgs e)
+        {
+            var rootFrame = (Frame)Window.Current.Content;
+            rootFrame.Navigate(typeof(MainPage), null);
+            rootFrame.BackStack.Clear();
         }
     }
 }

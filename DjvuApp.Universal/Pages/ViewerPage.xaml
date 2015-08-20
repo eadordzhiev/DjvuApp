@@ -13,9 +13,49 @@
     Loaded="LoadedHandler">
     
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid
+            x:Name="notificationGrid"
+            Visibility="Collapsed"
+            RequestedTheme="Dark"
+            Background="{ThemeResource SystemControlBackgroundAccentBrush}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock 
+                Grid.Column="1"
+                VerticalAlignment="Center"
+                Margin="0,12"
+                TextWrapping="WrapWholeWords"
+                Text="Bookmarks won't be available unless you add this file to the library."/>
+            <Button
+                Grid.Column="2"
+                HorizontalAlignment="Right" 
+                Margin="12"
+                Background="Transparent"
+                Click="CloseNotificationButtonClickHandler">
+                <SymbolIcon Symbol="Clear"/>
+            </Button>
+            <Button
+                Grid.Column="0"
+                Margin="12"
+                MinWidth="120"
+                Content="Add to the library"/>
+        </Grid>
         <controls:ReaderControl
+            Grid.Row="1"
             Source="{Binding CurrentDocument}"
             PageNumber="{Binding CurrentPageNumber, Mode=TwoWay}"/>
+        <ProgressRing 
+            Grid.Row="1"
+            Width="100"
+            Height="100"
+            IsActive="{Binding IsProgressVisible}"/>
     </Grid>
     
     <Page.BottomAppBar>
@@ -24,7 +64,7 @@
                 <AppBarButton
                     x:Uid="ViewerPage_AddBookmarkAppBarButton"
                     Command="{Binding AddBookmarkCommand}"
-                    Visibility="{Binding IsCurrentPageBookmarked, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Invert}"
+                    Visibility="{Binding IsCurrentPageBookmarked, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=negate}"
                     Label="add bookmark">
                     <BitmapIcon UriSource="/Assets/AddBookmark.png"/>
                 </AppBarButton>
@@ -37,7 +77,6 @@
                 </AppBarButton>
                 <AppBarButton
                     x:Uid="ViewerPage_OutlineAppBarButton"
-                    Visibility="{Binding Outline, Converter={StaticResource IsNullOrEmptyToVisibilityConverter}}"
                     Label="outline"
                     Icon="Bookmarks"
                     Command="{Binding ShowOutlineCommand}"/>
@@ -53,6 +92,9 @@
                     Command="{Binding GoToNextPageCommand}"/>
             </CommandBar.PrimaryCommands>
             <CommandBar.SecondaryCommands>
+                <AppBarButton
+                    Label="View library"
+                    Click="ViewLibraryButtonClickHandler"/>
                 <AppBarButton
                     x:Uid="ViewerPage_JumpToPageAppBarButton"
                     Label="jump to page..."

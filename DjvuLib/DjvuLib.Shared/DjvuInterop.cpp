@@ -1,6 +1,5 @@
 ﻿#include "pch.h"
 #include "DjvuInterop.h"
-#include "LicenseValidator.h"
 #include "IBufferUtilities.h"
 #include "WinrtByteStream.h"
 
@@ -26,22 +25,13 @@ DjvuOutlineItem::DjvuOutlineItem(String^ name, uint32_t pageNumber, IVectorView<
 
 IAsyncOperation<DjvuDocument^>^ DjvuDocument::LoadAsync(IStorageFile^ file)
 {
-	return create_async([file]()
+	return create_async([=]
 	{
-		return LicenseValidator::GetLicenseStatusStealthily()
-			.then([=](bool isLicenseValid)
+		return create_task(file->OpenReadAsync())
+			.then([file](IRandomAccessStreamWithContentType^ stream)
 		{
-			if (!isLicenseValid)
-			{
-				throw ref new Exception(E_UNEXPECTED);
-			}
-
-			return create_task(file->OpenReadAsync())
-				.then([file](IRandomAccessStreamWithContentType^ stream)
-			{
-				return ref new DjvuDocument(stream);
-			});
-		});
+			return ref new DjvuDocument(stream);
+		}, task_continuation_context::use_arbitrary());
 	});
 }
 
@@ -62,7 +52,7 @@ DjvuDocument::DjvuDocument(IRandomAccessStream^ stream)
 
 	if (doctype != DjVuDocument::DOC_TYPE::SINGLE_PAGE && doctype != DjVuDocument::DOC_TYPE::BUNDLED)
 	{
-		throw ref new InvalidArgumentException("Unsupported document type. Only bundled and single page documents are supported.");
+		throw ref new NotImplementedException("Unsupported document type. Only bundled and single page documents are supported.");
 	}
 
 	pageCount = djvuDocument->get_pages_num();
@@ -174,8 +164,7 @@ IAsyncOperation<DjvuPage^>^ DjvuDocument::GetPageAsync(uint32_t pageNumber)
 		throw ref new InvalidArgumentException("pageNumber is out of range");
 	}
 
-	return create_async([=]() -> DjvuPage^
-	{
+	return create_async([=]	{
 		return GetPage(pageNumber);
 	});
 }

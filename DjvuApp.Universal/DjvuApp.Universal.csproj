@@ -107,6 +107,7 @@
     <Compile Include="Common\BooleanToVisibilityConverter.cs" />
     <Compile Include="Common\INavigationService.cs" />
     <Compile Include="Common\IsNullOrEmptyToVisibilityConverter.cs" />
+    <Compile Include="Common\LicenseValidator.cs" />
     <Compile Include="Common\MenuFlyoutService.cs" />
     <Compile Include="Common\NavigationHelper.cs" />
     <Compile Include="Common\NavigationService.cs" />

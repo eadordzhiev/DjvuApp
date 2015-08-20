@@ -30,17 +30,25 @@ namespace DjvuApp.Pages
     /// </summary>
     public sealed partial class AboutPage : Page
     {
-        private NavigationHelper navigationHelper;
+        private readonly NavigationHelper _navigationHelper;
 
         public AboutPage()
         {
             this.InitializeComponent();
+            _navigationHelper = new NavigationHelper(this);
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            _navigationHelper.OnNavigatedTo(e);
+
             var version = Package.Current.Id.Version;
             versionTextBlock.Text = String.Format("Version {0}.{1}.{2}.{3}\nBy Useless guy\nFrom Russia with love :)", version.Major, version.Minor, version.Build, version.Revision);
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            _navigationHelper.OnNavigatedFrom(e);
         }
 
         private async void ContactMeButtonClickHandler(object sender, RoutedEventArgs e)

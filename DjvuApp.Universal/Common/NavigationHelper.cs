@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.System;
 using Windows.UI.Core;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -76,10 +77,12 @@ namespace DjvuApp.Common
             // When this page is part of the visual tree make two changes:
             // 1) Map application view state to visual state for the page
             // 2) Handle hardware navigation requests
-            this.Page.Loaded += (sender, e) =>
+            this.Page.Loaded += async (sender, e) =>
             {
 #if WINDOWS_UWP
-                Windows.UI.Core.SystemNavigationManager.GetForCurrentView().BackRequested += NavigationHelper_BackRequested;
+                var navigationManager = SystemNavigationManager.GetForCurrentView();
+                navigationManager.BackRequested += NavigationHelper_BackRequested;
+                navigationManager.AppViewBackButtonVisibility = Frame.CanGoBack ? AppViewBackButtonVisibility.Visible : AppViewBackButtonVisibility.Collapsed;
 #endif
 #if WINDOWS_PHONE_APP
                 Windows.Phone.UI.Input.HardwareButtons.BackPressed += HardwareButtons_BackPressed;
@@ -95,6 +98,14 @@ namespace DjvuApp.Common
                         this.CoreWindow_PointerPressed;
                 }
 #endif
+
+                var hasLicense = await LicenseValidator.Current.GetIsLicensedAsync();
+                if (!hasLicense)
+                {
+                    var dialog = new MessageDialog("I don't like being pirated...");
+                    await dialog.ShowAsync();
+                    Application.Current.Exit();
+                }
             };
 
             // Undo the same changes when the page is no longer visible
@@ -117,11 +128,7 @@ namespace DjvuApp.Common
 #if WINDOWS_UWP
         private void NavigationHelper_BackRequested(object sender, BackRequestedEventArgs e)
         {
-            if (this.GoBackCommand.CanExecute(null))
-            {
-                e.Handled = true;
-                this.GoBackCommand.Execute(null);
-            }
+            GoBack();
         }
 #endif
 
