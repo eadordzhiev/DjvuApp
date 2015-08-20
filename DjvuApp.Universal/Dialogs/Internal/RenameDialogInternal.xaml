@@ -6,19 +6,18 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Title="RENAME"
-    FullSizeDesired="True"
     PrimaryButtonText="save"
     PrimaryButtonClick="SaveButtonClickHandler"
     SecondaryButtonText="cancel"
     SecondaryButtonClick="CancelButtonClickHandler"
     Loaded="LoadedHandler"
-    DataContext="{Binding RelativeSource={RelativeSource Self}}"
     x:Uid="RenameDialog">
 
     <TextBox 
         x:Name="nameTextBox"
         x:Uid="RenameDialog_NewNameField"
+        Margin="0,12"
         TabIndex="0"
         Header="Name"
-        Text="{Binding NewName, Mode=TwoWay}"/>
+        Text="{x:Bind NewName, Mode=TwoWay}"/>
 </ContentDialog>

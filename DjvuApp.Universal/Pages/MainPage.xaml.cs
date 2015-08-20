@@ -20,7 +20,6 @@ using DjvuApp.Common;
 using DjvuApp.Misc;
 using DjvuApp.Model.Books;
 using DjvuApp.ViewModel;
-using DjvuApp.ViewModel.Messages;
 using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Practices.ServiceLocation;
 
@@ -28,6 +27,8 @@ namespace DjvuApp.Pages
 {
     public sealed partial class MainPage : Page
     {
+        public MainViewModel ViewModel { get; } = ServiceLocator.Current.GetInstance<MainViewModel>();
+
         private readonly NavigationHelper _navigationHelper;
 
         public MainPage()
@@ -40,15 +41,13 @@ namespace DjvuApp.Pages
         {
             _navigationHelper.OnNavigatedTo(e);
 
-            Messenger.Default.Send(new OnNavigatedToMessage<MainViewModel>(e));
+            ViewModel.OnNavigatedTo(e);
             ShowRateAppDialog();
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             _navigationHelper.OnNavigatedFrom(e);
-
-            Messenger.Default.Send(new OnNavigatedFromMessage<MainViewModel>(e));
         }
 
         private async void ShowRateAppDialog()

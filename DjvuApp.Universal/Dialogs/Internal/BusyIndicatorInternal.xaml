@@ -31,7 +31,7 @@
             RelativePanel.Below="progressRing"
             RelativePanel.AlignHorizontalCenterWithPanel="True"
             Margin="12"
-            Text="{x:Bind TaskDescription}"
+            Text="{x:Bind TaskDescription, Mode=OneWay}"
             Style="{ThemeResource SubtitleTextBlockStyle}"/>
     </RelativePanel>
 </UserControl>

@@ -6,7 +6,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Title="JUMP TO PAGE"
-    FullSizeDesired="True"
     PrimaryButtonText="jump"
     IsPrimaryButtonEnabled="False"
     Loaded="LoadedHandler"
@@ -14,20 +13,16 @@
     DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
     <StackPanel>
-        <TextBlock
-            x:Uid="JumpToPageDialog_Designation"
-            TextWrapping="Wrap"
-            Style="{StaticResource BaseTextBlockStyle}"
-            Text="Type the number of the page you would like to jump to in document."/>
         <TextBox
             x:Name="pageNumberTextBox"
             x:Uid="JumpToPageDialog_PageNumberField"
+            Margin="0,12"
             Header="Page number"
             InputScope="Number"
             Text="{Binding PageNumberText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
         <TextBlock TextWrapping="Wrap">
-            <Run x:Uid="JumpToPageDialog_TotalPageNumber" Text="The total number of pages is "/>
-            <Run Text="{Binding PageCount}"/>
+            <Run x:Uid="JumpToPageDialog_TotalPageNumber" Text="The total number of pages is"/>
+            <Run Text="{x:Bind PageCount}"/>
         </TextBlock>
     </StackPanel>
 </ContentDialog>

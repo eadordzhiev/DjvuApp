@@ -8,9 +8,7 @@
     xmlns:common="using:DjvuApp.Common"
     xmlns:controls="using:DjvuApp.Controls"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    DataContext="{Binding ViewerViewModel, Source={StaticResource ViewModelLocator}}"
-    Loaded="LoadedHandler">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     
     <Grid>
         <Grid.RowDefinitions>
@@ -50,13 +48,13 @@
         </Grid>
         <controls:ReaderControl
             Grid.Row="1"
-            Source="{Binding CurrentDocument}"
-            PageNumber="{Binding CurrentPageNumber, Mode=TwoWay}"/>
+            Source="{x:Bind ViewModel.CurrentDocument, Mode=OneWay}"
+            PageNumber="{x:Bind ViewModel.CurrentPageNumber, Mode=TwoWay}"/>
         <ProgressRing 
             Grid.Row="1"
             Width="100"
             Height="100"
-            IsActive="{Binding IsProgressVisible}"/>
+            IsActive="{x:Bind ViewModel.IsProgressVisible, Mode=OneWay}"/>
     </Grid>
     
     <Page.BottomAppBar>
@@ -64,15 +62,15 @@
             <CommandBar.PrimaryCommands>
                 <AppBarButton
                     x:Uid="ViewerPage_AddBookmarkAppBarButton"
-                    Command="{Binding AddBookmarkCommand}"
-                    Visibility="{Binding IsCurrentPageBookmarked, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=negate}"
+                    Command="{x:Bind ViewModel.AddBookmarkCommand}"
+                    Visibility="{x:Bind ViewModel.IsCurrentPageBookmarked, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=negate}"
                     Label="add bookmark">
                     <BitmapIcon UriSource="/Assets/AddBookmark.png"/>
                 </AppBarButton>
                 <AppBarButton
                     x:Uid="ViewerPage_RemoveBookmarkAppBarButton"
-                    Command="{Binding RemoveBookmarkCommand}"
-                    Visibility="{Binding IsCurrentPageBookmarked, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Command="{x:Bind ViewModel.RemoveBookmarkCommand}"
+                    Visibility="{x:Bind ViewModel.IsCurrentPageBookmarked, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
                     Label="remove bookmark">
                     <BitmapIcon UriSource="/Assets/RemoveBookmark.png"/>
                 </AppBarButton>
@@ -80,17 +78,17 @@
                     x:Uid="ViewerPage_OutlineAppBarButton"
                     Label="outline"
                     Icon="Bookmarks"
-                    Command="{Binding ShowOutlineCommand}"/>
+                    Command="{x:Bind ViewModel.ShowOutlineCommand, Mode=OneWay}"/>
                 <AppBarButton
                     x:Uid="ViewerPage_PreviousPageAppBarButton"
                     Label="previous"
                     Icon="Back"
-                    Command="{Binding GoToPreviousPageCommand}"/>
+                    Command="{x:Bind ViewModel.GoToPreviousPageCommand, Mode=OneWay}"/>
                 <AppBarButton
                     x:Uid="ViewerPage_NextPageAppBarButton"
                     Label="next"
                     Icon="Forward"
-                    Command="{Binding GoToNextPageCommand}"/>
+                    Command="{x:Bind ViewModel.GoToNextPageCommand, Mode=OneWay}"/>
             </CommandBar.PrimaryCommands>
             <CommandBar.SecondaryCommands>
                 <AppBarButton
@@ -101,15 +99,15 @@
                 <AppBarButton
                     x:Uid="ViewerPage_JumpToPageAppBarButton"
                     Label="jump to page..."
-                    Command="{Binding JumpToPageCommand}"/>
+                    Command="{x:Bind ViewModel.JumpToPageCommand}"/>
                 <AppBarButton
                     x:Uid="ViewerPage_ShowBookmarksAppBarButton"
                     Label="bookmarks..."
-                    Command="{Binding ShowBookmarksCommand}"/>
+                    Command="{x:Bind ViewModel.ShowBookmarksCommand, Mode=OneWay}"/>
                 <AppBarButton
                     x:Uid="ViewerPage_ShareAppBarButton"
                     Label="share..."
-                    Command="{Binding ShareCommand}"/>
+                    Command="{x:Bind ViewModel.ShareCommand}"/>
             </CommandBar.SecondaryCommands>
         </CommandBar>
     </Page.BottomAppBar>

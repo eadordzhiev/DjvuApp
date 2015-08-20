@@ -6,9 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:common="using:DjvuApp.Common"
     xmlns:books="using:DjvuApp.Model.Books"
-    mc:Ignorable="d"
-    DataContext="{Binding MainViewModel, Source={StaticResource ViewModelLocator}}"
-    d:DataContext="{d:DesignData /SampleData/MainPageSampleDataSource/MainPageSampleDataSource.xaml}">
+    mc:Ignorable="d">
     
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
@@ -29,14 +27,14 @@
                 Margin="19,0,19,0"
                 Text="Tap the plus sign to add a new book."
                 Style="{ThemeResource TitleTextBlockStyle}"
-                Visibility="{Binding Books, Converter={StaticResource IsNullOrEmptyToVisibilityConverter}, ConverterParameter=negate}"/>
+                Visibility="{x:Bind ViewModel.Books, Converter={StaticResource IsNullOrEmptyToVisibilityConverter}, ConverterParameter=negate}"/>
             <GridView
-                ItemsSource="{Binding Books}"
+                ItemsSource="{x:Bind ViewModel.Books}"
                 ItemClick="ItemClickHandler"
                 IsItemClickEnabled="True"
                 Padding="24">
                 <ItemsControl.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate x:DataType="books:IBook">
                         <RelativePanel Margin="12">
                             <Border 
                                 x:Name="thumbnail"
@@ -51,14 +49,16 @@
                                 RelativePanel.Below="thumbnail"
                                 RelativePanel.AlignLeftWith="thumbnail"
                                 Margin="0,6,0,0"
-                                Text="{Binding Title}"
+                                Width="140"
+                                Text="{x:Bind Title}"
                                 Style="{ThemeResource BodyTextBlockStyle}"
                                 TextTrimming="CharacterEllipsis"
                                 TextWrapping="NoWrap"/>
                             <TextBlock
                                 RelativePanel.Below="title"
                                 RelativePanel.AlignLeftWith="title"
-                                Text="{Binding LastOpeningTime}"
+                                Width="140"
+                                Text="{x:Bind LastOpeningTime}"
                                 Style="{ThemeResource CaptionTextBlockStyle}"
                                 Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
                                 TextTrimming="CharacterEllipsis"
@@ -98,7 +98,7 @@
                     x:Uid="MainPage_AddAppBarButton"
                     Icon="Add"
                     Label="Add"
-                    Command="{Binding AddBookCommand}"/>
+                    Command="{x:Bind ViewModel.AddBookCommand}"/>
                 <AppBarButton
                     Label="Manage">
                     <AppBarButton.Icon>

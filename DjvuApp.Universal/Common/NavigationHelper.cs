@@ -10,6 +10,7 @@ using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
+using DjvuApp.Misc;
 using GalaSoft.MvvmLight.Command;
 
 namespace DjvuApp.Common

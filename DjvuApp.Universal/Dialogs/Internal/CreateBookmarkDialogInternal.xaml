@@ -6,8 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Title="ADD BOOKMARK"
-    FullSizeDesired="False"
-    IsPrimaryButtonEnabled="{Binding CanSave}"
+    IsPrimaryButtonEnabled="{x:Bind CanSave, Mode=OneWay}"
     PrimaryButtonText="save"
     PrimaryButtonClick="SaveButtonClickHandler"
     SecondaryButtonText="cancel"
@@ -19,6 +18,7 @@
     <TextBox 
         x:Name="nameTextBox"
         x:Uid="CreateBookmarkDialog_NameField"
+        Margin="0,12"
         Header="Name"
         Text="{Binding BookmarkTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 </ContentDialog>

@@ -18,7 +18,6 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Navigation;
 using DjvuApp.Dialogs;
 using DjvuApp.Model.Books;
-using DjvuApp.ViewModel.Messages;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using JetBrains.Annotations;
@@ -87,28 +86,26 @@ namespace DjvuApp.ViewModel
                 picker.FileTypeFilter.Add(".djvu");
 
                 var file = await picker.PickSingleFileAsync();
-                AddBookFromFile(file);
-            });
-            ShareBookCommand = new RelayCommand<IBook>(ShareBook);
-
-            MessengerInstance.Register<OnNavigatedToMessage<MainViewModel>>(this, message =>
-            {
-                if (message.EventArgs.NavigationMode == NavigationMode.New)
+                if (file != null)
                 {
-                    var file = message.EventArgs.Parameter as IStorageFile;
-                    if (file != null)
-                    {
-                        AddBookFromFile(file);
-                    }
+                    AddBookFromFile(file);
                 }
             });
+            ShareBookCommand = new RelayCommand<IBook>(ShareBook);
             
             RefreshBooks();
         }
 
-        public override void Cleanup()
+        public void OnNavigatedTo(NavigationEventArgs e)
         {
-            MessengerInstance.Unregister<OnNavigatedToMessage<MainViewModel>>(this);
+            if (e.NavigationMode == NavigationMode.New)
+            {
+                var file = e.Parameter as IStorageFile;
+                if (file != null)
+                {
+                    AddBookFromFile(file);
+                }
+            }
         }
 
         private void ShareBook(IBook book)

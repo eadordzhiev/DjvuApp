@@ -10,13 +10,15 @@ using Windows.UI.Xaml.Navigation;
 using DjvuApp.Common;
 using DjvuApp.Model.Books;
 using DjvuApp.ViewModel;
-using DjvuApp.ViewModel.Messages;
 using GalaSoft.MvvmLight.Messaging;
+using Microsoft.Practices.ServiceLocation;
 
 namespace DjvuApp.Pages
 {
     public sealed partial class ViewerPage : Page
     {
+        public ViewerViewModel ViewModel { get; } = ServiceLocator.Current.GetInstance<ViewerViewModel>();
+
         private readonly NavigationHelper _navigationHelper;
         private object _navigationParameter;
 
@@ -30,7 +32,7 @@ namespace DjvuApp.Pages
         {
             _navigationHelper.OnNavigatedFrom(e);
 
-            Messenger.Default.Send(new OnNavigatedFromMessage<ViewerViewModel>(e));
+            ViewModel.OnNavigatedFrom(e);
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -39,12 +41,9 @@ namespace DjvuApp.Pages
 
             _navigationParameter = e.Parameter;
             
-            Messenger.Default.Send(new OnNavigatedToMessage<ViewerViewModel>(e));
-        }
+            ViewModel.OnNavigatedTo(e);
 
-        private void LoadedHandler(object sender, RoutedEventArgs e)
-        {
-            if (_navigationParameter is IStorageFile)
+            if (e.Parameter is IStorageFile)
             {
                 notificationGrid.Visibility = Visibility.Visible;
                 viewLibraryButton.Visibility = Visibility.Visible;

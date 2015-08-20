@@ -21,7 +21,6 @@ using Windows.UI.Xaml.Navigation;
 using JetBrains.Annotations;
 using DjvuApp.Controls;
 using DjvuApp.Djvu;
-using DjvuApp.ViewModel.Messages;
 using DjvuApp.Common;
 using DjvuApp.Dialogs;
 using DjvuApp.Model.Books;
@@ -169,29 +168,24 @@ namespace DjvuApp.ViewModel
             GoToPreviousPageCommand = new RelayCommand(
                 () => CurrentPageNumber--, 
                 () => CurrentPageNumber > 1);
-
-            MessengerInstance.Register<OnNavigatedFromMessage<ViewerViewModel>>(this, async message =>
-            {
-                _dataTransferManager.DataRequested -= DataRequestedHandler;
-                Application.Current.Suspending -= ApplicationSuspendingHandler;
-                await SaveLastOpenedPageAsync();
-            });
-            MessengerInstance.Register<OnNavigatedToMessage<ViewerViewModel>>(this, message =>
-            {
-                if (message.EventArgs.NavigationMode == NavigationMode.New)
-                {
-                    LoadedHandler(message.EventArgs.Parameter);
-                }
-
-                _dataTransferManager.DataRequested += DataRequestedHandler;
-                Application.Current.Suspending += ApplicationSuspendingHandler;
-            });
         }
 
-        public override void Cleanup()
+        public void OnNavigatedTo(NavigationEventArgs e)
         {
-            MessengerInstance.Unregister<OnNavigatedFromMessage<ViewerViewModel>>(this);
-            MessengerInstance.Unregister<OnNavigatedToMessage<ViewerViewModel>>(this);
+            if (e.NavigationMode == NavigationMode.New)
+            {
+                LoadedHandler(e.Parameter);
+            }
+
+            _dataTransferManager.DataRequested += DataRequestedHandler;
+            Application.Current.Suspending += ApplicationSuspendingHandler;
+        }
+
+        public void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            _dataTransferManager.DataRequested -= DataRequestedHandler;
+            Application.Current.Suspending -= ApplicationSuspendingHandler;
+            SaveLastOpenedPageAsync();
         }
 
         private async void ApplicationSuspendingHandler(object sender, SuspendingEventArgs e)

@@ -26,7 +26,7 @@ namespace DjvuApp.Dialogs.Internal
         public CreateBookmarkDialogInternal()
         {
             this.InitializeComponent();
-            BookmarkTitle = "Unnamed bookmark";
+            BookmarkTitle = "Bookmark 1";
         }
 
         private static void BookmarkTitleChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)

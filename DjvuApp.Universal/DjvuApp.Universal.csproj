@@ -107,12 +107,10 @@
     <Compile Include="Common\BooleanToVisibilityConverter.cs" />
     <Compile Include="Common\INavigationService.cs" />
     <Compile Include="Common\IsNullOrEmptyToVisibilityConverter.cs" />
-    <Compile Include="Common\LicenseValidator.cs" />
+    <Compile Include="Misc\LicenseValidator.cs" />
     <Compile Include="Common\MenuFlyoutService.cs" />
     <Compile Include="Common\NavigationHelper.cs" />
     <Compile Include="Common\NavigationService.cs" />
-    <Compile Include="Common\ProgressBehavior.cs" />
-    <Compile Include="Common\StatusBarBehavior.cs" />
     <Compile Include="Common\StringFormatConverter.cs" />
     <Compile Include="Common\SuspensionManager.cs" />
     <Compile Include="Controls\IZoomFactorObserver.cs" />
@@ -151,7 +149,6 @@
     <Compile Include="Misc\SQLite.cs" />
     <Compile Include="Misc\SQLiteAsync.cs" />
     <Compile Include="Misc\TextBoxExtensions.cs" />
-    <Compile Include="Misc\ViewModelLocator.cs" />
     <Compile Include="Model\Books\CachedSqliteBookProvider.cs" />
     <Compile Include="Model\Books\IBook.cs" />
     <Compile Include="Model\Books\IBookmark.cs" />
@@ -174,9 +171,6 @@
       <DependentUpon>SelectBookmarkDialogSampleDataSource.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\MainViewModel.cs" />
-    <Compile Include="ViewModel\Messages\LoadedHandledMessage.cs" />
-    <Compile Include="ViewModel\Messages\OnNavigatedFromMessage.cs" />
-    <Compile Include="ViewModel\Messages\OnNavigatedToMessage.cs" />
     <Compile Include="ViewModel\ViewerViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
