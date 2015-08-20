@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:osb="http://www.openswatchbook.org/uri/2009/osb"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="360"
+   height="360"
+   id="svg5176"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="TargetBasedUnplated.svg"
+   inkscape:export-filename="C:\Users\Desktop1\Source\Repos\DjvuApp\DjvuApp.Universal\Assets\Square44x44Logo.targetsize-16_altformunplated.png"
+   inkscape:export-xdpi="4"
+   inkscape:export-ydpi="4">
+  <defs
+     id="defs5178">
+    <linearGradient
+       id="linearGradient4146"
+       osb:paint="solid">
+      <stop
+         style="stop-color:#ac9d93;stop-opacity:1;"
+         offset="0"
+         id="stop4148" />
+    </linearGradient>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="10.393091"
+     inkscape:cy="133.55994"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1474"
+     inkscape:window-height="841"
+     inkscape:window-x="54"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:snap-page="true"
+     inkscape:snap-bbox="false"
+     inkscape:snap-global="true" />
+  <metadata
+     id="metadata5181">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-692.36218)">
+    <rect
+       style="fill:#7700fd;fill-opacity:1;stroke:none;stroke-width:0;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3342"
+       width="360"
+       height="360"
+       x="0"
+       y="692.36218" />
+    <path
+       style="fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:23.13053513;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 54.872435,840.8447 c 0,0 141.094115,159.8849 165.471295,178.9581 36.19198,28.317 74.16608,25.5876 92.18834,6.1318 18.02222,-19.4555 18.8617,-54.8229 -3.33791,-88.87776 C 292.63335,911.65204 121.82821,726.8836 111.98622,717.3499 97.145603,702.97415 67.093211,697.40036 48.195811,714.54353 c -18.897465,17.14321 -17.135843,48.94356 -2.119122,65.70121 15.776218,17.60515 106.922541,120.9217 158.750361,176.49265 13.95566,14.96362 35.05406,19.50627 47.96486,8.07013 12.90977,-11.43524 11.7955,-32.07109 -2.65678,-49.0288 C 219.70469,880.0728 156.13885,813.09276 156.13885,813.09276"
+       id="path4066"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cszsszssssc"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:export-filename="C:\Users\Desktop1\Source\Repos\DjvuApp\DjvuApp.Universal\Assets\path4066.png" />
+  </g>
+</svg>

@@ -7,9 +7,20 @@
     xmlns:common="using:DjvuApp.Common"
     xmlns:books="using:DjvuApp.Model.Books"
     mc:Ignorable="d"
-    x:Name="page">
-    
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    x:Name="page"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Page.Transitions>
+        <TransitionCollection>
+            <NavigationThemeTransition>
+                <NavigationThemeTransition.DefaultNavigationTransitionInfo>
+                    <DrillInNavigationTransitionInfo/>
+                </NavigationThemeTransition.DefaultNavigationTransitionInfo>
+            </NavigationThemeTransition>
+        </TransitionCollection>
+    </Page.Transitions>
+
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>

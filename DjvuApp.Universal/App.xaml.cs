@@ -16,6 +16,7 @@ using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 using DjvuApp.Misc;
@@ -42,17 +43,38 @@ namespace DjvuApp
             {
                 rootFrame = new Frame();
                 rootFrame.NavigationFailed += OnNavigationFailed;
-
+                rootFrame.Background = (Brush) Resources["ApplicationPageBackgroundThemeBrush"];
+                 
                 Window.Current.Content = rootFrame;
 
                 var titleBar = ApplicationView.GetForCurrentView().TitleBar;
                 titleBar.BackgroundColor = (Color)Resources["SystemChromeMediumColor"];
                 titleBar.ButtonBackgroundColor = (Color)Resources["SystemChromeMediumColor"];
+                titleBar.ButtonForegroundColor = (Color)Resources["SystemBaseHighColor"];
+                titleBar.ButtonHoverBackgroundColor = (Color)Resources["SystemChromeLowColor"];
+
+                titleBar.BackgroundColor = (Color)Resources["SystemChromeMediumColor"];
+                titleBar.ForegroundColor = (Color)Resources["SystemBaseHighColor"];
+
+                titleBar.ButtonBackgroundColor = (Color)Resources["SystemChromeMediumColor"];
+                titleBar.ButtonForegroundColor = (Color)Resources["SystemBaseHighColor"];
+
+                titleBar.ButtonHoverBackgroundColor = (Color)Resources["SystemChromeLowColor"];
+                titleBar.ButtonHoverForegroundColor = (Color)Resources["SystemBaseHighColor"];
+
+                titleBar.ButtonPressedBackgroundColor = (Color)Resources["SystemChromeHighColor"];
+                titleBar.ButtonPressedForegroundColor = (Color)Resources["SystemBaseHighColor"];
+
+                titleBar.ButtonInactiveBackgroundColor = (Color)Resources["SystemChromeMediumColor"];
+                //titleBar.ButtonInactiveForegroundColor = Colors.Gray;
+
+                titleBar.InactiveBackgroundColor = (Color)Resources["SystemChromeMediumColor"];
+                //titleBar.InactiveForegroundColor = Colors.Gray;
             }
 
             return rootFrame;
         }
-        
+
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
 #if DEBUG

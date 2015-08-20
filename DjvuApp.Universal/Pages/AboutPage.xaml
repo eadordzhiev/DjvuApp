@@ -6,8 +6,13 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
+    
     <Pivot Title="DJVU READER">
+        <Pivot.Transitions>
+            <TransitionCollection>
+                <EntranceThemeTransition/>
+            </TransitionCollection>
+        </Pivot.Transitions>
         <PivotItem x:Uid="AboutPage_AboutSection" Header="About">
             <ScrollViewer>
                 <StackPanel>

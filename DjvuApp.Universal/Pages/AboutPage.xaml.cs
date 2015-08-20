@@ -39,7 +39,7 @@ namespace DjvuApp.Pages
 
             var version = Package.Current.Id.Version;
             versionTextBlock.Text = $@"Version {version.Major}.{version.Minor}.{version.Build}.{version.Revision}
-By Useless guy
+By Eldar Dordzhiev
 From Russia with love :)";
         }
 
@@ -59,7 +59,7 @@ From Russia with love :)";
 
         private async void ShowMyAppsButtonClickHandler(object sender, RoutedEventArgs e)
         {
-            await Launcher.LaunchUriAsync(new Uri("ms-windows-store:Publisher?name=Useless%20guy"));
+            await Launcher.LaunchUriAsync(new Uri("ms-windows-store:Publisher?name=Eldar%20Dordzhiev"));
         }
 
         private async void RateButtonClickHandler(object sender, RoutedEventArgs e)
