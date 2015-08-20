@@ -45,7 +45,8 @@
                 Grid.Column="0"
                 Margin="12"
                 MinWidth="120"
-                Content="Add to the library"/>
+                Content="Add to the library"
+                Click="AddBookButtonClick"/>
         </Grid>
         <controls:ReaderControl
             Grid.Row="1"
@@ -93,7 +94,9 @@
             </CommandBar.PrimaryCommands>
             <CommandBar.SecondaryCommands>
                 <AppBarButton
+                    x:Name="viewLibraryButton"
                     Label="View library"
+                    Visibility="Collapsed"
                     Click="ViewLibraryButtonClickHandler"/>
                 <AppBarButton
                     x:Uid="ViewerPage_JumpToPageAppBarButton"

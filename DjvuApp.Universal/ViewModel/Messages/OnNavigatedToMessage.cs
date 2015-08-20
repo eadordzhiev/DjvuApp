@@ -1,12 +1,15 @@
-﻿namespace DjvuApp.ViewModel.Messages
-{
-    public class OnNavigatedToMessage
-    {
-        public object Parameter { get; private set; }
+﻿using Windows.UI.Xaml.Navigation;
+using JetBrains.Annotations;
 
-        public OnNavigatedToMessage(object parameter)
+namespace DjvuApp.ViewModel.Messages
+{
+    public class OnNavigatedToMessage<[UsedImplicitly] T>
+    {
+        public NavigationEventArgs EventArgs { get; }
+
+        public OnNavigatedToMessage(NavigationEventArgs eventArgs)
         {
-            Parameter = parameter;
+            EventArgs = eventArgs;
         }
     }
 }

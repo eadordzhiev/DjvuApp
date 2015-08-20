@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.ApplicationModel.DataTransfer;
@@ -14,6 +15,7 @@ using Windows.Storage.Pickers;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Navigation;
 using DjvuApp.Dialogs;
 using DjvuApp.Model.Books;
 using DjvuApp.ViewModel.Messages;
@@ -79,10 +81,34 @@ namespace DjvuApp.ViewModel
 
             RenameBookCommand = new RelayCommand<IBook>(RenameBook);
             RemoveBookCommand = new RelayCommand<IBook>(RemoveBook);
-            AddBookCommand = new RelayCommand(AddBook);
+            AddBookCommand = new RelayCommand(async () =>
+            {
+                var picker = new FileOpenPicker();
+                picker.FileTypeFilter.Add(".djvu");
+
+                var file = await picker.PickSingleFileAsync();
+                AddBookFromFile(file);
+            });
             ShareBookCommand = new RelayCommand<IBook>(ShareBook);
+
+            MessengerInstance.Register<OnNavigatedToMessage<MainViewModel>>(this, message =>
+            {
+                if (message.EventArgs.NavigationMode == NavigationMode.New)
+                {
+                    var file = message.EventArgs.Parameter as IStorageFile;
+                    if (file != null)
+                    {
+                        AddBookFromFile(file);
+                    }
+                }
+            });
             
             RefreshBooks();
+        }
+
+        public override void Cleanup()
+        {
+            MessengerInstance.Unregister<OnNavigatedToMessage<MainViewModel>>(this);
         }
 
         private void ShareBook(IBook book)
@@ -107,14 +133,30 @@ namespace DjvuApp.ViewModel
             DataTransferManager.ShowShareUI();
         }
         
-        private async void AddBook()
+        private async void AddBookFromFile(IStorageFile file)
         {
-            var picker = new FileOpenPicker();
-            picker.FileTypeFilter.Add(".djvu");
+            var dialog = new BusyIndicator();
+            dialog.Show($"Opening: {file.Name}");
 
-            var file = await picker.PickSingleFileAsync();
-            var app = (App) Application.Current;
-            await app.OpenFile(file);
+            IBook book;
+            try
+            {
+                book = await _bookProvider.AddBookAsync(file);
+            }
+            catch (NotImplementedException)
+            {
+                ShowDocumentTypeIsNotSupportedMessage();
+                return;
+            }
+            catch (Exception)
+            {
+                ShowDocumentOpeningErrorMessage();
+                return;
+            }
+
+            dialog.Hide();
+
+            Books.Insert(0, book);
         }
 
         private async void RenameBook(IBook book)
@@ -158,6 +200,30 @@ namespace DjvuApp.ViewModel
             Books = new ObservableCollection<IBook>(books);
 
             IsProgressVisible = false;
+        }
+
+        private async void ShowDocumentOpeningErrorMessage()
+        {
+            var resourceLoader = ResourceLoader.GetForCurrentView();
+            var title = resourceLoader.GetString("DocumentOpeningErrorDialog_Title");
+            var content = resourceLoader.GetString("DocumentOpeningErrorDialog_Content");
+            var okButtonCaption = resourceLoader.GetString("DocumentOpeningErrorDialog_OkButton_Caption");
+
+            var dialog = new MessageDialog(content, title);
+            dialog.Commands.Add(new UICommand(okButtonCaption));
+            await dialog.ShowAsync();
+        }
+
+        private async void ShowDocumentTypeIsNotSupportedMessage()
+        {
+            var resourceLoader = ResourceLoader.GetForCurrentView();
+            var title = resourceLoader.GetString("DocumentTypeIsNotSupportedDialog_Title");
+            var content = resourceLoader.GetString("DocumentTypeIsNotSupportedDialog_Content");
+            var okButtonCaption = resourceLoader.GetString("DocumentTypeIsNotSupportedDialog_OkButton_Caption");
+
+            var dialog = new MessageDialog(content, title);
+            dialog.Commands.Add(new UICommand(okButtonCaption));
+            await dialog.ShowAsync();
         }
     }
 }

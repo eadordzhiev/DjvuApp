@@ -157,9 +157,9 @@ namespace DjvuApp.Model.Books
             var properties = await file.GetBasicPropertiesAsync();
             var title = Path.GetFileNameWithoutExtension(file.Name);
 
-            var booksFolder = await GetBooksFolderAsync();
+            var booksFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Books", CreationCollisionOption.OpenIfExists);
             var djvuFolder = await booksFolder.CreateFolderAsync("Djvu", CreationCollisionOption.OpenIfExists);
-            var djvuFile = await file.CopyAsync(djvuFolder, string.Format("{0}.djvu", guid));
+            var djvuFile = await file.CopyAsync(djvuFolder, $"{guid}.djvu");
 
             var thumbnailBitmap = await RenderThumbnail(page);
             var thumbnailFile = await djvuFolder.CreateFileAsync($"{guid}.jpg");
@@ -295,11 +295,6 @@ namespace DjvuApp.Model.Books
 
             var connection = await GetConnectionAsync();
             await connection.UpdateAsync(sqliteBook);
-        }
-
-        private static async Task<IStorageFolder> GetBooksFolderAsync()
-        {
-            return await ApplicationData.Current.LocalFolder.CreateFolderAsync("Books", CreationCollisionOption.OpenIfExists);
         }
     }
 }

@@ -17,6 +17,7 @@ using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Navigation;
 using JetBrains.Annotations;
 using DjvuApp.Controls;
 using DjvuApp.Djvu;
@@ -169,20 +170,28 @@ namespace DjvuApp.ViewModel
                 () => CurrentPageNumber--, 
                 () => CurrentPageNumber > 1);
 
-            MessengerInstance.Register<LoadedHandledMessage<object>>(this, message => LoadedHandler(message.Parameter));
-            MessengerInstance.Register<OnNavigatedFromMessage>(this,
-                async message =>
+            MessengerInstance.Register<OnNavigatedFromMessage<ViewerViewModel>>(this, async message =>
+            {
+                _dataTransferManager.DataRequested -= DataRequestedHandler;
+                Application.Current.Suspending -= ApplicationSuspendingHandler;
+                await SaveLastOpenedPageAsync();
+            });
+            MessengerInstance.Register<OnNavigatedToMessage<ViewerViewModel>>(this, message =>
+            {
+                if (message.EventArgs.NavigationMode == NavigationMode.New)
                 {
-                    _dataTransferManager.DataRequested -= DataRequestedHandler;
-                    Application.Current.Suspending -= ApplicationSuspendingHandler;
-                    await SaveLastOpenedPageAsync();
-                });
-            MessengerInstance.Register<OnNavigatedToMessage>(this,
-                message =>
-                {
-                    _dataTransferManager.DataRequested += DataRequestedHandler;
-                    Application.Current.Suspending += ApplicationSuspendingHandler;
-                });
+                    LoadedHandler(message.EventArgs.Parameter);
+                }
+
+                _dataTransferManager.DataRequested += DataRequestedHandler;
+                Application.Current.Suspending += ApplicationSuspendingHandler;
+            });
+        }
+
+        public override void Cleanup()
+        {
+            MessengerInstance.Unregister<OnNavigatedFromMessage<ViewerViewModel>>(this);
+            MessengerInstance.Unregister<OnNavigatedToMessage<ViewerViewModel>>(this);
         }
 
         private async void ApplicationSuspendingHandler(object sender, SuspendingEventArgs e)

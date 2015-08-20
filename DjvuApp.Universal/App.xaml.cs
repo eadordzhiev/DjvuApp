@@ -17,21 +17,12 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 using DjvuApp.Misc;
-using DjvuApp.Model.Books;
 using DjvuApp.Pages;
-using Microsoft.Practices.ServiceLocation;
 
 namespace DjvuApp
 {
-    /// <summary>
-    /// Provides application-specific behavior to supplement the default Application class.
-    /// </summary>
     public sealed partial class App : Application
     {
-        /// <summary>
-        /// Initializes the singleton application object.  This is the first line of authored code
-        /// executed, and as such is the logical equivalent of main() or WinMain().
-        /// </summary>
         public App()
         {
             this.InitializeComponent();
@@ -57,13 +48,7 @@ namespace DjvuApp
 
             return rootFrame;
         }
-
-        /// <summary>
-        /// Invoked when the application is launched normally by the end user.  Other entry points
-        /// will be used when the application is launched to open a specific file, to display
-        /// search results, and so forth.
-        /// </summary>
-        /// <param name="e">Details about the launch request and process.</param>
+        
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
 #if DEBUG
@@ -78,12 +63,7 @@ namespace DjvuApp
 
             Window.Current.Activate();
         }
-
-        /// <summary>
-        /// Invoked when Navigation to a certain page fails
-        /// </summary>
-        /// <param name="sender">The Frame which failed navigation</param>
-        /// <param name="e">Details about the navigation failure</param>
+        
         void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
         {
             throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
@@ -100,58 +80,6 @@ namespace DjvuApp
             rootFrame.BackStack.Clear();
 
             Window.Current.Activate();
-        }
-
-        public async Task OpenFile(IStorageFile file)
-        {
-            var provider = ServiceLocator.Current.GetInstance<IBookProvider>();
-
-            IBook book;
-            try
-            {
-                book = await provider.AddBookAsync(file);
-            }
-            catch (NotImplementedException)
-            {
-                ShowDocumentTypeIsNotSupportedMessage();
-                return;
-            }
-            catch (Exception)
-            {
-                ShowDocumentOpeningErrorMessage();
-                return;
-            }
-
-            OnLaunched(null);
-
-            var frame = (Frame) Window.Current.Content;
-            frame.Navigate(typeof (ViewerPage), book);
-        }
-
-        private async void ShowDocumentOpeningErrorMessage()
-        {
-            var resourceLoader = ResourceLoader.GetForCurrentView();
-            var title = resourceLoader.GetString("DocumentOpeningErrorDialog_Title");
-            var content = resourceLoader.GetString("DocumentOpeningErrorDialog_Content");
-            var okButtonCaption = resourceLoader.GetString("DocumentOpeningErrorDialog_OkButton_Caption");
-
-            var dialog = new MessageDialog(content, title);
-            dialog.Commands.Add(new UICommand(okButtonCaption));
-            await dialog.ShowAsync();
-            Exit();
-        }
-
-        private async void ShowDocumentTypeIsNotSupportedMessage()
-        {
-            var resourceLoader = ResourceLoader.GetForCurrentView();
-            var title = resourceLoader.GetString("DocumentTypeIsNotSupportedDialog_Title");
-            var content = resourceLoader.GetString("DocumentTypeIsNotSupportedDialog_Content");
-            var okButtonCaption = resourceLoader.GetString("DocumentTypeIsNotSupportedDialog_OkButton_Caption");
-
-            var dialog = new MessageDialog(content, title);
-            dialog.Commands.Add(new UICommand(okButtonCaption));
-            await dialog.ShowAsync();
-            Exit();
         }
         
         public static async Task RateApp()

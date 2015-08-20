@@ -3,16 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml.Navigation;
+using JetBrains.Annotations;
 
 namespace DjvuApp.ViewModel.Messages
 {
-    public sealed class OnNavigatedFromMessage
+    public sealed class OnNavigatedFromMessage<[UsedImplicitly] T>
     {
-        public object Parameter { get; private set; }
+        public NavigationEventArgs EventArgs { get; }
 
-        public OnNavigatedFromMessage(object parameter)
+        public OnNavigatedFromMessage(NavigationEventArgs eventArgs)
         {
-            Parameter = parameter;
+            EventArgs = eventArgs;
         }
     }
 }

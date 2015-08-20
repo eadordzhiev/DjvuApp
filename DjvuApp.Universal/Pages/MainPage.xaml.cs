@@ -14,34 +14,41 @@ using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Navigation;
 using DjvuApp.Common;
 using DjvuApp.Misc;
+using DjvuApp.Model.Books;
+using DjvuApp.ViewModel;
+using DjvuApp.ViewModel.Messages;
+using GalaSoft.MvvmLight.Messaging;
+using Microsoft.Practices.ServiceLocation;
 
 namespace DjvuApp.Pages
 {
     public sealed partial class MainPage : Page
     {
         private readonly NavigationHelper _navigationHelper;
-        private readonly ResourceLoader _resourceLoader;
 
         public MainPage()
         {
             InitializeComponent();
             _navigationHelper = new NavigationHelper(this);
-            _resourceLoader = ResourceLoader.GetForCurrentView();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             _navigationHelper.OnNavigatedTo(e);
 
+            Messenger.Default.Send(new OnNavigatedToMessage<MainViewModel>(e));
             ShowRateAppDialog();
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             _navigationHelper.OnNavigatedFrom(e);
+
+            Messenger.Default.Send(new OnNavigatedFromMessage<MainViewModel>(e));
         }
 
         private async void ShowRateAppDialog()
@@ -60,10 +67,11 @@ namespace DjvuApp.Pages
 
             if (count == 5 || count == 10 || count == 15)
             {
-                var content = _resourceLoader.GetString("RateAppDialog_Content");
-                var title = _resourceLoader.GetString("RateAppDialog_Title");
-                var rateButtonCaption = _resourceLoader.GetString("RateAppDialog_RateButton_Caption");
-                var cancelButtonCaption = _resourceLoader.GetString("RateAppDialog_CancelButton_Caption");
+                var resourceLoader = ResourceLoader.GetForCurrentView();
+                var content = resourceLoader.GetString("RateAppDialog_Content");
+                var title = resourceLoader.GetString("RateAppDialog_Title");
+                var rateButtonCaption = resourceLoader.GetString("RateAppDialog_RateButton_Caption");
+                var cancelButtonCaption = resourceLoader.GetString("RateAppDialog_CancelButton_Caption");
                 var dialog = new MessageDialog(content, title);
 
                 dialog.Commands.Add(new UICommand(rateButtonCaption, async command =>
@@ -77,11 +85,6 @@ namespace DjvuApp.Pages
                 await dialog.ShowAsync();
             }
         }
-
-        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
-        {
-            base.OnNavigatingFrom(e);
-        }
         
         private void ItemClickHandler(object sender, ItemClickEventArgs e)
         {
@@ -90,7 +93,7 @@ namespace DjvuApp.Pages
 
         private void AboutButtonClickHandler(object sender, RoutedEventArgs e)
         {
-            Frame.Navigate(typeof (AboutPage));
+            Frame.Navigate(typeof(AboutPage));
         }
     }
 }

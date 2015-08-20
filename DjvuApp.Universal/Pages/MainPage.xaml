@@ -8,11 +8,9 @@
     xmlns:books="using:DjvuApp.Model.Books"
     mc:Ignorable="d"
     DataContext="{Binding MainViewModel, Source={StaticResource ViewModelLocator}}"
-    d:DataContext="{d:DesignData /SampleData/MainPageSampleDataSource/MainPageSampleDataSource.xaml}"
-    x:Name="page">
-
+    d:DataContext="{d:DesignData /SampleData/MainPageSampleDataSource/MainPageSampleDataSource.xaml}">
+    
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -67,7 +65,7 @@
                                 TextWrapping="NoWrap"/>
                         </RelativePanel>
 
-                        <common:MenuFlyoutService.MenuFlyout>
+                        <!--<common:MenuFlyoutService.MenuFlyout>
                             <MenuFlyout Placement="Bottom">
                                 <MenuFlyoutItem 
                                         x:Uid="MainPage_RenameMenuItem"
@@ -85,7 +83,7 @@
                                         CommandParameter="{Binding}"
                                         Text="share..."/>
                             </MenuFlyout>
-                        </common:MenuFlyoutService.MenuFlyout>
+                        </common:MenuFlyoutService.MenuFlyout>-->
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </GridView>

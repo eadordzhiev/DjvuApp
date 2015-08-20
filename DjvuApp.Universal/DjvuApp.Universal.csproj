@@ -123,7 +123,11 @@
     <Compile Include="Controls\ReaderControl.xaml.cs">
       <DependentUpon>ReaderControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\BusyIndicator.cs" />
     <Compile Include="Dialogs\CreateBookmarkDialog.cs" />
+    <Compile Include="Dialogs\Internal\BusyIndicatorInternal.xaml.cs">
+      <DependentUpon>BusyIndicatorInternal.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\Internal\CreateBookmarkDialogInternal.xaml.cs">
       <DependentUpon>CreateBookmarkDialogInternal.xaml</DependentUpon>
     </Compile>
@@ -221,6 +225,10 @@
     <Page Include="Controls\ReaderControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\Internal\BusyIndicatorInternal.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dialogs\Internal\CreateBookmarkDialogInternal.xaml">
       <Generator>MSBuild:Compile</Generator>
