@@ -6,38 +6,44 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"	
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    x:Class="DjvuApp.App"
-    RequestedTheme="Light">
+    x:Class="DjvuApp.App">
     <Application.Resources>
-        <SolidColorBrush x:Key="ApplicationPageBackgroundThemeBrush" Color="#FFF4F4F4"/>
-        <Color x:Key="PhoneAccentColor">#FF6A00FF</Color>
+        <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Light">
+                    <SolidColorBrush x:Key="ApplicationPageBackgroundThemeBrush" Color="#FFF4F4F4"/>
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="Dark">
+                    <SolidColorBrush x:Key="ApplicationPageBackgroundThemeBrush" Color="Black"/>
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
 
-        <common:StringFormatConverter x:Key="StringFormatConverter"/>
-        <common:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-        <common:IsNullOrEmptyToVisibilityConverter x:Key="IsNullOrEmptyToVisibilityConverter"/>
+            <common:StringFormatConverter x:Key="StringFormatConverter"/>
+            <common:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+            <common:IsNullOrEmptyToVisibilityConverter x:Key="IsNullOrEmptyToVisibilityConverter"/>
 
-        <Style x:Key="FullScreenContentDialogStyle" TargetType="ContentDialog">
-            <Setter Property="Foreground" Value="{ThemeResource SystemControlPageTextBaseHighBrush}" />
-            <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}" />
-            <Setter Property="HorizontalAlignment" Value="Center" />
-            <Setter Property="VerticalAlignment" Value="Top" />
-            <Setter Property="IsTabStop" Value="False" />
-            <Setter Property="MaxHeight" Value="{ThemeResource ContentDialogMaxHeight}" />
-            <Setter Property="MinHeight" Value="{ThemeResource ContentDialogMinHeight}" />
-            <Setter Property="MaxWidth" Value="{ThemeResource ContentDialogMaxWidth}" />
-            <Setter Property="MinWidth" Value="{ThemeResource ContentDialogMinWidth}" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ContentDialog">
-                        <Border x:Name="Container">
-                            <Grid x:Name="LayoutRoot">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <Border x:Name="BackgroundElement"
+            <Style x:Key="FullScreenContentDialogStyle" TargetType="ContentDialog">
+                <Setter Property="Foreground" Value="{ThemeResource SystemControlPageTextBaseHighBrush}" />
+                <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="VerticalAlignment" Value="Top" />
+                <Setter Property="IsTabStop" Value="False" />
+                <Setter Property="MaxHeight" Value="{ThemeResource ContentDialogMaxHeight}" />
+                <Setter Property="MinHeight" Value="{ThemeResource ContentDialogMinHeight}" />
+                <Setter Property="MaxWidth" Value="{ThemeResource ContentDialogMaxWidth}" />
+                <Setter Property="MinWidth" Value="{ThemeResource ContentDialogMinWidth}" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ContentDialog">
+                            <Border x:Name="Container">
+                                <Grid x:Name="LayoutRoot">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Border x:Name="BackgroundElement"
         							Background="{TemplateBinding Background}"
         							FlowDirection="{TemplateBinding FlowDirection}"
         							BorderThickness="{ThemeResource ContentDialogBorderWidth}"
@@ -46,25 +52,25 @@
         							MaxHeight="{TemplateBinding MaxHeight}"
         							MinWidth="{TemplateBinding MinWidth}"
         							MinHeight="{TemplateBinding MinHeight}" >
-                                    <Grid x:Name="DialogSpace" VerticalAlignment="Stretch">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="*" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
-                                        <ScrollViewer x:Name="ContentScrollViewer"
+                                        <Grid x:Name="DialogSpace" VerticalAlignment="Stretch">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="*" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <ScrollViewer x:Name="ContentScrollViewer"
         									HorizontalScrollBarVisibility="Disabled"
         									VerticalScrollBarVisibility="Disabled"
         									ZoomMode="Disabled"
         									Margin="{ThemeResource ContentDialogContentScrollViewerMargin}"
         									IsTabStop="False">
-                                            <Grid>
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="Auto" />
-                                                    <!--Here, I delete 'Height="Auto"' of RowDefinition.-->
-                                                    <RowDefinition />
-                                                </Grid.RowDefinitions>
-                                                <ContentControl x:Name="Title"
+                                                <Grid>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto" />
+                                                        <!--Here, I delete 'Height="Auto"' of RowDefinition.-->
+                                                        <RowDefinition />
+                                                    </Grid.RowDefinitions>
+                                                    <ContentControl x:Name="Title"
         											Margin="{ThemeResource ContentDialogTitleMargin}"
         											Content="{TemplateBinding Title}"
         											ContentTemplate="{TemplateBinding TitleTemplate}"
@@ -76,9 +82,9 @@
         											VerticalAlignment="Top"
         											IsTabStop="False"
         											MaxHeight="{ThemeResource ContentDialogTitleMaxHeight}" >
-                                                    <ContentControl.Template>
-                                                        <ControlTemplate TargetType="ContentControl">
-                                                            <ContentPresenter 
+                                                        <ContentControl.Template>
+                                                            <ControlTemplate TargetType="ContentControl">
+                                                                <ContentPresenter 
         														Content="{TemplateBinding Content}"
         														MaxLines="2"
         														TextWrapping="Wrap"
@@ -87,10 +93,10 @@
         														ContentTransitions="{TemplateBinding ContentTransitions}"
         														HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
         														VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                                                        </ControlTemplate>
-                                                    </ContentControl.Template>
-                                                </ContentControl>
-                                                <ContentPresenter x:Name="Content"
+                                                            </ControlTemplate>
+                                                        </ContentControl.Template>
+                                                    </ContentControl>
+                                                    <ContentPresenter x:Name="Content"
         											ContentTemplate="{TemplateBinding ContentTemplate}"
         											Content="{TemplateBinding Content}"
         											FontSize="{ThemeResource ControlContentThemeFontSize}"
@@ -99,100 +105,101 @@
         											Foreground="{TemplateBinding Foreground}"
         											Grid.Row="1"
         											TextWrapping="Wrap" />
-                                            </Grid>
-                                        </ScrollViewer>
-                                        <Grid x:Name="CommandSpace" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition/>
-                                                <ColumnDefinition/>
-                                            </Grid.ColumnDefinitions>
-                                            <Border x:Name="Button1Host"
+                                                </Grid>
+                                            </ScrollViewer>
+                                            <Grid x:Name="CommandSpace" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition/>
+                                                    <ColumnDefinition/>
+                                                </Grid.ColumnDefinitions>
+                                                <Border x:Name="Button1Host"
         										Margin="{ThemeResource ContentDialogButton1HostMargin}"
         										MinWidth="{ThemeResource ContentDialogButtonMinWidth}"
         										MaxWidth="{ThemeResource ContentDialogButtonMaxWidth}"
         										Height="{ThemeResource ContentDialogButtonHeight}"
         										HorizontalAlignment="Stretch" />
-                                            <Border x:Name="Button2Host"
+                                                <Border x:Name="Button2Host"
         										Margin="{ThemeResource ContentDialogButton2HostMargin}"
         										MinWidth="{ThemeResource ContentDialogButtonMinWidth}"
         										MaxWidth="{ThemeResource ContentDialogButtonMaxWidth}"
         										Height="{ThemeResource ContentDialogButtonHeight}"
         										Grid.Column="1"
         										HorizontalAlignment="Stretch" />
+                                            </Grid>
                                         </Grid>
-                                    </Grid>
-                                </Border>
-                            </Grid>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
-        <Style x:Key="CircleButtonStyle" TargetType="Button">
-            <Setter Property="MinWidth" Value="38.5"/>
-            <Setter Property="MinHeight" Value="38.5"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Grid x:Name="Grid" Background="Transparent">
-                            <VisualStateManager.VisualStateGroups>
-                                <VisualStateGroup x:Name="CommonStates">
-                                    <VisualStateGroup.Transitions>
-                                        <VisualTransition From="Pressed" To="PointerOver">
+            <Style x:Key="CircleButtonStyle" TargetType="Button">
+                <Setter Property="MinWidth" Value="38.5"/>
+                <Setter Property="MinHeight" Value="38.5"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Grid x:Name="Grid" Background="Transparent">
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualStateGroup.Transitions>
+                                            <VisualTransition From="Pressed" To="PointerOver">
+                                                <Storyboard>
+                                                    <PointerUpThemeAnimation Storyboard.TargetName="Grid"/>
+                                                </Storyboard>
+                                            </VisualTransition>
+                                            <VisualTransition From="PointerOver" To="Normal">
+                                                <Storyboard>
+                                                    <PointerUpThemeAnimation Storyboard.TargetName="Grid"/>
+                                                </Storyboard>
+                                            </VisualTransition>
+                                            <VisualTransition From="Pressed" To="Normal">
+                                                <Storyboard>
+                                                    <PointerUpThemeAnimation Storyboard.TargetName="Grid"/>
+                                                </Storyboard>
+                                            </VisualTransition>
+                                        </VisualStateGroup.Transitions>
+                                        <VisualState x:Name="Normal"/>
+                                        <VisualState x:Name="PointerOver"/>
+                                        <VisualState x:Name="Pressed">
                                             <Storyboard>
-                                                <PointerUpThemeAnimation Storyboard.TargetName="Grid"/>
+                                                <PointerDownThemeAnimation Storyboard.TargetName="Grid"/>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentPresenter">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonPressedForegroundThemeBrush}"/>
+                                                </ObjectAnimationUsingKeyFrames>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Fill" Storyboard.TargetName="Border">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonPressedBackgroundThemeBrush}"/>
+                                                </ObjectAnimationUsingKeyFrames>
                                             </Storyboard>
-                                        </VisualTransition>
-                                        <VisualTransition From="PointerOver" To="Normal">
+                                        </VisualState>
+                                        <VisualState x:Name="Disabled">
                                             <Storyboard>
-                                                <PointerUpThemeAnimation Storyboard.TargetName="Grid"/>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentPresenter">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonDisabledForegroundThemeBrush}"/>
+                                                </ObjectAnimationUsingKeyFrames>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Stroke" Storyboard.TargetName="Border">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonDisabledBorderThemeBrush}"/>
+                                                </ObjectAnimationUsingKeyFrames>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Fill" Storyboard.TargetName="Border">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonDisabledBackgroundThemeBrush}"/>
+                                                </ObjectAnimationUsingKeyFrames>
                                             </Storyboard>
-                                        </VisualTransition>
-                                        <VisualTransition From="Pressed" To="Normal">
-                                            <Storyboard>
-                                                <PointerUpThemeAnimation Storyboard.TargetName="Grid"/>
-                                            </Storyboard>
-                                        </VisualTransition>
-                                    </VisualStateGroup.Transitions>
-                                    <VisualState x:Name="Normal"/>
-                                    <VisualState x:Name="PointerOver"/>
-                                    <VisualState x:Name="Pressed">
-                                        <Storyboard>
-                                            <PointerDownThemeAnimation Storyboard.TargetName="Grid"/>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentPresenter">
-                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonPressedForegroundThemeBrush}"/>
-                                            </ObjectAnimationUsingKeyFrames>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Fill" Storyboard.TargetName="Border">
-                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonPressedBackgroundThemeBrush}"/>
-                                            </ObjectAnimationUsingKeyFrames>
-                                        </Storyboard>
-                                    </VisualState>
-                                    <VisualState x:Name="Disabled">
-                                        <Storyboard>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentPresenter">
-                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonDisabledForegroundThemeBrush}"/>
-                                            </ObjectAnimationUsingKeyFrames>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Stroke" Storyboard.TargetName="Border">
-                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonDisabledBorderThemeBrush}"/>
-                                            </ObjectAnimationUsingKeyFrames>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Fill" Storyboard.TargetName="Border">
-                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonDisabledBackgroundThemeBrush}"/>
-                                            </ObjectAnimationUsingKeyFrames>
-                                        </Storyboard>
-                                    </VisualState>
-                                </VisualStateGroup>
-                            </VisualStateManager.VisualStateGroups>
-                            <Grid HorizontalAlignment="Center" Height="38.5" Width="38.5" Margin="{TemplateBinding Padding}">
-                                <Ellipse x:Name="Border" Fill="{TemplateBinding Background}" Height="38.5" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="2.5"
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Grid HorizontalAlignment="Center" Height="38.5" Width="38.5" Margin="{TemplateBinding Padding}">
+                                    <Ellipse x:Name="Border" Fill="{TemplateBinding Background}" Height="38.5" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="2.5"
         							UseLayoutRounding="False" Width="38.5"/>
-                                <ContentPresenter x:Name="ContentPresenter" AutomationProperties.AccessibilityView="Raw" Content="{TemplateBinding Content}"
+                                    <ContentPresenter x:Name="ContentPresenter" AutomationProperties.AccessibilityView="Raw" Content="{TemplateBinding Content}"
         							Foreground="{TemplateBinding Foreground}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                </Grid>
                             </Grid>
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

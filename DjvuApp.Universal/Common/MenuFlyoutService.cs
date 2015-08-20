@@ -1,4 +1,5 @@
 ﻿using System;
+using Windows.Devices.Input;
 using Windows.UI.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -87,11 +88,17 @@ namespace DjvuApp.Common
 
         private static void OnRightTapped(object sender, RightTappedRoutedEventArgs e)
         {
+            if (e.PointerDeviceType == PointerDeviceType.Touch)
+            {
+                return;
+            }
+
             FrameworkElement element = sender as FrameworkElement;
             if (element == null) return;
 
-            // If the menu was attached properly, we just need to call this handy method
-            FlyoutBase.ShowAttachedFlyout(element);
+            var position = e.GetPosition(element);
+            var flyout = (MenuFlyout)FlyoutBase.GetAttachedFlyout(element);
+            flyout.ShowAt(element, position);
         }
 
         private static void OnElementHolding(object sender, HoldingRoutedEventArgs args)

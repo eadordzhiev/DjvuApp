@@ -6,7 +6,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:common="using:DjvuApp.Common"
     xmlns:books="using:DjvuApp.Model.Books"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    x:Name="page">
     
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
@@ -41,7 +42,7 @@
                                 RelativePanel.AlignLeftWithPanel="True"
                                 Width="140"
                                 Height="140"
-                                Background="{ThemeResource SystemControlBackgroundChromeWhiteBrush}">
+                                Background="{ThemeResource SystemControlBackgroundAltMediumLowBrush}">
                                 <Image Source="{Binding ThumbnailPath}" Stretch="Uniform"/>
                             </Border>
                             <TextBlock
@@ -63,27 +64,26 @@
                                 Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
                                 TextTrimming="CharacterEllipsis"
                                 TextWrapping="NoWrap"/>
-                        </RelativePanel>
-
-                        <!--<common:MenuFlyoutService.MenuFlyout>
-                            <MenuFlyout Placement="Bottom">
-                                <MenuFlyoutItem 
+                            <common:MenuFlyoutService.MenuFlyout>
+                                <MenuFlyout Placement="Bottom">
+                                    <MenuFlyoutItem 
                                         x:Uid="MainPage_RenameMenuItem"
-                                        Command="{Binding DataContext.RenameBookCommand, ElementName=page}"
+                                        Command="{Binding ViewModel.RenameBookCommand, ElementName=page}"
                                         CommandParameter="{Binding}"
                                         Text="rename..."/>
-                                <MenuFlyoutItem
+                                    <MenuFlyoutItem
                                         x:Uid="MainPage_RemoveMenuItem"
-                                        Command="{Binding DataContext.RemoveBookCommand, ElementName=page}"
+                                        Command="{Binding ViewModel.RemoveBookCommand, ElementName=page}"
                                         CommandParameter="{Binding}"
                                         Text="remove"/>
-                                <MenuFlyoutItem
+                                    <MenuFlyoutItem
                                         x:Uid="MainPage_ShareMenuItem"
-                                        Command="{Binding DataContext.ShareBookCommand, ElementName=page}"
+                                        Command="{Binding ViewModel.ShareBookCommand, ElementName=page}"
                                         CommandParameter="{Binding}"
                                         Text="share..."/>
-                            </MenuFlyout>
-                        </common:MenuFlyoutService.MenuFlyout>-->
+                                </MenuFlyout>
+                            </common:MenuFlyoutService.MenuFlyout>
+                        </RelativePanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </GridView>
@@ -99,12 +99,6 @@
                     Icon="Add"
                     Label="Add"
                     Command="{x:Bind ViewModel.AddBookCommand}"/>
-                <AppBarButton
-                    Label="Manage">
-                    <AppBarButton.Icon>
-                        <FontIcon Glyph="&#57651;"/>
-                    </AppBarButton.Icon>
-                </AppBarButton>
             </CommandBar.PrimaryCommands>
             <CommandBar.SecondaryCommands>
                 <AppBarButton
