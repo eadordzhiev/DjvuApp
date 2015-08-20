@@ -118,60 +118,40 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AboutPage_AboutSection.Header" xml:space="preserve">
-    <value>about</value>
+    <value>About</value>
   </data>
   <data name="AboutPage_AboutSection_ContactMeButton.Content" xml:space="preserve">
-    <value>contact the author</value>
+    <value>Contact the author</value>
   </data>
   <data name="AboutPage_AboutSection_ContactMeComment.Text" xml:space="preserve">
     <value>Any comment and suggestion are welcome! I will answer every your letter.</value>
   </data>
   <data name="AboutPage_AboutSection_MyAppsButton.Content" xml:space="preserve">
-    <value>my apps</value>
+    <value>My apps</value>
   </data>
   <data name="AboutPage_AboutSection_RateButton.Content" xml:space="preserve">
-    <value>rate and review</value>
+    <value>Rate and review</value>
   </data>
   <data name="AboutPage_AboutSection_RateComment" xml:space="preserve">
     <value>If you have not already done so, please consider rating and reviewing this application.</value>
   </data>
-  <data name="AboutPage_AboutSection_Version.Text" xml:space="preserve">
-    <value>Version 1.0
-By Useless guy
-From Russia with love :)</value>
-  </data>
-  <data name="AboutPage_PicolyricsSection.Header" xml:space="preserve">
-    <value>try picolyrics</value>
-  </data>
-  <data name="AboutPage_PicolyricsSection_BuyButton.Content" xml:space="preserve">
-    <value>get app from store</value>
-  </data>
-  <data name="AboutPage_PicolyricsSection_Description.Text" xml:space="preserve">
-    <value>PicoLyrics is the best lyrics application for Windows Phone. It is the only application that scrolls lyrics along the music.</value>
-  </data>
-  <data name="AboutPage_PicolyricsSection_ScreenshotsHeader.Text" xml:space="preserve">
-    <value>screenshots</value>
-  </data>
-  <data name="ApplicationTitle" xml:space="preserve">
-    <value>DJVU READER</value>
-  </data>
   <data name="CreateBookmarkDialog.PrimaryButtonText" xml:space="preserve">
-    <value>save</value>
+    <value>Save</value>
   </data>
   <data name="CreateBookmarkDialog.SecondaryButtonText" xml:space="preserve">
-    <value>cancel</value>
+    <value>Cancel</value>
   </data>
   <data name="CreateBookmarkDialog.Title" xml:space="preserve">
-    <value>ADD BOOKMARK</value>
+    <value>Add bookmark</value>
   </data>
   <data name="CreateBookmarkDialog_NameField.Header" xml:space="preserve">
     <value>Name</value>
   </data>
   <data name="DocumentOpeningErrorDialog_Content" xml:space="preserve">
-    <value>This file cannot be opened because it is damaged. If this file is correct and opens in others applications, please report about this file to the developer.</value>
+    <value>This file is corrupted and cannot be opened.</value>
   </data>
   <data name="DocumentOpeningErrorDialog_OkButton_Caption" xml:space="preserve">
-    <value>ok</value>
+    <value>Ok</value>
   </data>
   <data name="DocumentOpeningErrorDialog_Title" xml:space="preserve">
     <value>Can't open file</value>
@@ -180,153 +160,114 @@ From Russia with love :)</value>
     <value>The file cannot be opened because this application supports only bundled and single page djvu files.</value>
   </data>
   <data name="DocumentTypeIsNotSupportedDialog_OkButton_Caption" xml:space="preserve">
-    <value>ok</value>
+    <value>Ok</value>
   </data>
   <data name="DocumentTypeIsNotSupportedDialog_Title" xml:space="preserve">
-    <value>Can't open file</value>
-  </data>
-  <data name="ExpirationDialog_BuyButton_Caption" xml:space="preserve">
-    <value>buy</value>
-  </data>
-  <data name="ExpirationDialog_Content" xml:space="preserve">
-    <value>Your license has expired. We hope you enjoyed using this application.</value>
-  </data>
-  <data name="ExpirationDialog_Title" xml:space="preserve">
-    <value>DjVu Reader</value>
-  </data>
-  <data name="FileDamagedDialog_Content" xml:space="preserve">
-    <value>This file cannot be opened because it is damaged. You should remove this file.</value>
-  </data>
-  <data name="FileDamagedDialog_RemoveButton_Caption" xml:space="preserve">
-    <value>remove</value>
-  </data>
-  <data name="FileDamagedDialog_Title" xml:space="preserve">
     <value>Can't open file</value>
   </data>
   <data name="JumpToPageDialog.PrimaryButtonText" xml:space="preserve">
     <value>jump</value>
   </data>
   <data name="JumpToPageDialog.Title" xml:space="preserve">
-    <value>JUMP TO PAGE</value>
-  </data>
-  <data name="JumpToPageDialog_Designation.Text" xml:space="preserve">
-    <value>Type the number of the page you would like to jump to in document.</value>
+    <value>Jump to page</value>
   </data>
   <data name="JumpToPageDialog_PageNumberField.Header" xml:space="preserve">
     <value>Page number</value>
   </data>
   <data name="JumpToPageDialog_TotalPageNumber.Text" xml:space="preserve">
-    <value>The total number of pages is </value>
-  </data>
-  <data name="LicenseCheckErrorDialog_Content" xml:space="preserve">
-    <value>Unable to verify your license info. Check the internet connection and current date and time, then restart the application.</value>
-  </data>
-  <data name="LicenseCheckErrorDialog_ExitButton_Caption" xml:space="preserve">
-    <value>ok</value>
-  </data>
-  <data name="LicenseCheckErrorDialog_Title" xml:space="preserve">
-    <value>License verification error</value>
-  </data>
-  <data name="LoadingMessage.Text" xml:space="preserve">
-    <value>Loading...</value>
+    <value>The total number of pages is</value>
   </data>
   <data name="MainPage_AboutAppBarButton.Label" xml:space="preserve">
-    <value>about</value>
+    <value>About</value>
   </data>
   <data name="MainPage_AddAppBarButton.Label" xml:space="preserve">
-    <value>add</value>
+    <value>Add file</value>
   </data>
   <data name="MainPage_BookListEmptyHint.Text" xml:space="preserve">
     <value>Tap the plus sign to add a new book.</value>
   </data>
-  <data name="MainPage_BuyAppBarButton.Label" xml:space="preserve">
-    <value>buy application</value>
-  </data>
   <data name="MainPage_RemoveMenuItem.Text" xml:space="preserve">
-    <value>remove</value>
+    <value>Remove</value>
   </data>
   <data name="MainPage_RenameMenuItem.Text" xml:space="preserve">
-    <value>rename...</value>
+    <value>Rename</value>
   </data>
   <data name="MainPage_ShareMenuItem.Text" xml:space="preserve">
-    <value>share...</value>
+    <value>Share</value>
   </data>
   <data name="MainPage_Title.Text" xml:space="preserve">
-    <value>my library</value>
+    <value>My library</value>
   </data>
   <data name="OutlineDialog_Title" xml:space="preserve">
     <value>Outline</value>
   </data>
   <data name="RateAppDialog_CancelButton_Caption" xml:space="preserve">
-    <value>cancel</value>
+    <value>Cancel</value>
   </data>
   <data name="RateAppDialog_Content" xml:space="preserve">
     <value>Please consider rating and reviewing this application. It won't take much time to write a review. Your positive reviews make the application better and inspire the developers to add more features!</value>
   </data>
   <data name="RateAppDialog_RateButton_Caption" xml:space="preserve">
-    <value>rate</value>
+    <value>Rate</value>
   </data>
   <data name="RateAppDialog_Title" xml:space="preserve">
-    <value>RATE THE APPLICATION</value>
+    <value>Rate the application</value>
   </data>
   <data name="RemoveBookDialog_CancelButton_Caption" xml:space="preserve">
-    <value>cancel</value>
+    <value>Cancel</value>
   </data>
   <data name="RemoveBookDialog_Content" xml:space="preserve">
-    <value>If you delete this document, you won't be able to recover it later. All the progress will also be deleted from your phone.</value>
+    <value>If you delete this document, you won't be able to recover it later. All the progress will also be deleted from your device.</value>
   </data>
   <data name="RemoveBookDialog_RemoveButton_Caption" xml:space="preserve">
-    <value>delete</value>
+    <value>Delete</value>
   </data>
   <data name="RemoveBookDialog_Title" xml:space="preserve">
     <value>Delete {0}?</value>
   </data>
   <data name="RenameDialog.PrimaryButtonText" xml:space="preserve">
-    <value>save</value>
+    <value>Save</value>
   </data>
   <data name="RenameDialog.SecondaryButtonText" xml:space="preserve">
-    <value>cancel</value>
+    <value>Cancel</value>
   </data>
   <data name="RenameDialog.Title" xml:space="preserve">
-    <value>RENAME</value>
+    <value>Rename</value>
   </data>
   <data name="RenameDialog_NewNameField.Header" xml:space="preserve">
     <value>Name</value>
   </data>
   <data name="SelectBookmarkDialog.Title" xml:space="preserve">
-    <value>BOOKMARKS</value>
+    <value>Bookmarks</value>
   </data>
   <data name="SelectBookmarkDialog_BookmarkSubheader.Text" xml:space="preserve">
-    <value>Page </value>
+    <value>Page</value>
   </data>
   <data name="SelectBookmarkDialog_NoBookmarksHint.Text" xml:space="preserve">
-    <value>No saved bookmarks</value>
-  </data>
-  <data name="TrialNotificationFormat" xml:space="preserve">
-    <value>TRIAL VERSION, {0} DAYS LEFT</value>
+    <value>No saved bookmarks.</value>
   </data>
   <data name="ViewerPage_AddBookmarkAppBarButton.Label" xml:space="preserve">
-    <value>add bookmark</value>
+    <value>Add bookmark</value>
   </data>
   <data name="ViewerPage_JumpToPageAppBarButton.Label" xml:space="preserve">
-    <value>jump to page...</value>
+    <value>Jump to page</value>
   </data>
   <data name="ViewerPage_NextPageAppBarButton.Label" xml:space="preserve">
-    <value>next</value>
+    <value>Next page</value>
   </data>
   <data name="ViewerPage_OutlineAppBarButton.Label" xml:space="preserve">
-    <value>outline</value>
+    <value>Outline</value>
   </data>
   <data name="ViewerPage_PreviousPageAppBarButton.Label" xml:space="preserve">
-    <value>previous</value>
+    <value>Previous page</value>
   </data>
   <data name="ViewerPage_RemoveBookmarkAppBarButton.Label" xml:space="preserve">
-    <value>remove bookmark</value>
+    <value>Remove bookmark</value>
   </data>
   <data name="ViewerPage_ShareAppBarButton.Label" xml:space="preserve">
-    <value>share...</value>
+    <value>Share</value>
   </data>
   <data name="ViewerPage_ShowBookmarksAppBarButton.Label" xml:space="preserve">
-    <value>bookmarks...</value>
+    <value>Bookmarks</value>
   </data>
 </root>

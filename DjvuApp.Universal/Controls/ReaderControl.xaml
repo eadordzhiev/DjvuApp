@@ -21,7 +21,7 @@
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="controls:PageViewControlState">
                     <controls:PageViewControl
-                        Margin="0,0,0,10"
+                        Margin="0,0,0,5"
                         State="{x:Bind}" 
                         Width="{x:Bind Width}"
                         Height="{x:Bind Height}"/>

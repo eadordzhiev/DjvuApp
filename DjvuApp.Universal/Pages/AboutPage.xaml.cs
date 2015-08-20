@@ -21,13 +21,8 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
-
 namespace DjvuApp.Pages
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class AboutPage : Page
     {
         private readonly NavigationHelper _navigationHelper;
@@ -43,7 +38,9 @@ namespace DjvuApp.Pages
             _navigationHelper.OnNavigatedTo(e);
 
             var version = Package.Current.Id.Version;
-            versionTextBlock.Text = String.Format("Version {0}.{1}.{2}.{3}\nBy Useless guy\nFrom Russia with love :)", version.Major, version.Minor, version.Build, version.Revision);
+            versionTextBlock.Text = $@"Version {version.Major}.{version.Minor}.{version.Build}.{version.Revision}
+By Useless guy
+From Russia with love :)";
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -62,30 +59,7 @@ namespace DjvuApp.Pages
 
         private async void ShowMyAppsButtonClickHandler(object sender, RoutedEventArgs e)
         {
-            await Launcher.LaunchUriAsync(new Uri("zune:search?publisher=Useless guy"));
-        }
-
-        private async void ShowPicoLyricsButtonClickHandler(object sender, RoutedEventArgs e)
-        {
-            await Launcher.LaunchUriAsync(new Uri("zune:navigate?appid=75e3bd8f-3eee-df11-9264-00237de2db9e"));
-        }
-
-        private async void ButtonBase_OnClick(object sender, RoutedEventArgs e)
-        {
-            var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/PicoLyrics/1.png"));
-            await Launcher.LaunchFileAsync(file);
-        }
-
-        private async void ButtonBase_OnClick1(object sender, RoutedEventArgs e)
-        {
-            var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/PicoLyrics/2.png"));
-            await Launcher.LaunchFileAsync(file);
-        }
-
-        private async void ButtonBase_OnClick2(object sender, RoutedEventArgs e)
-        {
-            var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/PicoLyrics/3.png"));
-            await Launcher.LaunchFileAsync(file);
+            await Launcher.LaunchUriAsync(new Uri("ms-windows-store:Publisher?name=Useless%20guy"));
         }
 
         private async void RateButtonClickHandler(object sender, RoutedEventArgs e)

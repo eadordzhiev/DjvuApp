@@ -129,7 +129,11 @@ namespace DjvuApp.Common
 #if WINDOWS_UWP
         private void NavigationHelper_BackRequested(object sender, BackRequestedEventArgs e)
         {
-            GoBack();
+            if (this.GoBackCommand.CanExecute(null))
+            {
+                e.Handled = true;
+                this.GoBackCommand.Execute(null);
+            }
         }
 #endif
 

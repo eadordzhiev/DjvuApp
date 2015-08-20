@@ -118,13 +118,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AboutPage_AboutSection.Header" xml:space="preserve">
-    <value>о приложении</value>
+    <value>О приложении</value>
   </data>
   <data name="AboutPage_AboutSection_ContactMeButton.Content" xml:space="preserve">
-    <value>связаться с автором</value>
+    <value>Связаться с автором</value>
   </data>
   <data name="AboutPage_AboutSection_ContactMeComment.Text" xml:space="preserve">
-    <value>Буду рад вашим предложениям и пожеланиям! Постараюсь ответить на каждое ваше письмо. Также вы можете найти меня на 4pda.ru</value>
+    <value>Буду рад вашим пожеланиям и предложениям! Ни одно ваше письмо не останется незамеченным. Если у вас возникли какие-либо проблемы или вам просто не понравилось приложение, напишите об этом разработчику.</value>
   </data>
   <data name="AboutPage_AboutSection_MyAppsButton.Content" xml:space="preserve">
     <value>мои приложения</value>
@@ -135,165 +135,110 @@
   <data name="AboutPage_AboutSection_RateComment" xml:space="preserve">
     <value>Оставьте отзыв о приложении, если вы еще этого не сделали. Это не займет у вас много времени, однако ваши положительные отзывы мотивируют разработчиков на улучшение приложения и добавление новых фич!</value>
   </data>
-  <data name="AboutPage_AboutSection_Version.Text" xml:space="preserve">
-    <value>Версия 1.0
-By Useless guy</value>
-  </data>
-  <data name="AboutPage_PicolyricsSection.Header" xml:space="preserve">
-    <value>попробовать picolyrics</value>
-  </data>
-  <data name="AboutPage_PicolyricsSection_BuyButton.Content" xml:space="preserve">
-    <value>скачать приложение</value>
-  </data>
-  <data name="AboutPage_PicolyricsSection_Description.Text" xml:space="preserve">
-    <value>Самое лучшее приложения для показа текста песен. Это единственное приложение, которое показывает текст синхронно к музыке.</value>
-  </data>
-  <data name="AboutPage_PicolyricsSection_ScreenshotsHeader.Text" xml:space="preserve">
-    <value>скриншоты</value>
-  </data>
-  <data name="ApplicationTitle" xml:space="preserve">
-    <value>DJVU READER</value>
-  </data>
   <data name="CreateBookmarkDialog.PrimaryButtonText" xml:space="preserve">
-    <value>сохранить</value>
+    <value>Сохранить</value>
   </data>
   <data name="CreateBookmarkDialog.SecondaryButtonText" xml:space="preserve">
-    <value>отмена</value>
+    <value>Отмена</value>
   </data>
   <data name="CreateBookmarkDialog.Title" xml:space="preserve">
-    <value>ДОБАВЛЕНИЕ ЗАКЛАДКИ</value>
+    <value>Добавление закладки</value>
   </data>
   <data name="CreateBookmarkDialog_NameField.Header" xml:space="preserve">
     <value>Название</value>
   </data>
   <data name="DocumentOpeningErrorDialog_Content" xml:space="preserve">
-    <value>Этот файл не может быть открыт, так как он поврежден. В случае, если этот файл цел и открывается в других приложениях, сообщите разработчику об этом файле.</value>
+    <value>Этот файл поврежден и не может быть открыт.</value>
   </data>
   <data name="DocumentOpeningErrorDialog_OkButton_Caption" xml:space="preserve">
-    <value>ок</value>
+    <value>Ок</value>
   </data>
   <data name="DocumentOpeningErrorDialog_Title" xml:space="preserve">
     <value>Невозможно открыть файл</value>
   </data>
   <data name="DocumentTypeIsNotSupportedDialog_Content" xml:space="preserve">
-    <value>Этот файл не может быть открыт, так как данное приложение поддерживает только "bundled" и "single page" djvu-файлы.</value>
+    <value>Этот файл не может быть открыт, так как формат этого файла устарел. Данное приложение поддерживает только bundled и single page файлы.</value>
   </data>
   <data name="DocumentTypeIsNotSupportedDialog_OkButton_Caption" xml:space="preserve">
-    <value>ок</value>
+    <value>Ок</value>
   </data>
   <data name="DocumentTypeIsNotSupportedDialog_Title" xml:space="preserve">
-    <value>Невозможно открыть файл</value>
-  </data>
-  <data name="ExpirationDialog_BuyButton_Caption" xml:space="preserve">
-    <value>купить</value>
-  </data>
-  <data name="ExpirationDialog_Content" xml:space="preserve">
-    <value>Срок действия вашей пробной версии истек. Мы надеемся, что вам понравилось это приложение!</value>
-  </data>
-  <data name="ExpirationDialog_Title" xml:space="preserve">
-    <value>DjVu Reader</value>
-  </data>
-  <data name="FileDamagedDialog_Content" xml:space="preserve">
-    <value>Этот файл не может быть открыт, так как он поврежден. Лучше удалить этот файл.</value>
-  </data>
-  <data name="FileDamagedDialog_RemoveButton_Caption" xml:space="preserve">
-    <value>удалить</value>
-  </data>
-  <data name="FileDamagedDialog_Title" xml:space="preserve">
-    <value>Невозможно открыть файл</value>
+    <value>Устаревший формат файла</value>
   </data>
   <data name="JumpToPageDialog.PrimaryButtonText" xml:space="preserve">
-    <value>перейти</value>
+    <value>Перейти</value>
   </data>
   <data name="JumpToPageDialog.Title" xml:space="preserve">
-    <value>ПЕРЕЙТИ НА СТРАНИЦУ</value>
-  </data>
-  <data name="JumpToPageDialog_Designation.Text" xml:space="preserve">
-    <value>Введите номер страницы в документе, на которую вы бы хотели перейти.</value>
+    <value>Перейти на страницу</value>
   </data>
   <data name="JumpToPageDialog_PageNumberField.Header" xml:space="preserve">
     <value>Номер страницы</value>
   </data>
   <data name="JumpToPageDialog_TotalPageNumber.Text" xml:space="preserve">
-    <value>Всего страниц </value>
-  </data>
-  <data name="LicenseCheckErrorDialog_Content" xml:space="preserve">
-    <value>Возникла ошибка при проверке вашей лицензии. Проверьте наличие доступа в интернет и текущие дату и время, затем перезапустите приложение.</value>
-  </data>
-  <data name="LicenseCheckErrorDialog_ExitButton_Caption" xml:space="preserve">
-    <value>ок</value>
-  </data>
-  <data name="LicenseCheckErrorDialog_Title" xml:space="preserve">
-    <value>Ошибка проверки лицензии</value>
-  </data>
-  <data name="LoadingMessage.Text" xml:space="preserve">
-    <value>Открытие...</value>
+    <value>Всего страниц:</value>
   </data>
   <data name="MainPage_AboutAppBarButton.Label" xml:space="preserve">
-    <value>о приложении</value>
+    <value>О приложении</value>
   </data>
   <data name="MainPage_AddAppBarButton.Label" xml:space="preserve">
-    <value>добавить</value>
+    <value>Добавить файл</value>
   </data>
   <data name="MainPage_BookListEmptyHint.Text" xml:space="preserve">
     <value>Коснитесь значка "+", чтобы добавить новую книгу.</value>
   </data>
-  <data name="MainPage_BuyAppBarButton.Label" xml:space="preserve">
-    <value>купить приложение</value>
-  </data>
   <data name="MainPage_RemoveMenuItem.Text" xml:space="preserve">
-    <value>удалить</value>
+    <value>Удалить</value>
   </data>
   <data name="MainPage_RenameMenuItem.Text" xml:space="preserve">
-    <value>переименовать...</value>
+    <value>Переименовать</value>
   </data>
   <data name="MainPage_ShareMenuItem.Text" xml:space="preserve">
-    <value>поделиться...</value>
+    <value>Поделиться</value>
   </data>
   <data name="MainPage_Title.Text" xml:space="preserve">
-    <value>мои книги</value>
+    <value>Мои книги</value>
   </data>
   <data name="OutlineDialog_Title" xml:space="preserve">
     <value>Оглавление</value>
   </data>
   <data name="RateAppDialog_CancelButton_Caption" xml:space="preserve">
-    <value>cancel</value>
+    <value>Отмена</value>
   </data>
   <data name="RateAppDialog_Content" xml:space="preserve">
-    <value>Поставьте 5 звезд, если вы этого ещё не сделали. Это не займет у вас много времени, однако ваши положительные отзывы мотивируют разработчиков на улучшение приложения и добавление новых фич!</value>
+    <value>Поставьте 5 звезд, если вы этого ещё не сделали. Это не займет у вас много времени, однако ваши положительные отзывы мотивируют разработчиков на улучшение приложения и добавление новых фич! Если вам что-то не устраивает, пожалуйста, свяжитесь с разработчиком, прежде чем писать плохие отзывы. Спасибо!</value>
   </data>
   <data name="RateAppDialog_RateButton_Caption" xml:space="preserve">
-    <value>rate</value>
+    <value>Оценить</value>
   </data>
   <data name="RateAppDialog_Title" xml:space="preserve">
-    <value>ОЦЕНИТЬ ПРИЛОЖЕНИЕ</value>
+    <value>Оценить приложение</value>
   </data>
   <data name="RemoveBookDialog_CancelButton_Caption" xml:space="preserve">
-    <value>отмена</value>
+    <value>Отмена</value>
   </data>
   <data name="RemoveBookDialog_Content" xml:space="preserve">
     <value>Удалить этот файл?</value>
   </data>
   <data name="RemoveBookDialog_RemoveButton_Caption" xml:space="preserve">
-    <value>удалить</value>
+    <value>Удалить</value>
   </data>
   <data name="RemoveBookDialog_Title" xml:space="preserve">
     <value>Удалить {0}?</value>
   </data>
   <data name="RenameDialog.PrimaryButtonText" xml:space="preserve">
-    <value>сохранить</value>
+    <value>Сохранить</value>
   </data>
   <data name="RenameDialog.SecondaryButtonText" xml:space="preserve">
-    <value>отмена</value>
+    <value>Отмена</value>
   </data>
   <data name="RenameDialog.Title" xml:space="preserve">
-    <value>ПЕРЕИМЕНОВАТЬ?</value>
+    <value>Переименовать?</value>
   </data>
   <data name="RenameDialog_NewNameField.Header" xml:space="preserve">
     <value>Новое имя файла</value>
   </data>
   <data name="SelectBookmarkDialog.Title" xml:space="preserve">
-    <value>ЗАКЛАДКИ</value>
+    <value>Закладка</value>
   </data>
   <data name="SelectBookmarkDialog_BookmarkSubheader.Text" xml:space="preserve">
     <value>Страница </value>
@@ -301,31 +246,28 @@ By Useless guy</value>
   <data name="SelectBookmarkDialog_NoBookmarksHint.Text" xml:space="preserve">
     <value>Нет сохраненных закладок</value>
   </data>
-  <data name="TrialNotificationFormat" xml:space="preserve">
-    <value>ОСТАЛОСЬ {0} ДНЕЙ</value>
-  </data>
   <data name="ViewerPage_AddBookmarkAppBarButton.Label" xml:space="preserve">
-    <value>добавить закладку</value>
+    <value>Добавить закладку</value>
   </data>
   <data name="ViewerPage_JumpToPageAppBarButton.Label" xml:space="preserve">
-    <value>перейти на страницу...</value>
+    <value>Перейти на страницу</value>
   </data>
   <data name="ViewerPage_NextPageAppBarButton.Label" xml:space="preserve">
-    <value>следующая страница</value>
+    <value>Следующая страница</value>
   </data>
   <data name="ViewerPage_OutlineAppBarButton.Label" xml:space="preserve">
-    <value>оглавление</value>
+    <value>Оглавление</value>
   </data>
   <data name="ViewerPage_PreviousPageAppBarButton.Label" xml:space="preserve">
-    <value>предыдущая страница</value>
+    <value>Предыдущая страница</value>
   </data>
   <data name="ViewerPage_RemoveBookmarkAppBarButton.Label" xml:space="preserve">
-    <value>удалить закладку</value>
+    <value>Удалить закладку</value>
   </data>
   <data name="ViewerPage_ShareAppBarButton.Label" xml:space="preserve">
-    <value>поделиться...</value>
+    <value>Поделиться</value>
   </data>
   <data name="ViewerPage_ShowBookmarksAppBarButton.Label" xml:space="preserve">
-    <value>закладки...</value>
+    <value>Закладки</value>
   </data>
 </root>
