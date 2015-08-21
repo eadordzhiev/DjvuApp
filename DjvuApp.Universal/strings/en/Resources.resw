@@ -138,6 +138,9 @@
   <data name="Application_MigrationProgress" xml:space="preserve">
     <value>Creating thumbnails: {0} of {1}</value>
   </data>
+  <data name="Application_Opening" xml:space="preserve">
+    <value>Opening: {0}</value>
+  </data>
   <data name="CreateBookmarkDialog.PrimaryButtonText" xml:space="preserve">
     <value>Save</value>
   </data>

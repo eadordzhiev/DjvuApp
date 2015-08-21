@@ -112,9 +112,9 @@ namespace DjvuApp.Common
             FrameworkElement element = sender as FrameworkElement;
             if (element == null) return;
 
-            var position = e.GetPosition(null);
+            var position = e.GetPosition(element);
             var flyout = (MenuFlyout)FlyoutBase.GetAttachedFlyout(element);
-            flyout.ShowAt(null, position);
+            flyout.ShowAt(element, position);
             
             var itemsToCancel = VisualTreeHelper.FindElementsInHostCoordinates(position, element);
             foreach (var item in itemsToCancel)

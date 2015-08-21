@@ -128,7 +128,8 @@ namespace DjvuApp.ViewModel
         private async void AddBookFromFile(IStorageFile file)
         {
             var dialog = new BusyIndicator();
-            dialog.TaskDescription = $"Opening: {file.Name}";
+            var taskDescription = _resourceLoader.GetString("Application_Opening");
+            dialog.TaskDescription = string.Format(taskDescription, file.Name);
             dialog.Show();
 
             IBook book;

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
@@ -30,9 +31,30 @@ namespace DjvuApp.Dialogs.Internal
         public static readonly DependencyProperty TaskDescriptionProperty =
             DependencyProperty.Register("TaskDescription", typeof(string), typeof(BusyIndicatorInternal), new PropertyMetadata(null));
 
+        private TaskCompletionSource<object> _completionSource;
+
         public BusyIndicatorInternal()
         {
             this.InitializeComponent();
+        }
+
+        public void OnOpen()
+        {
+            openingAnimation.Begin();
+        }
+
+        public async Task OnClose()
+        {
+            _completionSource = new TaskCompletionSource<object>();
+            
+            closingAnimation.Begin();
+
+            await _completionSource.Task;
+        }
+
+        private void ClosingAnimation_Completed(object sender, object e)
+        {
+            _completionSource.SetResult(null);
         }
     }
 }

@@ -15,21 +15,17 @@ namespace DjvuApp.Dialogs
     {
         public string TaskDescription
         {
-            set
-            {
-                if (_content != null)
-                {
-                    _content.TaskDescription = value;
-                }
-            }
+            set { _content.TaskDescription = value; }
         }
 
         private readonly Popup _popup;
-        private BusyIndicatorInternal _content;
+        private readonly BusyIndicatorInternal _content;
 
         public BusyIndicator()
         {
             _popup = new Popup { IsLightDismissEnabled = false };
+            _content = new BusyIndicatorInternal();
+            _popup.Child = _content;
         }
 
         public void Show()
@@ -39,36 +35,36 @@ namespace DjvuApp.Dialogs
                 return;
             }
 
-            _content = new BusyIndicatorInternal
-            {
-                Width = Window.Current.Bounds.Width,
-                Height = Window.Current.Bounds.Height
-            };
-
-            _popup.Child = _content;
-            _popup.IsOpen = true;
+            UpdateSize();
             
+            _popup.IsOpen = true;
             Window.Current.SizeChanged += Current_SizeChanged;
+
+            _content.OnOpen();
         }
 
-        public void Hide()
+        public async void Hide()
         {
             if (!_popup.IsOpen)
             {
                 return;
             }
 
+            await _content.OnClose();
+
             _popup.IsOpen = false;
             Window.Current.SizeChanged -= Current_SizeChanged;
+        }
 
-            _popup.Child = null;
-            _content = null;
+        private void UpdateSize()
+        {
+            _content.Width = Window.Current.Bounds.Width;
+            _content.Height = Window.Current.Bounds.Height;
         }
 
         private void Current_SizeChanged(object sender, Windows.UI.Core.WindowSizeChangedEventArgs e)
         {
-            _content.Width = e.Size.Width;
-            _content.Height = e.Size.Height;
+            UpdateSize();
         }
     }
 }

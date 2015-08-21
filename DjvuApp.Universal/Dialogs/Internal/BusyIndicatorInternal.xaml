@@ -8,13 +8,17 @@
     mc:Ignorable="d"
     RequestedTheme="Dark"
     d:DesignWidth="300"
-    d:DesignHeight="300">
+    d:DesignHeight="300"
+    x:Name="rootElement">
     
-    <UserControl.Transitions>
-        <TransitionCollection>
-            <PopupThemeTransition/>
-        </TransitionCollection>
-    </UserControl.Transitions>
+    <UserControl.Resources>
+        <Storyboard x:Name="openingAnimation" TargetName="rootElement" TargetProperty="Opacity">
+            <DoubleAnimation From="0" To="1" Duration="0:0:0.3"/>
+        </Storyboard>
+        <Storyboard x:Name="closingAnimation" TargetName="rootElement" TargetProperty="Opacity" Completed="ClosingAnimation_Completed">
+            <DoubleAnimation To="0" Duration="0:0:0.3"/>
+        </Storyboard>
+    </UserControl.Resources>
     
     <RelativePanel Background="#99000000">
         <ProgressRing

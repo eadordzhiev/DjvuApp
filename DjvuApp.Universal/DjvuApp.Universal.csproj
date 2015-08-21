@@ -20,8 +20,8 @@
     <PackageCertificateKeyFile>DjvuApp.Universal_StoreKey.pfx</PackageCertificateKeyFile>
     <PackageCertificateThumbprint>546C0F2EF75EAD33B1F76991DD709F57BA4D7A67</PackageCertificateThumbprint>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
-    <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
-    <AppxSymbolPackageEnabled>True</AppxSymbolPackageEnabled>
+    <AppxBundlePlatforms>x64</AppxBundlePlatforms>
+    <AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <DebugSymbols>true</DebugSymbols>

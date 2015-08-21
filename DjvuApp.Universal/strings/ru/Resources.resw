@@ -138,6 +138,9 @@
   <data name="Application_MigrationProgress" xml:space="preserve">
     <value>Создание миниатюр: {0} из {1}</value>
   </data>
+  <data name="Application_Opening" xml:space="preserve">
+    <value>Открытие: {0}</value>
+  </data>
   <data name="CreateBookmarkDialog.PrimaryButtonText" xml:space="preserve">
     <value>Сохранить</value>
   </data>
