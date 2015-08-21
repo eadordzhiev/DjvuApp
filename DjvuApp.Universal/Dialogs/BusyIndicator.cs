@@ -13,28 +13,39 @@ namespace DjvuApp.Dialogs
 {
     public class BusyIndicator
     {
+        public string TaskDescription
+        {
+            set
+            {
+                if (_content != null)
+                {
+                    _content.TaskDescription = value;
+                }
+            }
+        }
+
         private readonly Popup _popup;
+        private BusyIndicatorInternal _content;
 
         public BusyIndicator()
         {
             _popup = new Popup { IsLightDismissEnabled = false };
         }
 
-        public void Show(string taskDescription)
+        public void Show()
         {
             if (_popup.IsOpen)
             {
                 return;
             }
 
-            var content = new BusyIndicatorInternal
+            _content = new BusyIndicatorInternal
             {
                 Width = Window.Current.Bounds.Width,
-                Height = Window.Current.Bounds.Height,
-                TaskDescription = taskDescription
+                Height = Window.Current.Bounds.Height
             };
 
-            _popup.Child = content;
+            _popup.Child = _content;
             _popup.IsOpen = true;
             
             Window.Current.SizeChanged += Current_SizeChanged;
@@ -48,15 +59,16 @@ namespace DjvuApp.Dialogs
             }
 
             _popup.IsOpen = false;
-            _popup.Child = null;
             Window.Current.SizeChanged -= Current_SizeChanged;
+
+            _popup.Child = null;
+            _content = null;
         }
 
         private void Current_SizeChanged(object sender, Windows.UI.Core.WindowSizeChangedEventArgs e)
         {
-            var child = (FrameworkElement) _popup.Child;
-            child.Width = e.Size.Width;
-            child.Height = e.Size.Height;
+            _content.Width = e.Size.Width;
+            _content.Height = e.Size.Height;
         }
     }
 }

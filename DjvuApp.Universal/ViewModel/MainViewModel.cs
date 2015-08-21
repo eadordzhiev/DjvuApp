@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.Resources;
@@ -127,7 +128,8 @@ namespace DjvuApp.ViewModel
         private async void AddBookFromFile(IStorageFile file)
         {
             var dialog = new BusyIndicator();
-            dialog.Show($"Opening: {file.Name}");
+            dialog.TaskDescription = $"Opening: {file.Name}";
+            dialog.Show();
 
             IBook book;
             try
@@ -180,13 +182,39 @@ namespace DjvuApp.ViewModel
 
             await dialog.ShowAsync();
         }
-
-        private async void RefreshBooks()
+        
+        private async Task RefreshBooks()
         {
             var books = 
                 from book in await _bookProvider.GetBooksAsync()
                 orderby book.LastOpeningTime descending 
                 select book;
+
+            if (books.Any(book => book.ThumbnailPath == null))
+            {
+                var cachedProvider = (CachedSqliteBookProvider)_bookProvider;
+                var sqliteProvider = cachedProvider.Provider;
+                
+                var dialog = new BusyIndicator();
+                dialog.Show();
+
+                var booksArray = books.ToArray();
+                for (int i = 0; i < booksArray.Length; i++)
+                {
+                    var book = booksArray[i];
+
+                    var progressFormat = _resourceLoader.GetString("Application_MigrationProgress");
+                    dialog.TaskDescription = string.Format(progressFormat, i + 1, booksArray.Length);
+
+                    await sqliteProvider.UpdateThumbnail(book);
+                }
+                
+                dialog.Hide();
+
+                await cachedProvider.RefreshCache();
+                await RefreshBooks();
+                return;
+            }
 
             Books = new ObservableCollection<IBook>(books);
             Books.CollectionChanged += (sender, args) => UpdateHasBooks();

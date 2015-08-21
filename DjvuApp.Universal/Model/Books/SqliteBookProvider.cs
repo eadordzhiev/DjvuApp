@@ -130,8 +130,23 @@ namespace DjvuApp.Model.Books
             return items;
         }
 
-        private static async Task<WriteableBitmap> RenderThumbnail(DjvuPage page)
+        public async Task UpdateThumbnail(IBook book)
         {
+            var djvuFile = await StorageFile.GetFileFromPathAsync(book.Path);
+            var document = await DjvuDocument.LoadAsync(djvuFile);
+            var thumbnailFile = await SaveThumbnail(book.Guid, document);
+
+            var sqliteBook = (SqliteBook)book;
+            sqliteBook.ThumbnailPath = thumbnailFile.Path;
+
+            var connection = await GetConnectionAsync();
+            await connection.UpdateAsync(sqliteBook);
+        }
+
+        private static async Task<IStorageFile> SaveThumbnail(Guid guid, DjvuDocument document)
+        {
+            var page = await document.GetPageAsync(1);
+
             var maxWidth = 140 * DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
             var aspectRatio = (double)page.Width / page.Height;
 
@@ -142,7 +157,31 @@ namespace DjvuApp.Model.Books
             var bitmap = new WriteableBitmap(width, height);
             await page.RenderRegionAsync(bitmap, size, new Rect(new Point(), size));
 
-            return bitmap;
+            var booksFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Books", CreationCollisionOption.OpenIfExists);
+            var thumbnailsFolder = await booksFolder.CreateFolderAsync("Thumbnails", CreationCollisionOption.OpenIfExists);
+            var thumbnailFile = await thumbnailsFolder.CreateFileAsync($"{guid}.jpg", CreationCollisionOption.ReplaceExisting);
+
+            using (var thumbnailStream = await thumbnailFile.OpenAsync(FileAccessMode.ReadWrite))
+            {
+                var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.JpegEncoderId, thumbnailStream);
+
+                var pixelStream = bitmap.PixelBuffer.AsStream();
+                var pixels = new byte[pixelStream.Length];
+                await pixelStream.ReadAsync(pixels, 0, pixels.Length);
+
+                encoder.SetPixelData(
+                    pixelFormat: BitmapPixelFormat.Bgra8,
+                    alphaMode: BitmapAlphaMode.Ignore,
+                    width: (uint)bitmap.PixelWidth,
+                    height: (uint)bitmap.PixelHeight,
+                    dpiX: 96.0,
+                    dpiY: 96.0,
+                    pixels: pixels);
+
+                await encoder.FlushAsync();
+            }
+
+            return thumbnailFile;
         }
 
         public async Task<IBook> AddBookAsync(IStorageFile file)
@@ -151,38 +190,16 @@ namespace DjvuApp.Model.Books
                 throw new ArgumentNullException(nameof(file));
 
             var document = await DjvuDocument.LoadAsync(file);
-            var page = await document.GetPageAsync(1);
-
+            
             var guid = Guid.NewGuid();
             var properties = await file.GetBasicPropertiesAsync();
             var title = Path.GetFileNameWithoutExtension(file.Name);
 
             var booksFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Books", CreationCollisionOption.OpenIfExists);
             var djvuFolder = await booksFolder.CreateFolderAsync("Djvu", CreationCollisionOption.OpenIfExists);
-            var djvuFile = await file.CopyAsync(djvuFolder, $"{guid}.djvu");
 
-            var thumbnailBitmap = await RenderThumbnail(page);
-            var thumbnailFile = await djvuFolder.CreateFileAsync($"{guid}.jpg");
-
-            using (var thumbnailStream = await thumbnailFile.OpenAsync(FileAccessMode.ReadWrite))
-            {
-                var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.JpegEncoderId, thumbnailStream);
-
-                var pixelStream = thumbnailBitmap.PixelBuffer.AsStream();
-                var pixels = new byte[pixelStream.Length];
-                await pixelStream.ReadAsync(pixels, 0, pixels.Length);
-
-                encoder.SetPixelData(
-                    pixelFormat: BitmapPixelFormat.Bgra8,
-                    alphaMode: BitmapAlphaMode.Ignore, 
-                    width: (uint)thumbnailBitmap.PixelWidth, 
-                    height: (uint)thumbnailBitmap.PixelHeight, 
-                    dpiX: 96.0,
-                    dpiY: 96.0,
-                    pixels: pixels);
-
-                await encoder.FlushAsync();
-            }
+            var djvuFile = await file.CopyAsync(djvuFolder, $"{guid}.djvu", NameCollisionOption.ReplaceExisting);
+            var thumbnailFile = await SaveThumbnail(guid, document);
 
             var book = new SqliteBook
             {

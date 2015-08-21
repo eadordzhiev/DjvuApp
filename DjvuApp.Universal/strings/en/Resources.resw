@@ -135,6 +135,9 @@
   <data name="AboutPage_AboutSection_RateComment.Text" xml:space="preserve">
     <value>If you have not already done so, please consider rating and reviewing this application.</value>
   </data>
+  <data name="Application_MigrationProgress" xml:space="preserve">
+    <value>Creating thumbnails: {0} of {1}</value>
+  </data>
   <data name="CreateBookmarkDialog.PrimaryButtonText" xml:space="preserve">
     <value>Save</value>
   </data>

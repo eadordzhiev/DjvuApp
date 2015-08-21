@@ -9,22 +9,27 @@ namespace DjvuApp.Model.Books
 {
     public sealed class CachedSqliteBookProvider : IBookProvider
     {
-        private readonly SqliteBookProvider _provider;
+        public SqliteBookProvider Provider { get; }
+
         private List<IBook> _books; 
 
         private CachedSqliteBookProvider()
         {
-            _provider = new SqliteBookProvider();
+            Provider = new SqliteBookProvider();
         }
         
         public static async Task<CachedSqliteBookProvider> CreateNewAsync()
         {
             var provider = new CachedSqliteBookProvider();
-
-            var books = await provider._provider.GetBooksAsync();
-            provider._books = books.ToList();
+            await provider.RefreshCache();
 
             return provider;
+        }
+
+        public async Task RefreshCache()
+        {
+            var books = await Provider.GetBooksAsync();
+            _books = books.ToList();
         }
 
         public Task<IEnumerable<IBook>> GetBooksAsync()
@@ -34,45 +39,45 @@ namespace DjvuApp.Model.Books
 
         public async Task<IBook> AddBookAsync(IStorageFile file)
         {
-            var book = await _provider.AddBookAsync(file);
+            var book = await Provider.AddBookAsync(file);
             _books.Add(book);
             return book;
         }
 
         public async Task RemoveBookAsync(IBook book)
         {
-            await _provider.RemoveBookAsync(book);
+            await Provider.RemoveBookAsync(book);
             _books.Remove(book);
         }
 
         public async Task ChangeTitleAsync(IBook book, string title)
         {
-            await _provider.ChangeTitleAsync(book, title);
+            await Provider.ChangeTitleAsync(book, title);
         }
 
         public async Task<IEnumerable<IBookmark>> GetBookmarksAsync(IBook book)
         {
-            return await _provider.GetBookmarksAsync(book);
+            return await Provider.GetBookmarksAsync(book);
         }
 
         public async Task<IBookmark> CreateBookmarkAsync(IBook book, string title, uint pageNumber)
         {
-            return await _provider.CreateBookmarkAsync(book, title, pageNumber);
+            return await Provider.CreateBookmarkAsync(book, title, pageNumber);
         }
 
         public async Task RemoveBookmarkAsync(IBookmark bookmark)
         {
-            await _provider.RemoveBookmarkAsync(bookmark);
+            await Provider.RemoveBookmarkAsync(bookmark);
         }
 
         public async Task UpdateLastOpeningTimeAsync(IBook book)
         {
-            await _provider.UpdateLastOpeningTimeAsync(book);
+            await Provider.UpdateLastOpeningTimeAsync(book);
         }
 
         public async Task UpdateLastOpenedPageAsync(IBook book, uint pageNumber)
         {
-            await _provider.UpdateLastOpenedPageAsync(book, pageNumber);
+            await Provider.UpdateLastOpenedPageAsync(book, pageNumber);
         }
     }
 }

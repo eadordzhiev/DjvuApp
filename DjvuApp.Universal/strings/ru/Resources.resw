@@ -135,6 +135,9 @@
   <data name="AboutPage_AboutSection_RateComment.Text" xml:space="preserve">
     <value>Оставьте отзыв о приложении, если вы еще этого не сделали. Это не займет у вас много времени, однако ваши положительные отзывы мотивируют разработчиков на улучшение приложения и добавление новых фич!</value>
   </data>
+  <data name="Application_MigrationProgress" xml:space="preserve">
+    <value>Создание миниатюр: {0} из {1}</value>
+  </data>
   <data name="CreateBookmarkDialog.PrimaryButtonText" xml:space="preserve">
     <value>Сохранить</value>
   </data>
