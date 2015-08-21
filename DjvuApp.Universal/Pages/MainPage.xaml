@@ -6,6 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:common="using:DjvuApp.Common"
     xmlns:books="using:DjvuApp.Model.Books"
+    xmlns:controls="using:DjvuApp.Controls"
     mc:Ignorable="d"
     x:Name="page">
 
@@ -46,35 +47,8 @@
                 IsItemClickEnabled="True"
                 Padding="12">
                 <ItemsControl.ItemTemplate>
-                    <DataTemplate x:DataType="books:IBook">
-                        <RelativePanel Margin="12">
-                            <Border 
-                                x:Name="thumbnail"
-                                RelativePanel.AlignLeftWithPanel="True"
-                                Width="140"
-                                Height="140"
-                                Background="{ThemeResource SystemControlBackgroundAltMediumLowBrush}">
-                                <Image Source="{Binding ThumbnailPath}" Stretch="Uniform"/>
-                            </Border>
-                            <TextBlock
-                                x:Name="title"
-                                RelativePanel.Below="thumbnail"
-                                RelativePanel.AlignLeftWith="thumbnail"
-                                Margin="0,6,0,0"
-                                Width="140"
-                                Text="{x:Bind Title, Mode=OneWay}"
-                                Style="{ThemeResource BodyTextBlockStyle}"
-                                TextTrimming="CharacterEllipsis"
-                                TextWrapping="NoWrap"/>
-                            <TextBlock
-                                RelativePanel.Below="title"
-                                RelativePanel.AlignLeftWith="title"
-                                Width="140"
-                                Text="{x:Bind LastOpeningTime}"
-                                Style="{ThemeResource CaptionTextBlockStyle}"
-                                Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
-                                TextTrimming="CharacterEllipsis"
-                                TextWrapping="NoWrap"/>
+                    <DataTemplate>
+                        <controls:BookView Margin="12">
                             <common:MenuFlyoutService.MenuFlyout>
                                 <MenuFlyout Placement="Bottom">
                                     <MenuFlyoutItem 
@@ -94,7 +68,7 @@
                                         Text="share..."/>
                                 </MenuFlyout>
                             </common:MenuFlyoutService.MenuFlyout>
-                        </RelativePanel>
+                        </controls:BookView>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </GridView>

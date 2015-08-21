@@ -10,8 +10,7 @@
     SecondaryButtonText="Back"
     SecondaryButtonClick="BackButtonClickHandler"
     FullSizeDesired="True"
-    Style="{StaticResource FullScreenContentDialogStyle}" 
-    d:DataContext="{d:DesignData /SampleData/DjvuOutlineItemSampleData.xaml}"
+    Style="{StaticResource FullScreenContentDialogStyle}"
     x:Uid="OutlineDialog">
     
     <ContentDialog.TitleTemplate>

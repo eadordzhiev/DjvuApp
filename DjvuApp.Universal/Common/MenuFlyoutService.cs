@@ -5,6 +5,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 
 namespace DjvuApp.Common
 {
@@ -99,18 +100,29 @@ namespace DjvuApp.Common
             var position = e.GetPosition(element);
             var flyout = (MenuFlyout)FlyoutBase.GetAttachedFlyout(element);
             flyout.ShowAt(element, position);
+
+            e.Handled = true;
         }
 
-        private static void OnElementHolding(object sender, HoldingRoutedEventArgs args)
+        private static void OnElementHolding(object sender, HoldingRoutedEventArgs e)
         {
-            // this event is fired multiple times. We do not want to show the menu twice
-            if (args.HoldingState != HoldingState.Started) return;
+            if (e.HoldingState != HoldingState.Started)
+                return;
 
             FrameworkElement element = sender as FrameworkElement;
             if (element == null) return;
 
-            // If the menu was attached properly, we just need to call this handy method
-            FlyoutBase.ShowAttachedFlyout(element);
+            var position = e.GetPosition(null);
+            var flyout = (MenuFlyout)FlyoutBase.GetAttachedFlyout(element);
+            flyout.ShowAt(null, position);
+            
+            var itemsToCancel = VisualTreeHelper.FindElementsInHostCoordinates(position, element);
+            foreach (var item in itemsToCancel)
+            {
+                item.CancelDirectManipulations();
+            }
+
+            e.Handled = true;
         }
     }
 }
