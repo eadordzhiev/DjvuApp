@@ -88,6 +88,7 @@ namespace DjvuApp
 
             var rootFrame = GetRootFrame();
             rootFrame.Navigate(typeof(MainPage), null);
+            rootFrame.BackStack.Clear();
 
             Window.Current.Activate();
         }
