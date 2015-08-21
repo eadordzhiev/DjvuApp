@@ -132,7 +132,7 @@
   <data name="AboutPage_AboutSection_RateButton.Content" xml:space="preserve">
     <value>Rate and review</value>
   </data>
-  <data name="AboutPage_AboutSection_RateComment" xml:space="preserve">
+  <data name="AboutPage_AboutSection_RateComment.Text" xml:space="preserve">
     <value>If you have not already done so, please consider rating and reviewing this application.</value>
   </data>
   <data name="CreateBookmarkDialog.PrimaryButtonText" xml:space="preserve">

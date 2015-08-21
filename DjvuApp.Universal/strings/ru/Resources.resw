@@ -127,12 +127,12 @@
     <value>Буду рад вашим пожеланиям и предложениям! Ни одно ваше письмо не останется незамеченным. Если у вас возникли какие-либо проблемы или вам просто не понравилось приложение, напишите об этом разработчику.</value>
   </data>
   <data name="AboutPage_AboutSection_MyAppsButton.Content" xml:space="preserve">
-    <value>мои приложения</value>
+    <value>Мои приложения</value>
   </data>
   <data name="AboutPage_AboutSection_RateButton.Content" xml:space="preserve">
-    <value>оценить приложение</value>
+    <value>Оценить приложение</value>
   </data>
-  <data name="AboutPage_AboutSection_RateComment" xml:space="preserve">
+  <data name="AboutPage_AboutSection_RateComment.Text" xml:space="preserve">
     <value>Оставьте отзыв о приложении, если вы еще этого не сделали. Это не займет у вас много времени, однако ваши положительные отзывы мотивируют разработчиков на улучшение приложения и добавление новых фич!</value>
   </data>
   <data name="CreateBookmarkDialog.PrimaryButtonText" xml:space="preserve">
@@ -235,7 +235,7 @@
     <value>Отмена</value>
   </data>
   <data name="RenameDialog.Title" xml:space="preserve">
-    <value>Переименовать?</value>
+    <value>Переименовать</value>
   </data>
   <data name="RenameDialog_NewNameField.Header" xml:space="preserve">
     <value>Новое имя файла</value>

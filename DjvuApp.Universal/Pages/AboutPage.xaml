@@ -13,8 +13,8 @@
             </TransitionCollection>
         </Pivot.Transitions>
         <PivotItem x:Uid="AboutPage_AboutSection" Header="About">
-            <ScrollViewer>
-                <StackPanel>
+            <ScrollViewer Margin="-12,0" VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="12">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
@@ -61,7 +61,7 @@
                         Text="Any comment and suggestion are welcome! I will answer every your letter."/>
                     <Button
                         x:Uid="AboutPage_AboutSection_MyAppsButton"
-                        Margin="0,30"
+                        Margin="0,30,0,64"
                         Click="ShowMyAppsButtonClickHandler"
                         Content="My apps" />
                 </StackPanel>
