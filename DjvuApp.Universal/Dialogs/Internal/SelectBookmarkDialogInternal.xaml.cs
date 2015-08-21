@@ -21,5 +21,10 @@ namespace DjvuApp.Dialogs.Internal
             SelectedBookmark = (IBookmark) e.ClickedItem;
             Hide();
         }
+
+        private void BackButtonClickHandler(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        {
+            Hide();
+        }
     }
 }

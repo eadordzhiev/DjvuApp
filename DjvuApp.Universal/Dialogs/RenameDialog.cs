@@ -12,19 +12,20 @@ namespace DjvuApp.Dialogs
     {
         public static async Task<string> ShowAsync(string oldName)
         {
-            var dialog = new RenameDialogInternal(oldName);
+            var dialog = new RenameDialogInternal();
+            dialog.NewName = oldName;
             var task = dialog.ShowAsync();
             using (App.AddPendingDialog(task))
             {
                 try
                 {
-                    return await task == ContentDialogResult.Primary ? dialog.NewName : oldName;
+                    await task;
                 }
                 catch (OperationCanceledException)
                 {
-                    return null;
                 }
             }
+            return dialog.NewName;
         }
     }
 }

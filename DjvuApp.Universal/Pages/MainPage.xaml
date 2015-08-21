@@ -7,8 +7,7 @@
     xmlns:common="using:DjvuApp.Common"
     xmlns:books="using:DjvuApp.Model.Books"
     mc:Ignorable="d"
-    x:Name="page"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    x:Name="page">
 
     <Page.Transitions>
         <TransitionCollection>
@@ -20,13 +19,13 @@
         </TransitionCollection>
     </Page.Transitions>
 
-    <Grid>
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" Margin="36,0">
+        <Grid Grid.Row="0" Margin="24,0">
             <TextBlock
                 x:Uid="MainPage_Title"
                 Text="My library"
@@ -34,17 +33,18 @@
         </Grid>
 
         <Grid Grid.Row="1">
-            <TextBlock 
+            <TextBlock
                 x:Uid="MainPage_BookListEmptyHint"
-                Margin="19,0,19,0"
+                Margin="24,12"
                 Text="Tap the plus sign to add a new book."
-                Style="{ThemeResource TitleTextBlockStyle}"
-                Visibility="{x:Bind ViewModel.Books, Mode=OneWay, Converter={StaticResource IsNullOrEmptyToVisibilityConverter}, ConverterParameter=negate}"/>
+                Style="{StaticResource TitleTextBlockStyle}"
+                Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
+                Visibility="{x:Bind ViewModel.HasBooks, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=negate}"/>
             <GridView
                 ItemsSource="{x:Bind ViewModel.Books, Mode=OneWay}"
                 ItemClick="ItemClickHandler"
                 IsItemClickEnabled="True"
-                Padding="24">
+                Padding="12">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="books:IBook">
                         <RelativePanel Margin="12">

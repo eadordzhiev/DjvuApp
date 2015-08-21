@@ -7,11 +7,12 @@
     xmlns:djvu="using:DjvuApp.Djvu"
     mc:Ignorable="d"
     Title="{Binding Name}"
-    SecondaryButtonText="back"
+    SecondaryButtonText="Back"
     SecondaryButtonClick="BackButtonClickHandler"
     FullSizeDesired="True"
     Style="{StaticResource FullScreenContentDialogStyle}" 
-    d:DataContext="{d:DesignData /SampleData/DjvuOutlineItemSampleData.xaml}">
+    d:DataContext="{d:DesignData /SampleData/DjvuOutlineItemSampleData.xaml}"
+    x:Uid="OutlineDialog">
     
     <ContentDialog.TitleTemplate>
         <DataTemplate>

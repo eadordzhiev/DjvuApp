@@ -45,14 +45,14 @@ namespace DjvuApp.Pages
 
             if (e.Parameter is IStorageFile)
             {
-                notificationGrid.Visibility = Visibility.Visible;
+                notificationPanel.Visibility = Visibility.Visible;
                 viewLibraryButton.Visibility = Visibility.Visible;
             }
         }
 
         private void CloseNotificationButtonClickHandler(object sender, RoutedEventArgs e)
         {
-            notificationGrid.Visibility = Visibility.Collapsed;
+            notificationPanel.Visibility = Visibility.Collapsed;
         }
 
         private void ViewLibraryButtonClickHandler(object sender, RoutedEventArgs e)

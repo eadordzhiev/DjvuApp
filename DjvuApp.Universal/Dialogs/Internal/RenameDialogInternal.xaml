@@ -19,5 +19,7 @@
         Margin="0,12"
         TabIndex="0"
         Header="Name"
-        Text="{x:Bind NewName, Mode=TwoWay}"/>
+        Text="{x:Bind NewName}"
+        TextChanged="NameTextBox_OnTextChanged"
+        KeyDown="NameTextBox_OnKeyDown"/>
 </ContentDialog>

@@ -18,13 +18,13 @@ namespace DjvuApp.Dialogs
             {
                 try
                 {
-                    return await task == ContentDialogResult.Primary ? dialog.BookmarkTitle : null;
+                    await task;
                 }
                 catch (OperationCanceledException)
                 {
-                    return null;
                 }
             }
+            return dialog.IsSaved ? dialog.BookmarkTitle : null;
         }
     }
 }

@@ -6,8 +6,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:books="using:DjvuApp.Model.Books"
     mc:Ignorable="d"
-    Title="BOOKMARKS"
+    Title="Bookmarks"
     FullSizeDesired="True"
+    SecondaryButtonText="Back"
+    SecondaryButtonClick="BackButtonClickHandler"
     Style="{StaticResource FullScreenContentDialogStyle}"
     x:Uid="SelectBookmarkDialog" 
 	d:DataContext="{d:DesignData /SampleData/SelectBookmarkDialogSampleDataSource/SelectBookmarkDialogSampleDataSource.xaml}">
@@ -15,8 +17,11 @@
     <Grid>
         <TextBlock 
             x:Uid="SelectBookmarkDialog_NoBookmarksHint"
+            Margin="0,12"
+            Visibility="{x:Bind Items, Converter={StaticResource IsNullOrEmptyToVisibilityConverter}, ConverterParameter=negate}"
             Text="No saved bookmarks"
-            Visibility="{x:Bind Items, Converter={StaticResource IsNullOrEmptyToVisibilityConverter}, ConverterParameter=negate}"/>
+            Style="{StaticResource SubtitleTextBlockStyle}"
+            Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
         <ListView
             Margin="-10,0"
             ItemsSource="{x:Bind Items}"

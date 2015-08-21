@@ -1,5 +1,7 @@
-﻿using Windows.UI.Xaml;
+﻿using Windows.System;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 
 namespace DjvuApp.Dialogs.Internal
 {
@@ -16,6 +18,8 @@ namespace DjvuApp.Dialogs.Internal
             get { return (string)GetValue(BookmarkTitleProperty); }
             set { SetValue(BookmarkTitleProperty, value); }
         }
+
+        public bool IsSaved { get; set; }
 
         public static readonly DependencyProperty BookmarkTitleProperty =
             DependencyProperty.Register("BookmarkTitle", typeof(string), typeof(CreateBookmarkDialogInternal), new PropertyMetadata(null, BookmarkTitleChangedCallback));
@@ -38,7 +42,7 @@ namespace DjvuApp.Dialogs.Internal
 
         private void SaveButtonClickHandler(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            // Do nothing, the result is handled by ShowAsync()
+            IsSaved = true;
         }
 
         private void CancelButtonClickHandler(ContentDialog sender, ContentDialogButtonClickEventArgs args)
@@ -49,6 +53,15 @@ namespace DjvuApp.Dialogs.Internal
         private void LoadedHandler(object sender, RoutedEventArgs e)
         {
             nameTextBox.Focus(FocusState.Programmatic);
+        }
+
+        private void NameTextBox_OnKeyDown(object sender, KeyRoutedEventArgs e)
+        {
+            if (e.Key == VirtualKey.Enter && CanSave)
+            {
+                IsSaved = true;
+                Hide();
+            }
         }
     }
 }

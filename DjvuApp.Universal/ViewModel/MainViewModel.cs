@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -26,6 +27,22 @@ namespace DjvuApp.ViewModel
 {
     public sealed class MainViewModel : ViewModelBase
     {
+        public bool HasBooks
+        {
+            get { return _hasBooks; }
+
+            set
+            {
+                if (_hasBooks == value)
+                {
+                    return;
+                }
+
+                _hasBooks = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public ObservableCollection<IBook> Books
         {
             get { return _books; }
@@ -68,6 +85,7 @@ namespace DjvuApp.ViewModel
 
         private ObservableCollection<IBook> _books;
         private bool _isProgressVisible;
+        private bool _hasBooks;
 
         private readonly IBookProvider _bookProvider;
         private readonly ResourceLoader _resourceLoader;
@@ -84,6 +102,7 @@ namespace DjvuApp.ViewModel
             {
                 var picker = new FileOpenPicker();
                 picker.FileTypeFilter.Add(".djvu");
+                picker.FileTypeFilter.Add(".djv");
 
                 var file = await picker.PickSingleFileAsync();
                 if (file != null)
@@ -150,9 +169,11 @@ namespace DjvuApp.ViewModel
                 ShowDocumentOpeningErrorMessage();
                 return;
             }
-
-            dialog.Hide();
-
+            finally
+            {
+                dialog.Hide();
+            }
+            
             Books.Insert(0, book);
         }
 
@@ -195,8 +216,15 @@ namespace DjvuApp.ViewModel
                 select book;
 
             Books = new ObservableCollection<IBook>(books);
+            Books.CollectionChanged += (sender, args) => UpdateHasBooks();
+            UpdateHasBooks();
 
             IsProgressVisible = false;
+        }
+
+        private void UpdateHasBooks()
+        {
+            HasBooks = Books.Any();
         }
 
         private async void ShowDocumentOpeningErrorMessage()

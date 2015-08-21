@@ -42,7 +42,7 @@ DjvuDocument::DjvuDocument(IRandomAccessStream^ stream)
 	context = ddjvu_context_create(nullptr);
 	document = ddjvu_document_create_by_bytestream(context, bs, false);
 	
-	if (document == nullptr)
+	if (document == nullptr || ddjvu_document_decoding_error(document))
 	{
 		throw ref new FailureException(L"Failed to decode the document.");
 	}
@@ -148,8 +148,7 @@ DjvuPage^ DjvuDocument::GetPage(uint32_t pageNumber)
 	auto page = ddjvu_page_create_by_pageno(document, pageNumber - 1);
 	assert(page != nullptr);
 	
-	auto djvuImage = ddjvu_get_DjVuImage(page);
-	if (!djvuImage->wait_for_complete_decode())
+	if (ddjvu_page_decoding_error(page))
 	{
 		throw ref new FailureException("Failed to decode the page.");
 	}

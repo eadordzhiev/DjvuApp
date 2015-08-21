@@ -1,30 +1,24 @@
-﻿using Windows.UI.Core;
+﻿using Windows.System;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 using DjvuApp.Misc;
 
 namespace DjvuApp.Dialogs.Internal
 {
     public sealed partial class RenameDialogInternal : ContentDialog
     {   
-        public string NewName
-        {
-            get { return (string)GetValue(NewNameProperty); }
-            set { SetValue(NewNameProperty, value); }
-        }
-
-        public static readonly DependencyProperty NewNameProperty =
-            DependencyProperty.Register("NewName", typeof(string), typeof(RenameDialogInternal), new PropertyMetadata(null));
+        public string NewName { get; set; }
         
-        public RenameDialogInternal(string oldName)
+        public RenameDialogInternal()
         {
             this.InitializeComponent();
-            NewName = oldName;
         }
 
         private void SaveButtonClickHandler(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            // Do nothing, the result is handled by ShowAsync()
+            NewName = nameTextBox.Text;
         }
 
         private void CancelButtonClickHandler(ContentDialog sender, ContentDialogButtonClickEventArgs args)
@@ -35,6 +29,20 @@ namespace DjvuApp.Dialogs.Internal
         private void LoadedHandler(object sender, RoutedEventArgs e)
         {
             nameTextBox.FocusAndSelectAll();
+        }
+
+        private void NameTextBox_OnKeyDown(object sender, KeyRoutedEventArgs e)
+        {
+            if (e.Key == VirtualKey.Enter && IsPrimaryButtonEnabled)
+            {
+                NewName = nameTextBox.Text;
+                Hide();
+            }
+        }
+
+        private void NameTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            IsPrimaryButtonEnabled = !string.IsNullOrWhiteSpace(nameTextBox.Text);
         }
     }
 }

@@ -42,16 +42,13 @@ namespace DjvuApp
             if (rootFrame == null)
             {
                 rootFrame = new Frame();
+                rootFrame.Navigated += OnNavigated;
                 rootFrame.NavigationFailed += OnNavigationFailed;
                 rootFrame.Background = (Brush) Resources["ApplicationPageBackgroundThemeBrush"];
                  
                 Window.Current.Content = rootFrame;
 
                 var titleBar = ApplicationView.GetForCurrentView().TitleBar;
-                titleBar.BackgroundColor = (Color)Resources["SystemChromeMediumColor"];
-                titleBar.ButtonBackgroundColor = (Color)Resources["SystemChromeMediumColor"];
-                titleBar.ButtonForegroundColor = (Color)Resources["SystemBaseHighColor"];
-                titleBar.ButtonHoverBackgroundColor = (Color)Resources["SystemChromeLowColor"];
 
                 titleBar.BackgroundColor = (Color)Resources["SystemChromeMediumColor"];
                 titleBar.ForegroundColor = (Color)Resources["SystemBaseHighColor"];
@@ -73,6 +70,11 @@ namespace DjvuApp
             }
 
             return rootFrame;
+        }
+
+        private void OnNavigated(object sender, NavigationEventArgs e)
+        {
+            DismissPendingDialogs();
         }
 
         protected override void OnLaunched(LaunchActivatedEventArgs e)
@@ -149,7 +151,7 @@ namespace DjvuApp
         
         public static async Task RateApp()
         {
-            var uri = new Uri("ms-windows-store:reviewapp?appid=appc6f56627-a976-443c-8531-00a92b42f4e5");
+            var uri = new Uri("ms-windows-store:reviewapp");
             await Launcher.LaunchUriAsync(uri);
         }
     }

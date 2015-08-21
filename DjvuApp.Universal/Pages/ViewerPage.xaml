@@ -5,8 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:DjvuApp.Controls"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    mc:Ignorable="d">
 
     <Page.Transitions>
         <TransitionCollection>
@@ -18,13 +17,13 @@
         </TransitionCollection>
     </Page.Transitions>
 
-    <Grid>
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid
-            x:Name="notificationGrid"
+            x:Name="notificationPanel"
             Visibility="Collapsed"
             RequestedTheme="Dark"
             Background="{ThemeResource SystemControlBackgroundAccentBrush}">
@@ -72,29 +71,29 @@
                     x:Uid="ViewerPage_AddBookmarkAppBarButton"
                     Command="{x:Bind ViewModel.AddBookmarkCommand}"
                     Visibility="{x:Bind ViewModel.IsCurrentPageBookmarked, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=negate}"
-                    Label="add bookmark">
+                    Label="Add bookmark">
                     <BitmapIcon UriSource="/Assets/AddBookmark.png"/>
                 </AppBarButton>
                 <AppBarButton
                     x:Uid="ViewerPage_RemoveBookmarkAppBarButton"
                     Command="{x:Bind ViewModel.RemoveBookmarkCommand}"
                     Visibility="{x:Bind ViewModel.IsCurrentPageBookmarked, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
-                    Label="remove bookmark">
+                    Label="Remove bookmark">
                     <BitmapIcon UriSource="/Assets/RemoveBookmark.png"/>
                 </AppBarButton>
                 <AppBarButton
                     x:Uid="ViewerPage_OutlineAppBarButton"
-                    Label="outline"
+                    Label="Outline"
                     Icon="Bookmarks"
                     Command="{x:Bind ViewModel.ShowOutlineCommand, Mode=OneWay}"/>
                 <AppBarButton
                     x:Uid="ViewerPage_PreviousPageAppBarButton"
-                    Label="previous"
+                    Label="Previous page"
                     Icon="Back"
                     Command="{x:Bind ViewModel.GoToPreviousPageCommand, Mode=OneWay}"/>
                 <AppBarButton
                     x:Uid="ViewerPage_NextPageAppBarButton"
-                    Label="next"
+                    Label="Next page"
                     Icon="Forward"
                     Command="{x:Bind ViewModel.GoToNextPageCommand, Mode=OneWay}"/>
             </CommandBar.PrimaryCommands>
@@ -106,15 +105,15 @@
                     Click="ViewLibraryButtonClickHandler"/>
                 <AppBarButton
                     x:Uid="ViewerPage_JumpToPageAppBarButton"
-                    Label="jump to page..."
+                    Label="Jump to page"
                     Command="{x:Bind ViewModel.JumpToPageCommand}"/>
                 <AppBarButton
                     x:Uid="ViewerPage_ShowBookmarksAppBarButton"
-                    Label="bookmarks..."
+                    Label="Bookmarks"
                     Command="{x:Bind ViewModel.ShowBookmarksCommand, Mode=OneWay}"/>
                 <AppBarButton
                     x:Uid="ViewerPage_ShareAppBarButton"
-                    Label="share..."
+                    Label="Share"
                     Command="{x:Bind ViewModel.ShareCommand}"/>
             </CommandBar.SecondaryCommands>
         </CommandBar>

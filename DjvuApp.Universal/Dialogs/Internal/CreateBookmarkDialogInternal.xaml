@@ -20,5 +20,6 @@
         x:Uid="CreateBookmarkDialog_NameField"
         Margin="0,12"
         Header="Name"
-        Text="{Binding BookmarkTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        Text="{Binding BookmarkTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+        KeyDown="NameTextBox_OnKeyDown"/>
 </ContentDialog>
