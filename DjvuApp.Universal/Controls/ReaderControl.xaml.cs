@@ -86,12 +86,18 @@ namespace DjvuApp.Controls
         private void OnPageNumberChanged()
         {
             if (Source == null)
+            {
                 throw new InvalidOperationException("Source is null.");
+            }
             if (PageNumber == 0 || PageNumber > Source.PageCount)
+            {
                 throw new InvalidOperationException("PageNumber is out of range.");
+            }
 
             if (_supressPageNumberChangedCallback)
+            {
                 return;
+            }
 
             GoToPage(PageNumber);
         }

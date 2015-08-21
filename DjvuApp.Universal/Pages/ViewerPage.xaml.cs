@@ -1,16 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
-using Windows.Graphics.Display;
-using Windows.Storage;
-using Windows.UI.ViewManagement;
+﻿using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Navigation;
 using DjvuApp.Common;
-using DjvuApp.Model.Books;
 using DjvuApp.ViewModel;
-using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Practices.ServiceLocation;
 
 namespace DjvuApp.Pages

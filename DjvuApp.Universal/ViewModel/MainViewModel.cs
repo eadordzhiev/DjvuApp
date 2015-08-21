@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.Resources;
@@ -14,8 +8,6 @@ using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.UI.Popups;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Navigation;
 using DjvuApp.Dialogs;
 using DjvuApp.Model.Books;
@@ -31,7 +23,7 @@ namespace DjvuApp.ViewModel
         {
             get { return _hasBooks; }
 
-            set
+            private set
             {
                 if (_hasBooks == value)
                 {
@@ -59,22 +51,6 @@ namespace DjvuApp.ViewModel
             }
         }
 
-        public bool IsProgressVisible
-        {
-            get { return _isProgressVisible; }
-
-            private set
-            {
-                if (_isProgressVisible == value)
-                {
-                    return;
-                }
-
-                _isProgressVisible = value;
-                RaisePropertyChanged();
-            }
-        }
-
         public ICommand RenameBookCommand { get; private set; }
 
         public ICommand RemoveBookCommand { get; private set; }
@@ -84,7 +60,6 @@ namespace DjvuApp.ViewModel
         public ICommand ShareBookCommand { get; private set; }
 
         private ObservableCollection<IBook> _books;
-        private bool _isProgressVisible;
         private bool _hasBooks;
 
         private readonly IBookProvider _bookProvider;
@@ -208,8 +183,6 @@ namespace DjvuApp.ViewModel
 
         private async void RefreshBooks()
         {
-            IsProgressVisible = true;
-
             var books = 
                 from book in await _bookProvider.GetBooksAsync()
                 orderby book.LastOpeningTime descending 
@@ -218,8 +191,6 @@ namespace DjvuApp.ViewModel
             Books = new ObservableCollection<IBook>(books);
             Books.CollectionChanged += (sender, args) => UpdateHasBooks();
             UpdateHasBooks();
-
-            IsProgressVisible = false;
         }
 
         private void UpdateHasBooks()

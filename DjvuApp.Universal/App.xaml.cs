@@ -80,9 +80,9 @@ namespace DjvuApp
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
 #if DEBUG
-            if (System.Diagnostics.Debugger.IsAttached)
+            if (Debugger.IsAttached)
             {
-                this.DebugSettings.EnableFrameRateCounter = true;
+                DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
 
@@ -115,16 +115,16 @@ namespace DjvuApp
 
         private class PendingDialogAwaiter : IDisposable
         {
-            public WeakReference<IAsyncInfo> Reference { get; }
+            private readonly WeakReference<IAsyncInfo> _reference;
 
             public PendingDialogAwaiter(WeakReference<IAsyncInfo> reference)
             {
-                Reference = reference;
+                _reference = reference;
             }
 
             public void Dispose()
             {
-                _pendingDialogs.Remove(Reference);
+                _pendingDialogs.Remove(_reference);
             }
         }
 

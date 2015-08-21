@@ -95,12 +95,6 @@
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <None Include="DjvuApp.Universal_StoreKey.pfx" />
     <None Include="project.json" />
-    <None Include="SampleData\MainPageSampleDataSource\MainPageSampleDataSource.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="SampleData\SelectBookmarkDialogSampleDataSource\SelectBookmarkDialogSampleDataSource.xsd">
-      <SubType>Designer</SubType>
-    </None>
     <PRIResource Include="strings\ru\Resources.resw" />
     <PRIResource Include="strings\en\Resources.resw" />
   </ItemGroup>
@@ -168,12 +162,6 @@
       <DependentUpon>ViewerPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SampleData\MainPageSampleDataSource\MainPageSampleDataSource.xaml.cs">
-      <DependentUpon>MainPageSampleDataSource.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="SampleData\SelectBookmarkDialogSampleDataSource\SelectBookmarkDialogSampleDataSource.xaml.cs">
-      <DependentUpon>SelectBookmarkDialogSampleDataSource.xaml</DependentUpon>
-    </Compile>
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewerViewModel.cs" />
   </ItemGroup>
@@ -269,18 +257,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\ViewerPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <DesignData Include="SampleData\DjvuOutlineItemSampleData.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </DesignData>
-    <Page Include="SampleData\MainPageSampleDataSource\MainPageSampleDataSource.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="SampleData\SelectBookmarkDialogSampleDataSource\SelectBookmarkDialogSampleDataSource.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

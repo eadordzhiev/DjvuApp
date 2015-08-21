@@ -1,25 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.Resources;
 using Windows.Storage;
-using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
-using JetBrains.Annotations;
-using DjvuApp.Controls;
 using DjvuApp.Djvu;
 using DjvuApp.Common;
 using DjvuApp.Dialogs;
@@ -29,7 +21,6 @@ using GalaSoft.MvvmLight.Command;
 
 namespace DjvuApp.ViewModel
 {
-    [UsedImplicitly]
     public sealed class ViewerViewModel : ViewModelBase
     {
         public bool IsProgressVisible
@@ -101,23 +92,6 @@ namespace DjvuApp.ViewModel
             }
         }
 
-        public IReadOnlyList<DjvuOutlineItem> Outline
-        {
-            get
-            {
-                return _outline;
-            }
-
-            private set
-            {
-                if (_outline != value)
-                {
-                    _outline = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
         public RelayCommand ShowOutlineCommand { get; }
 
         public ICommand JumpToPageCommand { get; }
@@ -155,7 +129,7 @@ namespace DjvuApp.ViewModel
             _navigationService = navigationService;
             _resourceLoader = ResourceLoader.GetForCurrentView();
 
-            ShowOutlineCommand = new RelayCommand(ShowOutline, () => Outline != null);
+            ShowOutlineCommand = new RelayCommand(ShowOutline, () => _outline != null);
             JumpToPageCommand = new RelayCommand(ShowJumpToPageDialog);
             AddBookmarkCommand = new RelayCommand(AddBookmark, () => _book != null);
             RemoveBookmarkCommand = new RelayCommand(RemoveBookmark, () => _book != null);
@@ -181,11 +155,11 @@ namespace DjvuApp.ViewModel
             Application.Current.Suspending += ApplicationSuspendingHandler;
         }
 
-        public void OnNavigatedFrom(NavigationEventArgs e)
+        public async void OnNavigatedFrom(NavigationEventArgs e)
         {
             _dataTransferManager.DataRequested -= DataRequestedHandler;
             Application.Current.Suspending -= ApplicationSuspendingHandler;
-            SaveLastOpenedPageAsync();
+            await SaveLastOpenedPageAsync();
         }
 
         private async void ApplicationSuspendingHandler(object sender, SuspendingEventArgs e)
@@ -248,7 +222,7 @@ namespace DjvuApp.ViewModel
 
         private async void ShowOutline()
         {
-            var pageNumber = await OutlineDialog.ShowAsync(Outline);
+            var pageNumber = await OutlineDialog.ShowAsync(_outline);
             if (pageNumber.HasValue)
             {
                 CurrentPageNumber = pageNumber.Value;
@@ -280,10 +254,10 @@ namespace DjvuApp.ViewModel
         private async void LoadedHandler(object navigationParameter)
         {
             IsProgressVisible = true;
-            
-            if (navigationParameter is IBook)
+
+            _book = navigationParameter as IBook;
+            if (_book != null)
             {
-                _book = (IBook) navigationParameter;
                 _file = await StorageFile.GetFileFromPathAsync(_book.Path);
             }
             else if (navigationParameter is IStorageFile)
@@ -329,7 +303,7 @@ namespace DjvuApp.ViewModel
                 }
             }
 
-            Outline = await document.GetOutlineAsync();
+            _outline = await document.GetOutlineAsync();
 
             IsProgressVisible = false;
             

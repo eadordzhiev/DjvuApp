@@ -195,7 +195,6 @@ namespace DjvuApp.Model.Books
                 Path = djvuFile.Path,
                 ThumbnailPath = thumbnailFile.Path
             };
-
             var connection = await GetConnectionAsync();
             await connection.InsertAsync(book);
 
@@ -205,7 +204,7 @@ namespace DjvuApp.Model.Books
         public async Task RemoveBookAsync(IBook book)
         {
             if (book == null)
-                throw new ArgumentNullException("book");
+                throw new ArgumentNullException(nameof(book));
 
             var connection = await GetConnectionAsync();
             await connection.DeleteAsync(book);
@@ -221,9 +220,9 @@ namespace DjvuApp.Model.Books
         public async Task ChangeTitleAsync(IBook book, string title)
         {
             if (book == null)
-                throw new ArgumentNullException("book");
+                throw new ArgumentNullException(nameof(book));
             if (string.IsNullOrWhiteSpace(title))
-                throw new ArgumentException("title can't be empty", "title");
+                throw new ArgumentException("title can't be empty", nameof(title));
 
             var sqliteBook = (SqliteBook) book;
             sqliteBook.Title = title;
@@ -235,7 +234,7 @@ namespace DjvuApp.Model.Books
         public async Task<IEnumerable<IBookmark>> GetBookmarksAsync(IBook book)
         {
             if (book == null)
-                throw new ArgumentNullException("book");
+                throw new ArgumentNullException(nameof(book));
 
             var sqliteBook = (SqliteBook)book;
 
@@ -247,11 +246,11 @@ namespace DjvuApp.Model.Books
         public async Task<IBookmark> CreateBookmarkAsync(IBook book, string title, uint pageNumber)
         {
             if (book == null)
-                throw new ArgumentNullException("book");
+                throw new ArgumentNullException(nameof(book));
             if (string.IsNullOrWhiteSpace(title))
-                throw new ArgumentException("Title is empty", "title");
+                throw new ArgumentException("Title is empty", nameof(title));
             if (pageNumber < 1 || pageNumber > book.PageCount)
-                throw new ArgumentOutOfRangeException("pageNumber");
+                throw new ArgumentOutOfRangeException(nameof(pageNumber));
 
             var sqliteBook = (SqliteBook) book;
             var bookmark = new SqliteBookmark { BookId = sqliteBook.Id, Title = title, PageNumber = pageNumber };
@@ -265,7 +264,7 @@ namespace DjvuApp.Model.Books
         public async Task RemoveBookmarkAsync(IBookmark bookmark)
         {
             if (bookmark == null)
-                throw new ArgumentNullException("bookmark");
+                throw new ArgumentNullException(nameof(bookmark));
 
             var connection = await GetConnectionAsync();
             await connection.DeleteAsync(bookmark);
@@ -274,7 +273,7 @@ namespace DjvuApp.Model.Books
         public async Task UpdateLastOpeningTimeAsync(IBook book)
         {
             if (book == null) 
-                throw new ArgumentNullException("book");
+                throw new ArgumentNullException(nameof(book));
 
             var sqliteBook = (SqliteBook)book;
             sqliteBook.LastOpeningTime = DateTime.Now;
@@ -286,9 +285,9 @@ namespace DjvuApp.Model.Books
         public async Task UpdateLastOpenedPageAsync(IBook book, uint pageNumber)
         {
             if (book == null) 
-                throw new ArgumentNullException("book");
+                throw new ArgumentNullException(nameof(book));
             if (pageNumber < 1 || pageNumber > book.PageCount)
-                throw new ArgumentOutOfRangeException("pageNumber");
+                throw new ArgumentOutOfRangeException(nameof(pageNumber));
 
             var sqliteBook = (SqliteBook)book;
             sqliteBook.LastOpenedPage = pageNumber;

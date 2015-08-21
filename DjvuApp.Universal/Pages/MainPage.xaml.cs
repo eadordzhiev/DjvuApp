@@ -1,26 +1,12 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using Windows.ApplicationModel;
 using Windows.ApplicationModel.Resources;
-using Windows.ApplicationModel.Store;
-using Windows.Graphics.Display;
 using Windows.Storage;
-using Windows.System;
-using Windows.UI;
-using Windows.UI.Core;
-using Windows.UI.Input;
 using Windows.UI.Popups;
-using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Navigation;
 using DjvuApp.Common;
-using DjvuApp.Misc;
-using DjvuApp.Model.Books;
 using DjvuApp.ViewModel;
-using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Practices.ServiceLocation;
 
 namespace DjvuApp.Pages
