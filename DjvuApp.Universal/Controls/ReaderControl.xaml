@@ -14,6 +14,7 @@
     <Grid>
         <ListView 
             x:Name="listView"
+            SelectionMode="None"
             ScrollViewer.HorizontalScrollBarVisibility="Auto"
             ScrollViewer.HorizontalScrollMode="Enabled"
             ScrollViewer.ZoomMode="Enabled"
@@ -34,6 +35,7 @@
             </ListView.ItemsPanel>
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
+                    <Setter Property="IsTabStop" Value="False"/>
                     <Setter Property="HorizontalAlignment" Value="Center"/>
                     <Setter Property="Template">
                         <Setter.Value>
@@ -54,6 +56,7 @@
                 <ControlTemplate TargetType="ListView">
                     <ScrollViewer 
                         x:Name="ScrollViewer"
+                        IsTabStop="True"
                         HorizontalContentAlignment="Center" 
                         MinZoomFactor="1"
                         MaxZoomFactor="5"
