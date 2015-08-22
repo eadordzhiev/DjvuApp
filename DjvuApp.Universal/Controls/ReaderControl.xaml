@@ -23,14 +23,14 @@
                 <DataTemplate x:DataType="controls:PageViewControlState">
                     <controls:PageViewControl
                         Margin="0,0,0,5"
-                        State="{x:Bind}" 
-                        Width="{x:Bind Width}"
-                        Height="{x:Bind Height}"/>
+                        State="{x:Bind Mode=OneWay}" 
+                        Width="{x:Bind Width, Mode=OneWay}"
+                        Height="{x:Bind Height, Mode=OneWay}"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <VirtualizingStackPanel/>
+                    <VirtualizingStackPanel VirtualizationMode="Recycling"/>
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
             <ListView.ItemContainerStyle>

@@ -4,10 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    d:DesignHeight="300"
-    d:DesignWidth="400"
-    x:Name="pageViewControl">
+    mc:Ignorable="d">
     
     <UserControl.Resources>
         <SolidColorBrush x:Key="ReaderCanvasForeground" Color="White"/>
@@ -16,18 +13,18 @@
     <Canvas Background="Transparent">
         <Canvas 
             x:Name="blankContentCanvas"
-            Width="{Binding Width, ElementName= pageViewControl}" 
-            Height="{Binding Height, ElementName=pageViewControl}"
+            Width="{x:Bind Width, Mode=OneWay}" 
+            Height="{x:Bind Height, Mode=OneWay}"
             Background="{StaticResource ReaderCanvasForeground}"/>
         <Canvas 
             x:Name="thumbnailContentCanvas"
-            Width="{Binding Width, ElementName= pageViewControl}" 
-            Height="{Binding Height, ElementName=pageViewControl}"
+            Width="{x:Bind Width, Mode=OneWay}" 
+            Height="{x:Bind Height, Mode=OneWay}"
             Background="Transparent"/>
         <Canvas 
             x:Name="contentCanvas"
-            Width="{Binding Width, ElementName= pageViewControl}" 
-            Height="{Binding Height, ElementName=pageViewControl}"
+            Width="{x:Bind Width, Mode=OneWay}" 
+            Height="{x:Bind Height, Mode=OneWay}"
             Background="Transparent"/>
     </Canvas>
 </UserControl>

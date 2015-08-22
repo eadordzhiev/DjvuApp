@@ -109,6 +109,7 @@
     <Compile Include="Controls\BookView.xaml.cs">
       <DependentUpon>BookView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\PageLoadObserver.cs" />
     <Compile Include="Misc\LicenseValidator.cs" />
     <Compile Include="Common\MenuFlyoutService.cs" />
     <Compile Include="Common\NavigationHelper.cs" />

@@ -29,7 +29,7 @@ namespace DjvuApp.Controls
         private SisWrapper _thumbnailSis;
         private DjvuPage _page;
         private IZoomFactorObserver _zoomFactorObserver;
-        static PageLoadObserver observer = new PageLoadObserver();
+        private int? _id;
 
         private static void StateChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -40,69 +40,9 @@ namespace DjvuApp.Controls
         public PageViewControl()
         {
             this.InitializeComponent();
-
-            observer.Start();
         }
 
-        class PageLoadObserver
-        {
-            private Dictionary<PageViewControlState, Action<DjvuPage>> states = new Dictionary<PageViewControlState, Action<DjvuPage>>();
-
-            readonly DispatcherTimer _timer = new DispatcherTimer();
-
-            public PageLoadObserver()
-            {
-                _timer.Interval = TimeSpan.FromMilliseconds(30);
-                _timer.Tick += Timer_Tick;
-            }
-
-            public void Subscribe(PageViewControlState state, Action<DjvuPage> callback)
-            {
-                states[state] = callback;
-            }
-
-            public void Unsubscribe(PageViewControlState state)
-            {
-                if (states.ContainsKey(state))
-                {
-                    states.Remove(state);
-                }
-            }
-
-            public void Start()
-            {
-                _timer.Start();
-            }
-
-            public void Stop()
-            {
-                _timer.Stop();
-            }
-
-            private async void Timer_Tick(object sender, object e)
-            {
-                if (!states.Any())
-                {
-                    return;
-                }
-
-                var pair = states.Last();
-                var state = pair.Key;
-                var callback = pair.Value;
-
-                Stop();
-                var page = await state.Document.GetPageAsync(state.PageNumber);
-                Start();
-
-                if (states.ContainsKey(state))
-                {
-                    states.Remove(state);
-                    callback(page);
-                }
-            }
-        }
-
-        private void PageDecodedHandler(DjvuPage page)
+        public void PageDecodedHandler(DjvuPage page)
         {
             _page = page;
 
@@ -125,14 +65,15 @@ namespace DjvuApp.Controls
         {
             CleanUp();
 
-            if (oldValue != null)
+            if (_id != null)
             {
-                observer.Unsubscribe(oldValue);
+                PageLoadObserver.Instance.Unsubscribe(_id.Value);
+                _id = null;
             }
-            
+
             if (newValue != null)
             {
-                observer.Subscribe(newValue, PageDecodedHandler);
+                _id = PageLoadObserver.Instance.Subscribe(newValue, PageDecodedHandler);
             }
         }
 
