@@ -8,7 +8,7 @@ using DjvuApp.Djvu;
 
 namespace DjvuApp.Controls
 {
-    public class PageLoadObserver
+    public class PageLoadScheduler
     {
         class Obj
         {
@@ -16,7 +16,7 @@ namespace DjvuApp.Controls
             public Action<DjvuPage, TextLayerZone> Callback { get; set; }
         }
 
-        public static PageLoadObserver Instance = new PageLoadObserver();
+        public static PageLoadScheduler Instance = new PageLoadScheduler();
 
         private Dictionary<int, Obj> states = new Dictionary<int, Obj>();
 
@@ -24,7 +24,7 @@ namespace DjvuApp.Controls
 
         private int _lastId;
 
-        public PageLoadObserver()
+        public PageLoadScheduler()
         {
             _timer.Interval = TimeSpan.FromMilliseconds(30);
             _timer.Tick += Timer_Tick;
@@ -69,8 +69,8 @@ namespace DjvuApp.Controls
 
             Stop();
             var page = await document.GetPageAsync(pageNumber);
-            //var textLayer = await document.GetTextLayerAsync(pageNumber);
             TextLayerZone textLayer = null;
+            textLayer = await document.GetTextLayerAsync(pageNumber);
             Start();
 
             if (states.ContainsKey(id))

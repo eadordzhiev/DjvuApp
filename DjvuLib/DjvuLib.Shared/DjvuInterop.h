@@ -16,6 +16,14 @@ namespace DjvuApp { namespace Djvu
 	public ref class TextLayerZone sealed
 	{
 	public:
+		property uint32_t StartIndex
+		{
+			uint32_t get() { return startIndex; }
+		}
+		property uint32_t EndIndex
+		{
+			uint32_t get() { return endIndex; }
+		}
 		property ZoneType Type
 		{
 			ZoneType get() { return type; }
@@ -33,6 +41,7 @@ namespace DjvuApp { namespace Djvu
 			Platform::String^ get() { return text; }
 		}
 	internal:
+		uint32_t startIndex, endIndex;
 		ZoneType type;
 		Windows::Foundation::Collections::IVectorView<TextLayerZone^>^ children;
 		Windows::Foundation::Rect bounds;

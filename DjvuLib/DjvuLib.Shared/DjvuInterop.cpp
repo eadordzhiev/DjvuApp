@@ -174,7 +174,7 @@ static const zone_tag knownTags[] =
 	{ "char", ZoneType::Character }
 };
 
-TextLayerZone^ readZone(miniexp_t current)
+TextLayerZone^ readZone(miniexp_t current, uint32_t& currentIndex)
 {
 	if (!miniexp_symbolp(miniexp_car(current)))
 	{
@@ -203,14 +203,17 @@ TextLayerZone^ readZone(miniexp_t current)
 		current = miniexp_cdr(current);
 	}
 
+	result->startIndex = currentIndex;
 	vector<TextLayerZone^> children;
 	while (current != miniexp_nil)
 	{
-		auto zone = readZone(miniexp_car(current));
+		currentIndex++;
+		auto zone = readZone(miniexp_car(current), currentIndex);
 		children.push_back(zone);
 
 		current = miniexp_cdr(current);
 	}
+	result->endIndex = currentIndex;
 	result->children = ref new VectorView<TextLayerZone^>(children);
 
 	return result;
@@ -227,7 +230,8 @@ IAsyncOperation<TextLayerZone^>^ DjvuDocument::GetTextLayerAsync(uint32_t pageNu
 			return nullptr;
 		}
 
-		return readZone(current);
+		uint32_t index = 0;
+		return readZone(current, index);
 	});
 }
 

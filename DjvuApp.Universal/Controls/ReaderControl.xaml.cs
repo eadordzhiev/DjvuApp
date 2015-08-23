@@ -10,50 +10,7 @@ namespace DjvuApp.Controls
 {
     public sealed partial class ReaderControl : UserControl
     {
-        private class ZoomFactorObserver : IZoomFactorObserver
-        {
-            public bool IsZooming { get; private set; }
-
-            public float ZoomFactor { get; private set; }
-
-            public event Action ZoomFactorChanging;
-
-            public event Action ZoomFactorChanged;
-
-            public ZoomFactorObserver()
-            {
-                ZoomFactor = 1;
-            }
-
-            public void OnZoomFactorChanged(float zoomFactor, bool isIntermediate)
-            {
-                // ReSharper disable once CompareOfFloatsByEqualityOperator
-                if (zoomFactor != ZoomFactor && !IsZooming)
-                {
-                    RaiseZoomFactorChanging();
-                    IsZooming = true;
-                }
-
-                if (!isIntermediate && IsZooming)
-                {
-                    ZoomFactor = zoomFactor;
-                    RaiseZoomFactorChanged();
-                    IsZooming = false;
-                }
-            }
-
-            private void RaiseZoomFactorChanged()
-            {
-                var handler = ZoomFactorChanged;
-                if (handler != null) handler();
-            }
-
-            private void RaiseZoomFactorChanging()
-            {
-                var handler = ZoomFactorChanging;
-                if (handler != null) handler();
-            }
-        }
+        
 
         public DjvuDocument Source
         {
@@ -74,7 +31,7 @@ namespace DjvuApp.Controls
             DependencyProperty.Register("PageNumber", typeof(uint), typeof(ReaderControl), new PropertyMetadata(0U, PageNumberChangedCallback));
 
         private bool _supressPageNumberChangedCallback;
-        private ZoomFactorObserver _zoomFactorObserver;
+        private PageViewObserver _zoomFactorObserver;
         private ScrollViewer _scrollViewer;
         private Size? _containerSize;
         private PageViewControlState[] _pageStates;
@@ -138,7 +95,7 @@ namespace DjvuApp.Controls
                 return;
             }
 
-            _zoomFactorObserver = new ZoomFactorObserver();
+            _zoomFactorObserver = new PageViewObserver();
 
             var pageInfos = Source.GetPageInfos();
             var maxPageWidth = pageInfos.Max(pageInfo => pageInfo.Width);
