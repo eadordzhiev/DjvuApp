@@ -2,6 +2,43 @@
 
 namespace DjvuApp { namespace Djvu 
 {
+	public enum class ZoneType
+	{
+		Page,
+		Column,
+		Region,
+		Paragraph,
+		Line,
+		Word,
+		Character
+	};
+
+	public ref class TextLayerZone sealed
+	{
+	public:
+		property ZoneType Type
+		{
+			ZoneType get() { return type; }
+		}
+		property Windows::Foundation::Collections::IVectorView<TextLayerZone^>^ Children
+		{
+			Windows::Foundation::Collections::IVectorView<TextLayerZone^>^ get() { return children; }
+		}
+		property Windows::Foundation::Rect Bounds
+		{
+			Windows::Foundation::Rect get() { return bounds; }
+		}
+		property Platform::String^ Text
+		{
+			Platform::String^ get() { return text; }
+		}
+	internal:
+		ZoneType type;
+		Windows::Foundation::Collections::IVectorView<TextLayerZone^>^ children;
+		Windows::Foundation::Rect bounds;
+		Platform::String^ text;
+	};
+	
     [Windows::Foundation::Metadata::WebHostHidden]
 	public ref class DjvuOutlineItem sealed
 	{
@@ -83,6 +120,7 @@ namespace DjvuApp { namespace Djvu
 		}
         static Windows::Foundation::IAsyncOperation<DjvuDocument^>^ LoadAsync(Windows::Storage::IStorageFile^ file);
 		Windows::Foundation::IAsyncOperation<Windows::Foundation::Collections::IVectorView<DjvuOutlineItem^>^>^ GetOutlineAsync();
+		Windows::Foundation::IAsyncOperation<TextLayerZone^>^ GetTextLayerAsync(uint32_t pageNumber);
         Windows::Foundation::IAsyncOperation<DjvuPage^>^ GetPageAsync(uint32_t pageNumber);
         Platform::Array<PageInfo>^ GetPageInfos();
 	private:

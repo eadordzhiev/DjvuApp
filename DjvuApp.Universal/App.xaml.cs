@@ -152,7 +152,7 @@ namespace DjvuApp
         
         public static async Task RateApp()
         {
-            var uri = new Uri("ms-windows-store:reviewapp");
+            var uri = new Uri("ms-windows-store:reviewapp?appid=c6f56627-a976-443c-8531-00a92b42f4e5");
             await Launcher.LaunchUriAsync(uri);
         }
     }

@@ -13,7 +13,7 @@ namespace DjvuApp.Controls
         class Obj
         {
             public PageViewControlState State { get; set; }
-            public Action<DjvuPage> Callback { get; set; }
+            public Action<DjvuPage, TextLayerZone> Callback { get; set; }
         }
 
         public static PageLoadObserver Instance = new PageLoadObserver();
@@ -31,7 +31,7 @@ namespace DjvuApp.Controls
             _timer.Start();
         }
 
-        public int Subscribe(PageViewControlState state, Action<DjvuPage> callback)
+        public int Subscribe(PageViewControlState state, Action<DjvuPage, TextLayerZone> callback)
         {
             _lastId++;
             states[_lastId] = new Obj { State = state, Callback = callback };
@@ -64,14 +64,19 @@ namespace DjvuApp.Controls
             var obj = pair.Value;
             var id = pair.Key;
 
+            var document = obj.State.Document;
+            var pageNumber = obj.State.PageNumber;
+
             Stop();
-            var page = await obj.State.Document.GetPageAsync(obj.State.PageNumber);
+            var page = await document.GetPageAsync(pageNumber);
+            //var textLayer = await document.GetTextLayerAsync(pageNumber);
+            TextLayerZone textLayer = null;
             Start();
 
             if (states.ContainsKey(id))
             {
                 states.Remove(id);
-                obj.Callback(page);
+                obj.Callback(page, textLayer);
             }
         }
     }

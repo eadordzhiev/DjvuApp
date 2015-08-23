@@ -143,6 +143,94 @@ IAsyncOperation<IVectorView<DjvuOutlineItem^>^>^ DjvuDocument::GetOutlineAsync()
 	});
 }
 
+miniexp_t readRect(miniexp_t current, Rect& rect)
+{
+	rect.X = miniexp_to_int(miniexp_car(current));
+	current = miniexp_cdr(current);
+	rect.Y = miniexp_to_int(miniexp_car(current));
+	current = miniexp_cdr(current);
+	rect.Width = miniexp_to_int(miniexp_car(current)) - rect.X;
+	current = miniexp_cdr(current);
+	rect.Height = miniexp_to_int(miniexp_car(current)) - rect.Y;
+	current = miniexp_cdr(current);
+
+	return current;
+}
+
+struct zone_tag
+{
+	const char* tag;
+	const ZoneType type;
+};
+
+static const zone_tag knownTags[] =
+{
+	{ "page", ZoneType::Page },
+	{ "column", ZoneType::Column },
+	{ "region", ZoneType::Region },
+	{ "para", ZoneType::Paragraph },
+	{ "line", ZoneType::Line },
+	{ "word", ZoneType::Word },
+	{ "char", ZoneType::Character }
+};
+
+TextLayerZone^ readZone(miniexp_t current)
+{
+	if (!miniexp_symbolp(miniexp_car(current)))
+	{
+		throw ref new FailureException();
+	}
+
+	auto result = ref new TextLayerZone();
+	auto zoneTypeTag = miniexp_to_name(miniexp_car(current));
+	current = miniexp_cdr(current);
+
+	for (auto knownTag : knownTags)
+	{
+		if (strcmp(zoneTypeTag, knownTag.tag) == 0)
+		{
+			result->type = knownTag.type;
+			break;
+		}
+	}
+		
+	current = readRect(current, result->bounds);
+
+	if (miniexp_stringp(miniexp_car(current)))
+	{
+		auto text = miniexp_to_str(miniexp_car(current));
+		result->text = utf8_to_ps(text);
+		current = miniexp_cdr(current);
+	}
+
+	vector<TextLayerZone^> children;
+	while (current != miniexp_nil)
+	{
+		auto zone = readZone(miniexp_car(current));
+		children.push_back(zone);
+
+		current = miniexp_cdr(current);
+	}
+	result->children = ref new VectorView<TextLayerZone^>(children);
+
+	return result;
+}
+
+IAsyncOperation<TextLayerZone^>^ DjvuDocument::GetTextLayerAsync(uint32_t pageNumber)
+{
+	return create_async([=]() -> TextLayerZone^
+	{
+		auto current = ddjvu_document_get_pagetext(document, pageNumber - 1, nullptr);
+
+		if (current == miniexp_nil)
+		{
+			return nullptr;
+		}
+
+		return readZone(current);
+	});
+}
+
 DjvuPage^ DjvuDocument::GetPage(uint32_t pageNumber)
 {
 	auto page = ddjvu_page_create_by_pageno(document, pageNumber - 1);

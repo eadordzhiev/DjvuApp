@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
@@ -42,7 +43,36 @@ namespace DjvuApp.Controls
             this.InitializeComponent();
         }
 
-        public void PageDecodedHandler(DjvuPage page)
+        void ProcessZones(IReadOnlyCollection<TextLayerZone> zones)
+        {
+            foreach (var zone in zones)
+            {
+                if (zone.Type == ZoneType.Word)
+                {
+                    var scaleFactor = Width / _page.Width;
+
+                    var textBlock = new TextBlock();
+                    textBlock.Foreground = new SolidColorBrush(Colors.White);
+                    textBlock.Text = zone.Text;
+                    textBlock.HorizontalAlignment = HorizontalAlignment.Center;
+                    textBlock.VerticalAlignment = VerticalAlignment.Center;
+                    var border = new Border();
+                    border.Background = new SolidColorBrush(Color.FromArgb(0xAF, 0, 0, 0));
+                    border.Child = textBlock;
+                    border.Width = zone.Bounds.Width * scaleFactor;
+                    border.Height = zone.Bounds.Height * scaleFactor;
+                    Canvas.SetLeft(border, zone.Bounds.X * scaleFactor);
+                    Canvas.SetTop(border, (_page.Height - zone.Bounds.Bottom) * scaleFactor);
+                    contentCanvas.Children.Add(border);
+                }
+                else
+                {
+                    ProcessZones(zone.Children);
+                }
+            }
+        }
+
+        public void PageDecodedHandler(DjvuPage page, TextLayerZone textLayer)
         {
             _page = page;
 
@@ -58,6 +88,11 @@ namespace DjvuApp.Controls
             if (!_zoomFactorObserver.IsZooming)
             {
                 CreateContentSurface();
+            }
+
+            if (textLayer != null)
+            {
+                ProcessZones(new[] { textLayer });
             }
         }
 
@@ -100,6 +135,7 @@ namespace DjvuApp.Controls
 
             thumbnailContentCanvas.Background = null;
             contentCanvas.Background = null;
+            contentCanvas.Children.Clear();
             _page = null;
         }
 
