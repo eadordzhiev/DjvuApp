@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
+using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using DjvuApp.Common;
 using DjvuApp.Djvu;
 
 namespace DjvuApp.Controls
@@ -118,6 +123,13 @@ namespace DjvuApp.Controls
             SelectionStart = _pageViewObserver.SelectionStart;
             SelectionEnd = _pageViewObserver.SelectionEnd;
 
+            if (SelectionStart > SelectionEnd)
+            {
+                var tmp = SelectionStart;
+                SelectionStart = SelectionEnd;
+                SelectionEnd = tmp;
+            }
+
             SelectionChanged?.Invoke(this, EventArgs.Empty);
         }
 
@@ -186,12 +198,32 @@ namespace DjvuApp.Controls
             var sender = (ReaderControl)d;
             sender.OnPageNumberChanged();
         }
-
+        
         private void ScrollViewerLoadedHandler(object sender, RoutedEventArgs e)
         {
             _scrollViewer = (ScrollViewer)sender;
             _scrollViewer.ViewChanged += ViewChangedHandler;
             _scrollViewer.AddHandler(PointerPressedEvent, new PointerEventHandler(PageViewControl_OnPointerPressed), true);
+
+            var zoomInButton = (Button) _scrollViewer.FindDescendantByName("zoomInButton");
+            var zoomOutButton = (Button) _scrollViewer.FindDescendantByName("zoomOutButton");
+
+            zoomInButton.Click += ZoomInButtonClickHandler;
+            zoomOutButton.Click += ZoomOutButtonClickHandler;
+        }
+
+        private void ZoomInButtonClickHandler(object sender, RoutedEventArgs e)
+        {
+            var newZoomFactor = Math.Min(_scrollViewer.ZoomFactor * 1.1f, _scrollViewer.MaxZoomFactor);
+
+            _scrollViewer.ZoomToFactor(newZoomFactor);
+        }
+
+        private void ZoomOutButtonClickHandler(object sender, RoutedEventArgs e)
+        {
+            var newZoomFactor = Math.Max(_scrollViewer.ZoomFactor / 1.1f, _scrollViewer.MinZoomFactor);
+
+            _scrollViewer.ZoomToFactor(newZoomFactor);
         }
 
         private void ViewChangedHandler(object sender, ScrollViewerViewChangedEventArgs e)
@@ -313,11 +345,9 @@ namespace DjvuApp.Controls
         
         private async void CopyButtonClickHandler(object sender, RoutedEventArgs e)
         {
-            var startingPage = Math.Min(SelectionStart.PageNumber, SelectionEnd.PageNumber);
-            var endingPage = Math.Max(SelectionStart.PageNumber, SelectionEnd.PageNumber);
             var stringBuilder = new StringBuilder();
 
-            for (var pageNumber = startingPage; pageNumber <= endingPage; pageNumber++)
+            for (var pageNumber = SelectionStart.PageNumber; pageNumber <= SelectionEnd.PageNumber; pageNumber++)
             {
                 uint selectionStartIndex, selectionEndIndex;
 
@@ -339,6 +369,112 @@ namespace DjvuApp.Controls
             dataPackage.SetText(stringBuilder.ToString());
 
             Clipboard.SetContent(dataPackage);
+        }
+
+        IEnumerable<TextLayerZone> GetSearchZones(IEnumerable<TextLayerZone> zones, string text)
+        {
+            foreach (var zone in zones)
+            {
+                if (zone.Type == ZoneType.Word 
+                    && CultureInfo.CurrentUICulture.CompareInfo.IndexOf(zone.Text, text, CompareOptions.IgnoreCase) >= 0)
+                {
+                    yield return zone;
+                }
+                else
+                {
+                    foreach (var childZone in GetSearchZones(zone.Children, text))
+                    {
+                        yield return childZone;
+                    }
+                }
+
+            }
+        }
+
+        private SelectionMarker? _lastSearchPosition;
+        private string _lastSearchQuery;
+
+        public void HighlightSearchMatches(string query)
+        {
+            _lastSearchPosition = null;
+            _lastSearchQuery = query;
+
+            _pageViewObserver.SearchText = query;
+            _pageViewObserver.RaiseSearchHighlightingRedrawingRequested();
+        }
+
+        public async Task SelectNextSearchMatch()
+        {
+            Debug.Assert(_lastSearchQuery != null);
+
+            if (_lastSearchPosition == null)
+            {
+                _lastSearchPosition = new SelectionMarker(PageNumber, 0);
+            }
+
+            SelectionMarker? found = null;
+
+            for (uint pageNumber = _lastSearchPosition.Value.PageNumber; pageNumber <= Source.PageCount; pageNumber++)
+            {
+                var textLayer = await Source.GetTextLayerAsync(pageNumber);
+                if (textLayer == null)
+                {
+                    continue;
+                }
+
+                var zones = GetSearchZones(new[] { textLayer }, _lastSearchQuery);
+
+                foreach (var zone in zones)
+                {
+                    var zoneStart = new SelectionMarker(pageNumber, zone.StartIndex);
+                    if (zoneStart > _lastSearchPosition)
+                    {
+                        found = zoneStart;
+                        break;
+                    }
+                }
+
+                if (found != null)
+                {
+                    break;
+                }
+            }
+
+            if (found == null)
+            {
+                for (uint pageNumber = 1; pageNumber < _lastSearchPosition.Value.PageNumber; pageNumber++)
+                {
+                    var textLayer = await Source.GetTextLayerAsync(pageNumber);
+                    if (textLayer == null)
+                    {
+                        continue;
+                    }
+
+                    var zone = GetSearchZones(new[] { textLayer }, _lastSearchQuery).FirstOrDefault();
+                    if (zone == null)
+                    {
+                        continue;
+                    }
+
+                    found = new SelectionMarker(pageNumber, zone.StartIndex);
+                    break;
+                }
+            }
+
+            if (found == null)
+            {
+                return;
+            }
+
+            _lastSearchPosition = found;
+
+            _pageViewObserver.SelectionStart = found.Value;
+            _pageViewObserver.SelectionEnd = found.Value;
+            _pageViewObserver.IsSelected = true;
+            _pageViewObserver.RaiseSelectionChanging();
+            RaiseSelectionChanged();
+
+            GoToPage(found.Value.PageNumber);
         }
     }
 }

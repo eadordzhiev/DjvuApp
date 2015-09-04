@@ -61,5 +61,45 @@ namespace DjvuApp.Pages
             rootFrame.Navigate(typeof(MainPage), _navigationParameter);
             rootFrame.BackStack.Clear();
         }
+
+        private void FindButtonClickHandler(object sender, RoutedEventArgs e)
+        {
+            searchPanel.Visibility = Visibility.Visible;
+            appBar.Visibility = Visibility.Collapsed;
+        }
+
+        private void SearchBox_OnQueryChanged(SearchBox sender, SearchBoxQueryChangedEventArgs e)
+        {
+            var query = searchBox.QueryText;
+
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                query = null;
+            }
+
+            readerControl.HighlightSearchMatches(query);
+        }
+
+        private async void SearchBox_OnQuerySubmitted(SearchBox sender, SearchBoxQuerySubmittedEventArgs args)
+        {
+            if (string.IsNullOrWhiteSpace(searchBox.QueryText))
+            {
+                return;
+            }
+
+            searchBox.IsEnabled = false;
+            searchProgressBar.Visibility = Visibility.Visible;
+
+            await readerControl.SelectNextSearchMatch();
+
+            searchBox.IsEnabled = true;
+            searchProgressBar.Visibility = Visibility.Collapsed;
+        }
+
+        private void CloseSearchButtonClickHandler(object sender, RoutedEventArgs e)
+        {
+            searchPanel.Visibility = Visibility.Collapsed;
+            appBar.Visibility = Visibility.Visible;
+        }
     }
 }

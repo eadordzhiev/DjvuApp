@@ -2,7 +2,7 @@
   "dependencies": {
     "JetBrains.Annotations": "9.2.0",
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.0.0",
-    "MvvmLightLibs": "5.1.1",
+    "MvvmLightLibs": "5.2.0",
     "Unity": "3.5.1404"
   },
   "frameworks": {

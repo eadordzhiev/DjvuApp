@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -57,6 +58,7 @@ namespace DjvuApp.Controls
             _pageViewObserver.ZoomFactorChanging += HandleZoomFactorChanging;
             _pageViewObserver.ZoomFactorChanged += HandleZoomFactorChanged;
             _pageViewObserver.SelectionChanging += HandleSelectionChanging;
+            _pageViewObserver.SearchHighlightingRedrawingRequested += HandleSearchHighlightingRedrawingRequested;
 
             Width = State.Width;
             Height = State.Height;
@@ -68,18 +70,66 @@ namespace DjvuApp.Controls
                 CreateContentSurface();
             }
 
-            if (textLayer != null)
-            {
-                TextLayer = new[] { textLayer };
-                _zonesOverlays = new Dictionary<TextLayerZone, UIElement>();
-                CreateOverlays(new[] { textLayer });
-                RedrawSelection();
-            }
+            TextLayer = textLayer != null ? new[] { textLayer } : Array.Empty<TextLayerZone>();
+
+            RedrawSelection();
+            RedrawSearchHighlighting();
+        }
+
+        private void HandleSearchHighlightingRedrawingRequested(object sender, EventArgs e)
+        {
+            RedrawSearchHighlighting();
         }
 
         private void HandleSelectionChanging()
         {
             RedrawSelection();
+        }
+
+        private static IEnumerable<TextLayerZone> GetSearchZones(IEnumerable<TextLayerZone> zones, string text)
+        {
+            foreach (var zone in zones)
+            {
+                if (zone.Type == ZoneType.Word
+                    && CultureInfo.CurrentUICulture.CompareInfo.IndexOf(zone.Text, text, CompareOptions.IgnoreCase) >= 0)
+                {
+                    yield return zone;
+                }
+                else
+                {
+                    foreach (var childZone in GetSearchZones(zone.Children, text))
+                    {
+                        yield return childZone;
+                    }
+                }
+
+            }
+        }
+
+        private void RedrawSearchHighlighting()
+        {
+            searchHighlightingShape.Data = null;
+
+            if (_pageViewObserver.SearchText == null)
+            {
+                return;
+            }
+
+            var zones = GetSearchZones(TextLayer, _pageViewObserver.SearchText);
+            searchHighlightingShape.Data = GetGeometryFromZones(zones);
+        }
+
+        Geometry GetGeometryFromZones(IEnumerable<TextLayerZone> zones)
+        {
+            var geometryGroup = new GeometryGroup();
+
+            foreach (var zone in zones)
+            {
+                var rect = PageRectToDipRect(zone.Bounds);
+                geometryGroup.Children.Add(new RectangleGeometry { Rect = rect });
+            }
+
+            return geometryGroup;
         }
 
         public static bool GetSelectionIndicesForPage(
@@ -89,21 +139,7 @@ namespace DjvuApp.Controls
             out uint selectionStartIndex,
             out uint selectionEndIndex)
         {
-            bool needSwapping = false;
-
-            if (selectionStart.PageNumber == selectionEnd.PageNumber)
-            {
-                if (selectionStart.Index > selectionEnd.Index)
-                {
-                    needSwapping = true;
-                }
-            }
-            else if (selectionStart.PageNumber > selectionEnd.PageNumber)
-            {
-                needSwapping = true;
-            }
-
-            if (needSwapping)
+            if (selectionStart > selectionEnd)
             {
                 var tmp = selectionStart;
                 selectionStart = selectionEnd;
@@ -144,15 +180,7 @@ namespace DjvuApp.Controls
 
         private void RedrawSelection()
         {
-            if (_pageViewObserver == null)
-            {
-                return;
-            }
-
-            foreach (var border in _zonesOverlays.Values)
-            {
-                border.Opacity = 0;
-            }
+            selectionShape.Data = null;
 
             if (!_pageViewObserver.IsSelected)
             {
@@ -169,13 +197,22 @@ namespace DjvuApp.Controls
             {
                 return;
             }
-
-            foreach (var zone in GetSelectionZones(TextLayer, selectionStartIndex, selectionEndIndex))
-            {
-                _zonesOverlays[zone].Opacity = 1;
-            }
+            
+            var selectionZones = GetSelectionZones(TextLayer, selectionStartIndex, selectionEndIndex);
+            selectionShape.Data = GetGeometryFromZones(selectionZones);
         }
 
+        Rect PageRectToDipRect(Rect pageRect)
+        {
+            var scaleFactor = Width / _page.Width;
+
+            return new Rect(
+                x: pageRect.X * scaleFactor,
+                y: (_page.Height - pageRect.Bottom) * scaleFactor,
+                width: pageRect.Width * scaleFactor,
+                height: pageRect.Height * scaleFactor);
+        }
+        
         private void OnStateChanged(PageViewControlState oldValue, PageViewControlState newValue)
         {
             CleanUp();
@@ -199,6 +236,7 @@ namespace DjvuApp.Controls
                 _pageViewObserver.ZoomFactorChanging -= HandleZoomFactorChanging;
                 _pageViewObserver.ZoomFactorChanged -= HandleZoomFactorChanged;
                 _pageViewObserver.SelectionChanging -= HandleSelectionChanging;
+                _pageViewObserver.SearchHighlightingRedrawingRequested -= HandleSearchHighlightingRedrawingRequested;
                 _pageViewObserver = null;
             }
 
@@ -217,6 +255,7 @@ namespace DjvuApp.Controls
             thumbnailContentCanvas.Background = null;
             contentCanvas.Background = null;
             contentCanvas.Children.Clear();
+            selectionShape.Data = null;
             _page = null;
             TextLayer = null;
         }
@@ -267,48 +306,7 @@ namespace DjvuApp.Controls
             thumbnailContentCanvas.Background = thumbnailBackgroundBrush;
         }
         
-        private Dictionary<TextLayerZone, UIElement> _zonesOverlays;
-
-        void CreateOverlays(IReadOnlyCollection<TextLayerZone> zones)
-        {
-            foreach (var zone in zones)
-            {
-                if (zone.Type == ZoneType.Word || zone.Type == ZoneType.Line)
-                {
-                    var scaleFactor = Width / _page.Width;
-
-                    var zoneOverlay = new Rectangle
-                    {
-                        Fill = (Brush) Resources["SelectionBackgroundBrush"],
-                        Opacity = 0,
-                        Width = zone.Bounds.Width * scaleFactor,
-                        Height = zone.Bounds.Height * scaleFactor
-                    };
-
-                    if (zone.Type == ZoneType.Word)
-                    {
-                        zoneOverlay.PointerEntered += (sender, args) =>
-                        {
-                            CoreWindow.GetForCurrentThread().PointerCursor = new CoreCursor(CoreCursorType.IBeam, 0);
-                        };
-                        zoneOverlay.PointerExited += (sender, args) =>
-                        {
-                            CoreWindow.GetForCurrentThread().PointerCursor = new CoreCursor(CoreCursorType.Arrow, 0);
-                        };
-                    }
-                    
-                    Canvas.SetLeft(zoneOverlay, zone.Bounds.X * scaleFactor);
-                    Canvas.SetTop(zoneOverlay, (_page.Height - zone.Bounds.Bottom) * scaleFactor);
-                    contentCanvas.Children.Add(zoneOverlay);
-
-                    _zonesOverlays[zone] = zoneOverlay;
-                }
-
-                CreateOverlays(zone.Children);
-            }
-        }
-        
-        IEnumerable<TextLayerZone> GetSelectionZones(IReadOnlyCollection<TextLayerZone> zones, uint selectionStart, uint selectionEnd)
+        IEnumerable<TextLayerZone> GetSelectionZones(IEnumerable<TextLayerZone> zones, uint selectionStart, uint selectionEnd)
         {
             foreach (var zone in zones)
             {
@@ -339,6 +337,11 @@ namespace DjvuApp.Controls
         
         public TextLayerZone FindWordAtPoint(IReadOnlyCollection<TextLayerZone> zones, Point point)
         {
+            if (_page == null)
+            {
+                return null;
+            }
+
             var scaleFactor = _page.Width / Width;
             var pagePoint = new Point(point.X * scaleFactor, _page.Height - point.Y * scaleFactor);
             
@@ -348,17 +351,24 @@ namespace DjvuApp.Controls
                 {
                     return zone;
                 }
-                else
+
+                var result = FindWordAtPoint(zone.Children, point);
+                if (result != null)
                 {
-                    var result = FindWordAtPoint(zone.Children, point);
-                    if (result != null)
-                    {
-                        return result;
-                    }
+                    return result;
                 }
             }
 
             return null;
+        }
+
+        private static readonly CoreCursor HoverCursor = new CoreCursor(CoreCursorType.IBeam, 0);
+        private static readonly CoreCursor NormalCursor = new CoreCursor(CoreCursorType.Arrow, 0);
+
+        private void PointerMovedHandler(object sender, PointerRoutedEventArgs e)
+        {
+            var zone = FindWordAtPoint(TextLayer, e.GetCurrentPoint(this).Position);
+            CoreWindow.GetForCurrentThread().PointerCursor = zone != null ? HoverCursor : NormalCursor;
         }
     }
 }

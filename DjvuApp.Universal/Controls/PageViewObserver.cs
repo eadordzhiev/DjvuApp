@@ -14,11 +14,15 @@ namespace DjvuApp.Controls
 
         public SelectionMarker SelectionEnd { get; set; }
 
+        public string SearchText { get; set; }
+
         public event Action ZoomFactorChanging;
 
         public event Action ZoomFactorChanged;
 
         public event Action SelectionChanging;
+
+        public event EventHandler SearchHighlightingRedrawingRequested;
 
         public PageViewObserver()
         {
@@ -56,6 +60,11 @@ namespace DjvuApp.Controls
         private void RaiseZoomFactorChanging()
         {
             ZoomFactorChanging?.Invoke();
+        }
+
+        public void RaiseSearchHighlightingRedrawingRequested()
+        {
+            SearchHighlightingRedrawingRequested?.Invoke(this, EventArgs.Empty);
         }
     }
 }

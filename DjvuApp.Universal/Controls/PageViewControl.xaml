@@ -4,11 +4,13 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    PointerMoved="PointerMovedHandler">
     
     <UserControl.Resources>
         <SolidColorBrush x:Key="ReaderCanvasForeground" Color="White"/>
-        <SolidColorBrush x:Key="SelectionBackgroundBrush" Color="{ThemeResource SystemAccentColor}" Opacity="0.3"/>
+        <SolidColorBrush x:Key="SearchHighlightingBackgroundBrush" Color="Yellow" Opacity="0.33"/>
+        <SolidColorBrush x:Key="SelectionBackgroundBrush" Color="{ThemeResource SystemAccentColor}" Opacity="0.33"/>
     </UserControl.Resources>
 
     <Canvas Background="Transparent">
@@ -27,5 +29,12 @@
             Width="{x:Bind Width, Mode=OneWay}" 
             Height="{x:Bind Height, Mode=OneWay}"
             Background="Transparent"/>
+        <Canvas
+            x:Name="selectionCanvas"
+            Width="0"
+            Height="0">
+            <Path x:Name="searchHighlightingShape" Fill="{StaticResource SearchHighlightingBackgroundBrush}"/>
+            <Path x:Name="selectionShape" Fill="{StaticResource SelectionBackgroundBrush}"/>
+        </Canvas>
     </Canvas>
 </UserControl>

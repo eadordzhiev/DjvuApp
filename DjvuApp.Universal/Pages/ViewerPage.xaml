@@ -21,6 +21,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid
             x:Name="notificationPanel"
@@ -54,6 +55,7 @@
                 Click="AddBookButtonClick"/>
         </Grid>
         <controls:ReaderControl
+            x:Name="readerControl"
             Grid.Row="1"
             Source="{x:Bind ViewModel.CurrentDocument, Mode=OneWay}"
             PageNumber="{x:Bind ViewModel.CurrentPageNumber, Mode=TwoWay}"/>
@@ -62,11 +64,32 @@
             Width="100"
             Height="100"
             IsActive="{x:Bind ViewModel.IsProgressVisible, Mode=OneWay}"/>
+        <Grid x:Name="searchPanel" Grid.Row="2" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}" Visibility="Collapsed">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <SearchBox x:Name="searchBox" Margin="12" Width="200" SearchHistoryEnabled="False" QueryChanged="SearchBox_OnQueryChanged" PlaceholderText="Search" QuerySubmitted="SearchBox_OnQuerySubmitted"/>
+            <Button
+                Grid.Column="1"
+                HorizontalAlignment="Right" 
+                Margin="12"
+                Background="Transparent"
+                Click="CloseSearchButtonClickHandler">
+                <SymbolIcon Symbol="Clear"/>
+            </Button>
+            <ProgressBar x:Name="searchProgressBar" Grid.ColumnSpan="2" IsIndeterminate="True" VerticalAlignment="Top" Visibility="Collapsed"/>
+        </Grid>
     </Grid>
     
     <Page.BottomAppBar>
-        <CommandBar>
+        <CommandBar x:Name="appBar">
             <CommandBar.PrimaryCommands>
+                <AppBarButton
+                    Click="FindButtonClickHandler"
+                    Label="Find">
+                    <SymbolIcon Symbol="Find"/>
+                </AppBarButton>
                 <AppBarButton
                     x:Uid="ViewerPage_AddBookmarkAppBarButton"
                     Command="{x:Bind ViewModel.AddBookmarkCommand}"
@@ -86,6 +109,13 @@
                     Label="Outline"
                     Icon="Bookmarks"
                     Command="{x:Bind ViewModel.ShowOutlineCommand, Mode=OneWay}"/>
+            </CommandBar.PrimaryCommands>
+            <CommandBar.SecondaryCommands>
+                <AppBarButton
+                    x:Name="viewLibraryButton"
+                    Label="View library"
+                    Visibility="Collapsed"
+                    Click="ViewLibraryButtonClickHandler"/>
                 <AppBarButton
                     x:Uid="ViewerPage_PreviousPageAppBarButton"
                     Label="Previous page"
@@ -96,13 +126,6 @@
                     Label="Next page"
                     Icon="Forward"
                     Command="{x:Bind ViewModel.GoToNextPageCommand, Mode=OneWay}"/>
-            </CommandBar.PrimaryCommands>
-            <CommandBar.SecondaryCommands>
-                <AppBarButton
-                    x:Name="viewLibraryButton"
-                    Label="View library"
-                    Visibility="Collapsed"
-                    Click="ViewLibraryButtonClickHandler"/>
                 <AppBarButton
                     x:Uid="ViewerPage_JumpToPageAppBarButton"
                     Label="Jump to page"

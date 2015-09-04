@@ -110,6 +110,7 @@
     <Compile Include="Controls\BookView.xaml.cs">
       <DependentUpon>BookView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Common\FrameworkElementExtensions.cs" />
     <Compile Include="Controls\PageLoadObserver.cs" />
     <Compile Include="Controls\SelectionMarker.cs" />
     <Compile Include="Controls\TextLayerPresenter.xaml.cs">
