@@ -11,81 +11,85 @@
     d:DesignWidth="400"
     SizeChanged="SizeChangedHandler">
     
-    <Grid>
-        <ListView 
-            x:Name="listView"
-            SelectionMode="None"
-            ScrollViewer.HorizontalScrollBarVisibility="Auto"
-            ScrollViewer.HorizontalScrollMode="Enabled"
-            ScrollViewer.ZoomMode="Enabled"
-            ScrollViewer.IsZoomInertiaEnabled="False">
-            <ListView.ItemTemplate>
-                <DataTemplate x:DataType="controls:PageViewControlState">
-                    <controls:PageViewControl
-                        Margin="0,0,0,5"
-                        State="{x:Bind Mode=OneWay}" 
-                        Width="{x:Bind Width, Mode=OneWay}"
-                        Height="{x:Bind Height, Mode=OneWay}"/>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-            <ListView.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <VirtualizingStackPanel VirtualizationMode="Recycling"/>
-                </ItemsPanelTemplate>
-            </ListView.ItemsPanel>
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
-                    <Setter Property="IsTabStop" Value="False"/>
-                    <Setter Property="HorizontalAlignment" Value="Center"/>
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="ListViewItem">
-                                <ContentPresenter 
-                                    x:Name="contentPresenter"
-                                    ContentTransitions="{TemplateBinding ContentTransitions}"
-                                    ContentTemplate="{TemplateBinding ContentTemplate}"
-                                    Content="{TemplateBinding Content}"
-                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </ListView.ItemContainerStyle>
-            <ListView.Template>
-                <ControlTemplate TargetType="ListView">
-                    <ScrollViewer 
-                        x:Name="ScrollViewer"
-                        IsTabStop="True"
-                        HorizontalContentAlignment="Center" 
-                        MinZoomFactor="1"
-                        MaxZoomFactor="5"
-                        Loaded="ScrollViewerLoadedHandler"
-                        TabNavigation="{TemplateBinding TabNavigation}"
-                        HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
-                        HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
-                        IsHorizontalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsHorizontalScrollChainingEnabled}"
-                        VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
-                        VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
-                        IsVerticalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsVerticalScrollChainingEnabled}"
-                        IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}"
-                        IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}"
-                        ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}"
-                        IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
-                        BringIntoViewOnFocusChange="{TemplateBinding ScrollViewer.BringIntoViewOnFocusChange}"
-                        AutomationProperties.AccessibilityView="Raw">
-                        <ItemsPresenter
-                            HorizontalAlignment="Center"
-                            Header="{TemplateBinding Header}" 
-                            HeaderTemplate="{TemplateBinding HeaderTemplate}"
-                            HeaderTransitions="{TemplateBinding HeaderTransitions}"
-                            Footer="{TemplateBinding Footer}" 
-                            FooterTemplate="{TemplateBinding FooterTemplate}"
-                            FooterTransitions="{TemplateBinding FooterTransitions}"
-                            Padding="{TemplateBinding Padding}"/>
-                    </ScrollViewer>
-                </ControlTemplate>
-            </ListView.Template>
-        </ListView>
-    </Grid>
+    <FrameworkElement.Resources>
+        <MenuFlyout x:Name="selectionContextMenu">
+            <MenuFlyoutItem Text="Copy" Click="CopyButtonClickHandler"/>
+        </MenuFlyout>
+    </FrameworkElement.Resources>
+
+    <ListView 
+        x:Name="listView"
+        SelectionMode="None"
+        ScrollViewer.HorizontalScrollBarVisibility="Auto"
+        ScrollViewer.HorizontalScrollMode="Enabled"
+        ScrollViewer.ZoomMode="Enabled"
+        ScrollViewer.IsZoomInertiaEnabled="False">
+        <ListView.ItemTemplate>
+            <DataTemplate x:DataType="controls:PageViewControlState">
+                <controls:PageViewControl
+                    Margin="0,0,0,5"
+                    State="{x:Bind Mode=OneWay}" 
+                    Width="{x:Bind Width, Mode=OneWay}"
+                    Height="{x:Bind Height, Mode=OneWay}"/>
+            </DataTemplate>
+        </ListView.ItemTemplate>
+        <ListView.ItemsPanel>
+            <ItemsPanelTemplate>
+                <VirtualizingStackPanel VirtualizationMode="Recycling"/>
+            </ItemsPanelTemplate>
+        </ListView.ItemsPanel>
+        <ListView.ItemContainerStyle>
+            <Style TargetType="ListViewItem">
+                <Setter Property="IsTabStop" Value="False"/>
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ListViewItem">
+                            <ContentPresenter 
+                                x:Name="contentPresenter"
+                                ContentTransitions="{TemplateBinding ContentTransitions}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                Content="{TemplateBinding Content}"
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ListView.ItemContainerStyle>
+        <ListView.Template>
+            <ControlTemplate TargetType="ListView">
+                <ScrollViewer 
+                    x:Name="ScrollViewer"
+                    IsTabStop="True"
+                    HorizontalContentAlignment="Center" 
+                    MinZoomFactor="1"
+                    MaxZoomFactor="5"
+                    Loaded="ScrollViewerLoadedHandler"
+                    TabNavigation="{TemplateBinding TabNavigation}"
+                    HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
+                    HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                    IsHorizontalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsHorizontalScrollChainingEnabled}"
+                    VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
+                    VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+                    IsVerticalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsVerticalScrollChainingEnabled}"
+                    IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}"
+                    IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}"
+                    ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}"
+                    IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
+                    BringIntoViewOnFocusChange="{TemplateBinding ScrollViewer.BringIntoViewOnFocusChange}"
+                    AutomationProperties.AccessibilityView="Raw">
+                    <ItemsPresenter
+                        HorizontalAlignment="Center"
+                        Header="{TemplateBinding Header}" 
+                        HeaderTemplate="{TemplateBinding HeaderTemplate}"
+                        HeaderTransitions="{TemplateBinding HeaderTransitions}"
+                        Footer="{TemplateBinding Footer}" 
+                        FooterTemplate="{TemplateBinding FooterTemplate}"
+                        FooterTransitions="{TemplateBinding FooterTransitions}"
+                        Padding="{TemplateBinding Padding}"/>
+                </ScrollViewer>
+            </ControlTemplate>
+        </ListView.Template>
+    </ListView>
 </UserControl>

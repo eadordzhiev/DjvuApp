@@ -21,7 +21,7 @@ namespace DjvuApp.Controls
     public sealed partial class PageViewControl : UserControl
     {
         private static readonly Lazy<Renderer> _renderer = new Lazy<Renderer>(() => new Renderer());
-
+        
         public PageViewControlState State
         {
             get { return (PageViewControlState)GetValue(StateProperty); }
@@ -34,9 +34,9 @@ namespace DjvuApp.Controls
         private VsisWrapper _contentVsis;
         private SisWrapper _thumbnailSis;
         private DjvuPage _page;
-        private PageViewObserver _zoomFactorObserver;
+        private PageViewObserver _pageViewObserver;
         private int? _id;
-        private IReadOnlyCollection<TextLayerZone> _textLayer;
+        public IReadOnlyCollection<TextLayerZone> TextLayer;
 
         private static void StateChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -53,37 +53,98 @@ namespace DjvuApp.Controls
         {
             _page = page;
 
-            _zoomFactorObserver = State.ZoomFactorObserver;
-            _zoomFactorObserver.ZoomFactorChanging += HandleZoomFactorChanging;
-            _zoomFactorObserver.ZoomFactorChanged += HandleZoomFactorChanged;
-            _zoomFactorObserver.SelectionChanged += HandleSelectionChanged;
+            _pageViewObserver = State.ZoomFactorObserver;
+            _pageViewObserver.ZoomFactorChanging += HandleZoomFactorChanging;
+            _pageViewObserver.ZoomFactorChanged += HandleZoomFactorChanged;
+            _pageViewObserver.SelectionChanging += HandleSelectionChanging;
 
             Width = State.Width;
             Height = State.Height;
 
             CreateThumbnailSurface();
 
-            if (!_zoomFactorObserver.IsZooming)
+            if (!_pageViewObserver.IsZooming)
             {
                 CreateContentSurface();
             }
 
             if (textLayer != null)
             {
-                _textLayer = new[] { textLayer };
+                TextLayer = new[] { textLayer };
                 _zonesOverlays = new Dictionary<TextLayerZone, UIElement>();
                 CreateOverlays(new[] { textLayer });
+                RedrawSelection();
             }
         }
 
-        private void HandleSelectionChanged()
+        private void HandleSelectionChanging()
         {
             RedrawSelection();
         }
 
+        public static bool GetSelectionIndicesForPage(
+            uint pageNumber,
+            SelectionMarker selectionStart,
+            SelectionMarker selectionEnd,
+            out uint selectionStartIndex,
+            out uint selectionEndIndex)
+        {
+            bool needSwapping = false;
+
+            if (selectionStart.PageNumber == selectionEnd.PageNumber)
+            {
+                if (selectionStart.Index > selectionEnd.Index)
+                {
+                    needSwapping = true;
+                }
+            }
+            else if (selectionStart.PageNumber > selectionEnd.PageNumber)
+            {
+                needSwapping = true;
+            }
+
+            if (needSwapping)
+            {
+                var tmp = selectionStart;
+                selectionStart = selectionEnd;
+                selectionEnd = tmp;
+            }
+
+            selectionStartIndex = 0;
+            selectionEndIndex = 0;
+
+            if (selectionStart.PageNumber < pageNumber)
+            {
+                selectionStartIndex = 0;
+            }
+            else if (selectionStart.PageNumber == pageNumber)
+            {
+                selectionStartIndex = selectionStart.Index;
+            }
+            else
+            {
+                return false;
+            }
+
+            if (selectionEnd.PageNumber > pageNumber)
+            {
+                selectionEndIndex = uint.MaxValue;
+            }
+            else if (selectionEnd.PageNumber == pageNumber)
+            {
+                selectionEndIndex = selectionEnd.Index;
+            }
+            else
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         private void RedrawSelection()
         {
-            if (_zoomFactorObserver == null)
+            if (_pageViewObserver == null)
             {
                 return;
             }
@@ -93,7 +154,23 @@ namespace DjvuApp.Controls
                 border.Opacity = 0;
             }
 
-            foreach (var zone in GetSelectionZones(_textLayer))
+            if (!_pageViewObserver.IsSelected)
+            {
+                return;
+            }
+
+            uint selectionStartIndex, selectionEndIndex;
+            if (!GetSelectionIndicesForPage(
+                pageNumber: State.PageNumber,
+                selectionStart: _pageViewObserver.SelectionStart,
+                selectionEnd: _pageViewObserver.SelectionEnd,
+                selectionStartIndex: out selectionStartIndex,
+                selectionEndIndex: out selectionEndIndex))
+            {
+                return;
+            }
+
+            foreach (var zone in GetSelectionZones(TextLayer, selectionStartIndex, selectionEndIndex))
             {
                 _zonesOverlays[zone].Opacity = 1;
             }
@@ -117,12 +194,12 @@ namespace DjvuApp.Controls
 
         private void CleanUp()
         {
-            if (_zoomFactorObserver != null)
+            if (_pageViewObserver != null)
             {
-                _zoomFactorObserver.ZoomFactorChanging -= HandleZoomFactorChanging;
-                _zoomFactorObserver.ZoomFactorChanged -= HandleZoomFactorChanged;
-                _zoomFactorObserver.SelectionChanged -= HandleSelectionChanged;
-                _zoomFactorObserver = null;
+                _pageViewObserver.ZoomFactorChanging -= HandleZoomFactorChanging;
+                _pageViewObserver.ZoomFactorChanged -= HandleZoomFactorChanged;
+                _pageViewObserver.SelectionChanging -= HandleSelectionChanging;
+                _pageViewObserver = null;
             }
 
             if (_contentVsis != null)
@@ -141,6 +218,7 @@ namespace DjvuApp.Controls
             contentCanvas.Background = null;
             contentCanvas.Children.Clear();
             _page = null;
+            TextLayer = null;
         }
 
         private void HandleZoomFactorChanging()
@@ -159,7 +237,7 @@ namespace DjvuApp.Controls
 
         private void CreateContentSurface()
         {
-            var zoomFactor = _zoomFactorObserver.ZoomFactor;
+            var zoomFactor = _pageViewObserver.ZoomFactor;
             var pageViewSize = new Size(Width * zoomFactor, Height * zoomFactor);
 
             _contentVsis = new VsisWrapper(_page, _renderer.Value, pageViewSize);
@@ -188,40 +266,7 @@ namespace DjvuApp.Controls
 
             thumbnailContentCanvas.Background = thumbnailBackgroundBrush;
         }
-
-        private Pointer _pointer;
-
-        private void PageViewControl_OnPointerPressed(object sender, PointerRoutedEventArgs e)
-        {
-            _zoomFactorObserver.IsSelected = false;
-
-            var point = e.GetCurrentPoint(this).Position;
-            var startingZone = FindWordAtPoint(_textLayer, point);
-            if (startingZone == null)
-            {
-                return;
-            }
-            
-            if (CapturePointer(e.Pointer))
-            {
-                _pointer = e.Pointer;
-                var selectionStart = new SelectionMarker(State.PageNumber, startingZone.StartIndex);
-                _zoomFactorObserver.SelectionStart = selectionStart;
-                _zoomFactorObserver.SelectionEnd = selectionStart;
-            }
-        }
-
-        private void PageViewControl_OnPointerReleased(object sender, PointerRoutedEventArgs e)
-        {
-            if (_pointer != null)
-            {
-                ReleasePointerCapture(_pointer);
-                _pointer = null;
-
-                _zoomFactorObserver.IsSelected = true;
-            }
-        }
-
+        
         private Dictionary<TextLayerZone, UIElement> _zonesOverlays;
 
         void CreateOverlays(IReadOnlyCollection<TextLayerZone> zones)
@@ -239,14 +284,19 @@ namespace DjvuApp.Controls
                         Width = zone.Bounds.Width * scaleFactor,
                         Height = zone.Bounds.Height * scaleFactor
                     };
-                    zoneOverlay.PointerEntered += (sender, args) =>
+
+                    if (zone.Type == ZoneType.Word)
                     {
-                        CoreWindow.GetForCurrentThread().PointerCursor = new CoreCursor(CoreCursorType.IBeam, 0);
-                    };
-                    zoneOverlay.PointerExited += (sender, args) =>
-                    {
-                        CoreWindow.GetForCurrentThread().PointerCursor = new CoreCursor(CoreCursorType.Arrow, 0);
-                    };
+                        zoneOverlay.PointerEntered += (sender, args) =>
+                        {
+                            CoreWindow.GetForCurrentThread().PointerCursor = new CoreCursor(CoreCursorType.IBeam, 0);
+                        };
+                        zoneOverlay.PointerExited += (sender, args) =>
+                        {
+                            CoreWindow.GetForCurrentThread().PointerCursor = new CoreCursor(CoreCursorType.Arrow, 0);
+                        };
+                    }
+                    
                     Canvas.SetLeft(zoneOverlay, zone.Bounds.X * scaleFactor);
                     Canvas.SetTop(zoneOverlay, (_page.Height - zone.Bounds.Bottom) * scaleFactor);
                     contentCanvas.Children.Add(zoneOverlay);
@@ -258,22 +308,19 @@ namespace DjvuApp.Controls
             }
         }
         
-        IEnumerable<TextLayerZone> GetSelectionZones(IReadOnlyCollection<TextLayerZone> zones)
+        IEnumerable<TextLayerZone> GetSelectionZones(IReadOnlyCollection<TextLayerZone> zones, uint selectionStart, uint selectionEnd)
         {
-            var startIndex = Math.Min(_zoomFactorObserver.SelectionStart.Index, _zoomFactorObserver.SelectionEnd.Index);
-            var endIndex = Math.Max(_zoomFactorObserver.SelectionStart.Index, _zoomFactorObserver.SelectionEnd.Index);
-
             foreach (var zone in zones)
             {
                 if (zone.Type == ZoneType.Line || zone.Type == ZoneType.Word)
                 {
-                    if (startIndex <= zone.StartIndex && zone.EndIndex <= endIndex)
+                    if (selectionStart <= zone.StartIndex && zone.EndIndex <= selectionEnd)
                     {
                         yield return zone;
                     }
                     else
                     {
-                        foreach (var childZone in GetSelectionZones(zone.Children))
+                        foreach (var childZone in GetSelectionZones(zone.Children, selectionStart, selectionEnd))
                         {
                             yield return childZone;
                         }
@@ -281,7 +328,7 @@ namespace DjvuApp.Controls
                 }
                 else
                 {
-                    foreach (var childZone in GetSelectionZones(zone.Children))
+                    foreach (var childZone in GetSelectionZones(zone.Children, selectionStart, selectionEnd))
                     {
                         yield return childZone;
                     }
@@ -289,26 +336,8 @@ namespace DjvuApp.Controls
                 
             }
         }
-
-        private void PageViewControl_OnPointerMoved(object sender, PointerRoutedEventArgs e)
-        {
-            if (_pointer == null)
-            {
-                return;
-            }
-
-            var point = e.GetCurrentPoint(this).Position;
-            var endingZone = FindWordAtPoint(_textLayer, point);
-            if (endingZone == null)
-            {
-                return;
-            }
-            _zoomFactorObserver.SelectionEnd = new SelectionMarker(State.PageNumber, endingZone.EndIndex);
-
-            _zoomFactorObserver.RaiseSelectionChanged();
-        }
         
-        TextLayerZone FindWordAtPoint(IReadOnlyCollection<TextLayerZone> zones, Point point)
+        public TextLayerZone FindWordAtPoint(IReadOnlyCollection<TextLayerZone> zones, Point point)
         {
             var scaleFactor = _page.Width / Width;
             var pagePoint = new Point(point.X * scaleFactor, _page.Height - point.Y * scaleFactor);
@@ -330,42 +359,6 @@ namespace DjvuApp.Controls
             }
 
             return null;
-        }
-
-        void BuildSelectionText(IReadOnlyCollection<TextLayerZone> zones, StringBuilder stringBuilder)
-        {
-            var startIndex = Math.Min(_zoomFactorObserver.SelectionStart.Index, _zoomFactorObserver.SelectionEnd.Index);
-            var endIndex = Math.Max(_zoomFactorObserver.SelectionStart.Index, _zoomFactorObserver.SelectionEnd.Index);
-
-            foreach (var zone in zones)
-            {
-                if (startIndex <= zone.StartIndex && zone.EndIndex <= endIndex)
-                {
-                    if (zone.Type == ZoneType.Paragraph || zone.Type == ZoneType.Line)
-                    {
-                        BuildSelectionText(zone.Children, stringBuilder);
-                        stringBuilder.AppendLine();
-                    }
-                    else if (zone.Type == ZoneType.Word)
-                    {
-                        stringBuilder.Append(zone.Text);
-                        stringBuilder.Append(' ');
-                    }
-                }
-                else
-                {
-                    BuildSelectionText(zone.Children, stringBuilder);
-                }
-            }
-        }
-
-        public string GetSelectionText()
-        {
-            var stringBuilder = new StringBuilder();
-
-            BuildSelectionText(_textLayer, stringBuilder);
-
-            return stringBuilder.ToString();
         }
     }
 }

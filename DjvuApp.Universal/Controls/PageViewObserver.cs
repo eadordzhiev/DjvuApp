@@ -18,7 +18,7 @@ namespace DjvuApp.Controls
 
         public event Action ZoomFactorChanged;
 
-        public event Action SelectionChanged;
+        public event Action SelectionChanging;
 
         public PageViewObserver()
         {
@@ -42,10 +42,11 @@ namespace DjvuApp.Controls
             }
         }
 
-        public void RaiseSelectionChanged()
+        public void RaiseSelectionChanging()
         {
-            SelectionChanged?.Invoke();
+            SelectionChanging?.Invoke();
         }
+        
 
         private void RaiseZoomFactorChanged()
         {
