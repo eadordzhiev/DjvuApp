@@ -48,7 +48,7 @@
                 Padding="12">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <controls:BookView Margin="12">
+                        <controls:BookView Margin="12" ToolTipService.ToolTip="{Binding Title}">
                             <common:MenuFlyoutService.MenuFlyout>
                                 <MenuFlyout Placement="Bottom">
                                     <MenuFlyoutItem 
