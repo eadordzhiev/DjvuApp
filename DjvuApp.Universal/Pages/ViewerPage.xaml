@@ -65,6 +65,7 @@
         <Grid x:Name="searchPanel" Grid.Row="2" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}" Visibility="Collapsed">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <SearchBox
@@ -78,7 +79,17 @@
                 QueryChanged="SearchBox_OnQueryChanged"
                 QuerySubmitted="SearchBox_OnQuerySubmitted"/>
             <Button
+                x:Name="phoneSearchButton"
                 Grid.Column="1"
+                VerticalAlignment="Center"
+                Background="Transparent"
+                Click="ButtonBase_OnClick"
+                Visibility="Collapsed"
+                IsEnabled="{Binding IsEnabled, ElementName=searchBox}">
+                <SymbolIcon Symbol="Find"/>
+            </Button>
+            <Button
+                Grid.Column="2"
                 Margin="12"
                 HorizontalAlignment="Right"
                 Background="Transparent"
@@ -87,7 +98,7 @@
             </Button>
             <ProgressBar
                 x:Name="searchProgressBar"
-                Grid.ColumnSpan="2"
+                Grid.ColumnSpan="3"
                 VerticalAlignment="Top"
                 IsIndeterminate="True"
                 Visibility="Collapsed"/>
@@ -95,7 +106,7 @@
     </Grid>
     
     <Page.BottomAppBar>
-        <CommandBar x:Name="appBar">
+        <CommandBar x:Name="appBar" Visibility="{x:Bind ViewModel.IsProgressVisible, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=negate}">
             <CommandBar.PrimaryCommands>
                 <AppBarButton
                     x:Uid="ViewerPage_SearchAppBarButton"

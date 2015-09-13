@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -245,7 +246,9 @@ namespace DjvuApp.Controls
 
         private void PageViewControl_OnPointerPressed(object sender, PointerRoutedEventArgs e)
         {
-            if (!e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+            if (_pageViewObserver == null 
+                || e.Pointer.PointerDeviceType != PointerDeviceType.Mouse
+                || !e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
             {
                 return;
             }

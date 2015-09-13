@@ -1,6 +1,8 @@
 ﻿using Windows.Storage;
+using Windows.System.Profile;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Navigation;
 using DjvuApp.Common;
 using DjvuApp.ViewModel;
@@ -19,6 +21,11 @@ namespace DjvuApp.Pages
         {
             InitializeComponent();
             _navigationHelper = new NavigationHelper(this);
+
+            if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile")
+            {
+                phoneSearchButton.Visibility = Visibility.Visible;
+            }
         }
         
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -102,6 +109,22 @@ namespace DjvuApp.Pages
         {
             searchPanel.Visibility = Visibility.Collapsed;
             appBar.Visibility = Visibility.Visible;
+        }
+        
+        private async void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(searchBox.QueryText))
+            {
+                return;
+            }
+
+            searchBox.IsEnabled = false;
+            searchProgressBar.Visibility = Visibility.Visible;
+
+            await readerControl.SelectNextSearchMatch();
+
+            searchBox.IsEnabled = true;
+            searchProgressBar.Visibility = Visibility.Collapsed;
         }
     }
 }

@@ -3,6 +3,8 @@
 #include "IBufferUtilities.h"
 #include "WinrtByteStream.h"
 
+#include "libdjvu\DjVuText.h"
+
 using namespace concurrency;
 using namespace std;
 
@@ -139,84 +141,77 @@ IAsyncOperation<IVectorView<DjvuOutlineItem^>^>^ DjvuDocument::GetOutlineAsync()
 
 		auto result = ProcessOutlineExpression(miniexp_cdr(outline));
 		ddjvu_miniexp_release(document, outline);
+		minilisp_gc();
 
 		return result;
 	});
 }
 
-miniexp_t readRect(miniexp_t current, Rect& rect)
+static struct zone_match 
 {
-	rect.X = miniexp_to_int(miniexp_car(current));
-	current = miniexp_cdr(current);
-	rect.Y = miniexp_to_int(miniexp_car(current));
-	current = miniexp_cdr(current);
-	rect.Width = miniexp_to_int(miniexp_car(current)) - rect.X;
-	current = miniexp_cdr(current);
-	rect.Height = miniexp_to_int(miniexp_car(current)) - rect.Y;
-	current = miniexp_cdr(current);
-
-	return current;
+	ZoneType zoneType;
+	DjVuTXT::ZoneType ztype;
+	char separator;
 }
-
-struct zone_tag
+zone_matches[] =
 {
-	const char* tag;
-	const ZoneType type;
+	{ ZoneType::Page, DjVuTXT::PAGE, 0 },
+	{ ZoneType::Column, DjVuTXT::COLUMN, DjVuTXT::end_of_column },
+	{ ZoneType::Region, DjVuTXT::REGION, DjVuTXT::end_of_region },
+	{ ZoneType::Paragraph, DjVuTXT::PARAGRAPH, DjVuTXT::end_of_paragraph },
+	{ ZoneType::Line, DjVuTXT::LINE, DjVuTXT::end_of_line },
+	{ ZoneType::Word, DjVuTXT::WORD, ' ' },
+	{ ZoneType::Character, DjVuTXT::CHARACTER, 0 }
 };
 
-static const zone_tag knownTags[] =
+TextLayerZone^ readZone(const GP<DjVuTXT> &txt, DjVuTXT::Zone &zone, uint32_t& currentIndex)
 {
-	{ "page", ZoneType::Page },
-	{ "column", ZoneType::Column },
-	{ "region", ZoneType::Region },
-	{ "para", ZoneType::Paragraph },
-	{ "line", ZoneType::Line },
-	{ "word", ZoneType::Word },
-	{ "char", ZoneType::Character }
-};
-
-TextLayerZone^ readZone(miniexp_t current, uint32_t& currentIndex)
-{
-	if (!miniexp_symbolp(miniexp_car(current)))
+	zone_match zoneMatch;
+	for (auto match : zone_matches)
 	{
-		throw ref new FailureException();
-	}
-
-	auto result = ref new TextLayerZone();
-	auto zoneTypeTag = miniexp_to_name(miniexp_car(current));
-	current = miniexp_cdr(current);
-
-	for (auto knownTag : knownTags)
-	{
-		if (strcmp(zoneTypeTag, knownTag.tag) == 0)
+		if (zone.ztype == match.ztype)
 		{
-			result->type = knownTag.type;
+			zoneMatch = match;
 			break;
 		}
 	}
-		
-	current = readRect(current, result->bounds);
 
-	if (miniexp_stringp(miniexp_car(current)))
-	{
-		auto text = miniexp_to_str(miniexp_car(current));
-		result->text = utf8_to_ps(text);
-		current = miniexp_cdr(current);
-	}
-
+	Rect bounds;
+	bounds.X = zone.rect.xmin;
+	bounds.Y = zone.rect.ymin;
+	bounds.Width = zone.rect.width();
+	bounds.Height = zone.rect.height();
+	
+	auto result = ref new TextLayerZone();
+	result->type = zoneMatch.zoneType;
+	result->bounds = bounds;
 	result->startIndex = currentIndex;
+
 	vector<TextLayerZone^> children;
-	while (current != miniexp_nil)
+
+	if (result->type == ZoneType::Word)
 	{
-		currentIndex++;
-		auto zone = readZone(miniexp_car(current), currentIndex);
-		children.push_back(zone);
+		auto data = (const char*)(txt->textUTF8) + zone.text_start;
+		auto length = zone.text_length;
+		if (length > 0 && data[length - 1] == zoneMatch.separator)
+			length -= 1;
 
-		current = miniexp_cdr(current);
+		string text(data, length);
+		result->text = utf8_to_ps(text);
 	}
-	result->endIndex = currentIndex;
-	result->children = ref new VectorView<TextLayerZone^>(children);
+	else
+	{
+		for (GPosition pos = zone.children; pos; ++pos)
+		{
+			currentIndex++;
+			auto textLayerZone = readZone(txt, zone.children[pos], currentIndex);
+			children.push_back(textLayerZone);
+		}
+	}
 
+	result->children = ref new VectorView<TextLayerZone^>(children);
+	result->endIndex = currentIndex;
+	
 	return result;
 }
 
@@ -224,18 +219,22 @@ IAsyncOperation<TextLayerZone^>^ DjvuDocument::GetTextLayerAsync(uint32_t pageNu
 {
 	return create_async([=]() -> TextLayerZone^
 	{
-		auto current = ddjvu_document_get_pagetext(document, pageNumber - 1, nullptr);
+		auto djvuDocument = ddjvu_get_DjVuDocument(document);
 
-		if (current == miniexp_nil)
-		{
+		GP<DjVuFile> file = djvuDocument->get_djvu_file(pageNumber - 1);
+		if (!file || !file->is_data_present())
 			return nullptr;
-		}
+		GP<ByteStream> bs = file->get_text();
+		if (!bs)
+			return nullptr;
+		GP<DjVuText> text = DjVuText::create();
+		text->decode(bs);
+		GP<DjVuTXT> txt = text->txt;
+		if (!txt)
+			return nullptr;
 
 		uint32_t index = 0;
-		auto result = readZone(current, index);
-		ddjvu_miniexp_release(document, current);
-
-		return result;
+		return readZone(txt, txt->page_zone, index);
 	});
 }
 
