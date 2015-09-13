@@ -110,12 +110,10 @@
     <Compile Include="Controls\BookView.xaml.cs">
       <DependentUpon>BookView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Common\FrameworkElementExtensions.cs" />
+    <Compile Include="Controls\SearchHelper.cs" />
+    <Compile Include="Misc\FrameworkElementExtensions.cs" />
     <Compile Include="Controls\PageLoadObserver.cs" />
     <Compile Include="Controls\SelectionMarker.cs" />
-    <Compile Include="Controls\TextLayerPresenter.xaml.cs">
-      <DependentUpon>TextLayerPresenter.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\PageViewObserver.cs" />
     <Compile Include="Misc\LicenseValidator.cs" />
     <Compile Include="Common\MenuFlyoutService.cs" />
@@ -240,10 +238,6 @@
     <Page Include="Controls\ReaderControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\TextLayerPresenter.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dialogs\Internal\BusyIndicatorInternal.xaml">
       <SubType>Designer</SubType>

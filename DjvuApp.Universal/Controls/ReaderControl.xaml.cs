@@ -1,20 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
-using Windows.UI.Popups;
-using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using DjvuApp.Common;
 using DjvuApp.Djvu;
+using DjvuApp.Misc;
 
 namespace DjvuApp.Controls
 {
@@ -370,27 +368,7 @@ namespace DjvuApp.Controls
 
             Clipboard.SetContent(dataPackage);
         }
-
-        IEnumerable<TextLayerZone> GetSearchZones(IEnumerable<TextLayerZone> zones, string text)
-        {
-            foreach (var zone in zones)
-            {
-                if (zone.Type == ZoneType.Word 
-                    && CultureInfo.CurrentUICulture.CompareInfo.IndexOf(zone.Text, text, CompareOptions.IgnoreCase) >= 0)
-                {
-                    yield return zone;
-                }
-                else
-                {
-                    foreach (var childZone in GetSearchZones(zone.Children, text))
-                    {
-                        yield return childZone;
-                    }
-                }
-
-            }
-        }
-
+        
         private SelectionMarker? _lastSearchPosition;
         private string _lastSearchQuery;
 
@@ -403,6 +381,30 @@ namespace DjvuApp.Controls
             _pageViewObserver.RaiseSearchHighlightingRedrawingRequested();
         }
 
+        private async Task<SelectionInterval> FindOnPage(uint pageNumber, string query, SelectionMarker minPosition)
+        {
+            var textLayer = await Source.GetTextLayerAsync(pageNumber);
+            if (textLayer == null)
+            {
+                return null;
+            }
+
+            var searchResults = SearchHelper.Search(new[] { textLayer }, query);
+
+            foreach (var zones in searchResults)
+            {
+                var zoneStart = new SelectionMarker(pageNumber, zones.First().StartIndex);
+                var zoneEnd = new SelectionMarker(pageNumber, zones.Last().EndIndex);
+
+                if (zoneStart > minPosition)
+                {
+                    return new SelectionInterval(zoneStart, zoneEnd);
+                }
+            }
+
+            return null;
+        }
+
         public async Task SelectNextSearchMatch()
         {
             Debug.Assert(_lastSearchQuery != null);
@@ -412,28 +414,11 @@ namespace DjvuApp.Controls
                 _lastSearchPosition = new SelectionMarker(PageNumber, 0);
             }
 
-            SelectionMarker? found = null;
+            SelectionInterval found = null;
 
             for (uint pageNumber = _lastSearchPosition.Value.PageNumber; pageNumber <= Source.PageCount; pageNumber++)
             {
-                var textLayer = await Source.GetTextLayerAsync(pageNumber);
-                if (textLayer == null)
-                {
-                    continue;
-                }
-
-                var zones = GetSearchZones(new[] { textLayer }, _lastSearchQuery);
-
-                foreach (var zone in zones)
-                {
-                    var zoneStart = new SelectionMarker(pageNumber, zone.StartIndex);
-                    if (zoneStart > _lastSearchPosition)
-                    {
-                        found = zoneStart;
-                        break;
-                    }
-                }
-
+                found = await FindOnPage(pageNumber, _lastSearchQuery, _lastSearchPosition.Value);
                 if (found != null)
                 {
                     break;
@@ -442,22 +427,13 @@ namespace DjvuApp.Controls
 
             if (found == null)
             {
-                for (uint pageNumber = 1; pageNumber < _lastSearchPosition.Value.PageNumber; pageNumber++)
+                for (uint pageNumber = 1; pageNumber <= _lastSearchPosition.Value.PageNumber; pageNumber++)
                 {
-                    var textLayer = await Source.GetTextLayerAsync(pageNumber);
-                    if (textLayer == null)
+                    found = await FindOnPage(pageNumber, _lastSearchQuery, new SelectionMarker());
+                    if (found != null)
                     {
-                        continue;
+                        break;
                     }
-
-                    var zone = GetSearchZones(new[] { textLayer }, _lastSearchQuery).FirstOrDefault();
-                    if (zone == null)
-                    {
-                        continue;
-                    }
-
-                    found = new SelectionMarker(pageNumber, zone.StartIndex);
-                    break;
                 }
             }
 
@@ -466,15 +442,15 @@ namespace DjvuApp.Controls
                 return;
             }
 
-            _lastSearchPosition = found;
+            _lastSearchPosition = found.End;
 
-            _pageViewObserver.SelectionStart = found.Value;
-            _pageViewObserver.SelectionEnd = found.Value;
+            _pageViewObserver.SelectionStart = found.Start;
+            _pageViewObserver.SelectionEnd = found.End;
             _pageViewObserver.IsSelected = true;
             _pageViewObserver.RaiseSelectionChanging();
             RaiseSelectionChanged();
 
-            GoToPage(found.Value.PageNumber);
+            GoToPage(found.Start.PageNumber);
         }
     }
 }

@@ -276,10 +276,19 @@
   <data name="ViewerPage_RemoveBookmarkAppBarButton.Label" xml:space="preserve">
     <value>Remove bookmark</value>
   </data>
+  <data name="ViewerPage_SearchAppBarButton.Label" xml:space="preserve">
+    <value>Find</value>
+  </data>
+  <data name="ViewerPage_SearchBox.PlaceholderText" xml:space="preserve">
+    <value>Search</value>
+  </data>
   <data name="ViewerPage_ShareAppBarButton.Label" xml:space="preserve">
     <value>Share</value>
   </data>
   <data name="ViewerPage_ShowBookmarksAppBarButton.Label" xml:space="preserve">
     <value>Bookmarks</value>
+  </data>
+  <data name="ViewerPage_ViewLibraryAppBarButton.Label" xml:space="preserve">
+    <value>View library</value>
   </data>
 </root>

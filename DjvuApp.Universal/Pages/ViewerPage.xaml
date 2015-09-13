@@ -6,7 +6,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:DjvuApp.Controls"
     mc:Ignorable="d">
-
     <Page.Transitions>
         <TransitionCollection>
             <NavigationThemeTransition>
@@ -16,7 +15,6 @@
             </NavigationThemeTransition>
         </TransitionCollection>
     </Page.Transitions>
-
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -33,7 +31,7 @@
                 <ColumnDefinition/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <TextBlock 
+            <TextBlock
                 Grid.Column="1"
                 VerticalAlignment="Center"
                 Margin="0,12"
@@ -41,7 +39,7 @@
                 Text="Bookmarks won't be available unless you add this file to the library."/>
             <Button
                 Grid.Column="2"
-                HorizontalAlignment="Right" 
+                HorizontalAlignment="Right"
                 Margin="12"
                 Background="Transparent"
                 Click="CloseNotificationButtonClickHandler">
@@ -59,7 +57,7 @@
             Grid.Row="1"
             Source="{x:Bind ViewModel.CurrentDocument, Mode=OneWay}"
             PageNumber="{x:Bind ViewModel.CurrentPageNumber, Mode=TwoWay}"/>
-        <ProgressRing 
+        <ProgressRing
             Grid.Row="1"
             Width="100"
             Height="100"
@@ -69,16 +67,30 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <SearchBox x:Name="searchBox" Margin="12" Width="200" SearchHistoryEnabled="False" QueryChanged="SearchBox_OnQueryChanged" PlaceholderText="Search" QuerySubmitted="SearchBox_OnQuerySubmitted"/>
+            <SearchBox
+                x:Name="searchBox"
+                x:Uid="ViewerPage_SearchBox"
+                Margin="12"
+                Width="200"
+                FocusOnKeyboardInput="True"
+                SearchHistoryEnabled="False"
+                PlaceholderText="Search"
+                QueryChanged="SearchBox_OnQueryChanged"
+                QuerySubmitted="SearchBox_OnQuerySubmitted"/>
             <Button
                 Grid.Column="1"
-                HorizontalAlignment="Right" 
                 Margin="12"
+                HorizontalAlignment="Right"
                 Background="Transparent"
                 Click="CloseSearchButtonClickHandler">
                 <SymbolIcon Symbol="Clear"/>
             </Button>
-            <ProgressBar x:Name="searchProgressBar" Grid.ColumnSpan="2" IsIndeterminate="True" VerticalAlignment="Top" Visibility="Collapsed"/>
+            <ProgressBar
+                x:Name="searchProgressBar"
+                Grid.ColumnSpan="2"
+                VerticalAlignment="Top"
+                IsIndeterminate="True"
+                Visibility="Collapsed"/>
         </Grid>
     </Grid>
     
@@ -86,7 +98,8 @@
         <CommandBar x:Name="appBar">
             <CommandBar.PrimaryCommands>
                 <AppBarButton
-                    Click="FindButtonClickHandler"
+                    x:Uid="ViewerPage_SearchAppBarButton"
+                    Click="SearchButtonClickHandler"
                     Label="Find">
                     <SymbolIcon Symbol="Find"/>
                 </AppBarButton>
@@ -113,6 +126,7 @@
             <CommandBar.SecondaryCommands>
                 <AppBarButton
                     x:Name="viewLibraryButton"
+                    x:Uid="ViewerPage_ViewLibraryAppBarButton"
                     Label="View library"
                     Visibility="Collapsed"
                     Click="ViewLibraryButtonClickHandler"/>

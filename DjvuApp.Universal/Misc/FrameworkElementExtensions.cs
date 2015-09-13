@@ -2,7 +2,7 @@ using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 
-namespace DjvuApp.Common
+namespace DjvuApp.Misc
 {
     public static class FrameworkElementExtensions
     {

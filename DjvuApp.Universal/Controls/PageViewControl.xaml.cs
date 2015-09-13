@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
 using DjvuApp.Djvu;
+using DjvuApp.Misc;
 
 namespace DjvuApp.Controls
 {
@@ -86,24 +87,9 @@ namespace DjvuApp.Controls
             RedrawSelection();
         }
 
-        private static IEnumerable<TextLayerZone> GetSearchZones(IEnumerable<TextLayerZone> zones, string text)
+        private static IEnumerable<TextLayerZone> GetSearchZones(IEnumerable<TextLayerZone> zones, string query)
         {
-            foreach (var zone in zones)
-            {
-                if (zone.Type == ZoneType.Word
-                    && CultureInfo.CurrentUICulture.CompareInfo.IndexOf(zone.Text, text, CompareOptions.IgnoreCase) >= 0)
-                {
-                    yield return zone;
-                }
-                else
-                {
-                    foreach (var childZone in GetSearchZones(zone.Children, text))
-                    {
-                        yield return childZone;
-                    }
-                }
-
-            }
+            return SearchHelper.Search(zones, query).SelectMany(zone => zone);
         }
 
         private void RedrawSearchHighlighting()
@@ -256,6 +242,7 @@ namespace DjvuApp.Controls
             contentCanvas.Background = null;
             contentCanvas.Children.Clear();
             selectionShape.Data = null;
+            searchHighlightingShape.Data = null;
             _page = null;
             TextLayer = null;
         }

@@ -137,9 +137,10 @@ IAsyncOperation<IVectorView<DjvuOutlineItem^>^>^ DjvuDocument::GetOutlineAsync()
 			throw ref new FailureException("Outline data is corrupted.");
 		}
 
-		outline = miniexp_cdr(outline);
+		auto result = ProcessOutlineExpression(miniexp_cdr(outline));
+		ddjvu_miniexp_release(document, outline);
 
-		return ProcessOutlineExpression(outline);
+		return result;
 	});
 }
 
@@ -231,7 +232,10 @@ IAsyncOperation<TextLayerZone^>^ DjvuDocument::GetTextLayerAsync(uint32_t pageNu
 		}
 
 		uint32_t index = 0;
-		return readZone(current, index);
+		auto result = readZone(current, index);
+		ddjvu_miniexp_release(document, current);
+
+		return result;
 	});
 }
 

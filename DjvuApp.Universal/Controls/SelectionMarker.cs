@@ -29,4 +29,17 @@ namespace DjvuApp.Controls
             return PageNumber == other.PageNumber ? Index.CompareTo(other.Index) : PageNumber.CompareTo(other.PageNumber);
         }
     }
+
+    public sealed class SelectionInterval
+    {
+        public SelectionMarker Start { get; }
+
+        public SelectionMarker End { get; }
+
+        public SelectionInterval(SelectionMarker start, SelectionMarker end)
+        {
+            Start = start;
+            End = end;
+        }
+    }
 }

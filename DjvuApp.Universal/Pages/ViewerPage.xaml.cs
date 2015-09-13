@@ -62,7 +62,7 @@ namespace DjvuApp.Pages
             rootFrame.BackStack.Clear();
         }
 
-        private void FindButtonClickHandler(object sender, RoutedEventArgs e)
+        private void SearchButtonClickHandler(object sender, RoutedEventArgs e)
         {
             searchPanel.Visibility = Visibility.Visible;
             appBar.Visibility = Visibility.Collapsed;
@@ -94,6 +94,8 @@ namespace DjvuApp.Pages
 
             searchBox.IsEnabled = true;
             searchProgressBar.Visibility = Visibility.Collapsed;
+
+            searchBox.Focus(FocusState.Programmatic);
         }
 
         private void CloseSearchButtonClickHandler(object sender, RoutedEventArgs e)
