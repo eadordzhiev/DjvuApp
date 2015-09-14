@@ -1771,7 +1771,11 @@ GURL::expand_name(const GUTF8String &xfname, const char *from)
   }
 #elif defined(_WIN32) // WIN32 implementation
   // Handle base
+#if _WINRT_DLL
+  strcpy(string_buffer, (char const *)(from ? expand_name(from) : ".\\"));
+#else
   strcpy(string_buffer, (char const *)(from ? expand_name(from) : GOS::cwd()));
+#endif
   //  GNativeString native;
   if (fname)
   {
@@ -1800,6 +1804,7 @@ GURL::expand_name(const GUTF8String &xfname, const char *from)
     {
       if (fname[2]!= slash && fname[2]!= backslash)
       {       // Case "x:abcd"
+#if !_WINRT_DLL
         if ( toupper((unsigned char)s[0]) != toupper((unsigned char)fname[0])
           || s[1]!=colon)
         {
@@ -1815,6 +1820,7 @@ GURL::expand_name(const GUTF8String &xfname, const char *from)
           strcpy(string_buffer,(const char *)GUTF8String(string_buffer).getNative2UTF8());
           s = string_buffer;
         }
+#endif
         fname += 2;
       }
       else if (fname[3]!= slash && fname[3]!= backslash)

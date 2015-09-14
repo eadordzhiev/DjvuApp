@@ -320,40 +320,40 @@ GOS::sleep(int milliseconds)
 // cwd([dirname])
 // -- changes directory to dirname (when specified).
 //    returns the full path name of the current directory. 
-GUTF8String 
-GOS::cwd(const GUTF8String &dirname)
-{
-#if defined(UNIX) || defined(macintosh) || defined(OS2)
-  if (dirname.length() && chdir(dirname.getUTF82Native())==-1)//MBCS cvt
-    G_THROW(errmsg());
-  char *string_buffer;
-  GPBuffer<char> gstring_buffer(string_buffer,MAXPATHLEN+1);
-  char *result = getcwd(string_buffer,MAXPATHLEN);
-  if (!result)
-    G_THROW(errmsg());
-  return GNativeString(result).getNative2UTF8();//MBCS cvt
-#elif defined (_WINRT_DLL)
-	wchar_t drv[2];
-	if (dirname.length() && _chdir(dirname.getUTF82Native()) == -1)//MBCS cvt
-		G_THROW(errmsg());
-	drv[0] = dot; drv[1] = 0;
-	auto path = GetWorkingDirectory();
-	std::string utf8_path = utf16_to_utf8(path);
-	return GUTF8String(utf8_path.c_str());//MBCS cvt
-#elif defined (WIN32)
-  char drv[2];
-  if (dirname.length() && _chdir(dirname.getUTF82Native())==-1)//MBCS cvt
-    G_THROW(errmsg());
-  drv[0]= dot ; drv[1]=0;
-  char *string_buffer;
-  GPBuffer<char> gstring_buffer(string_buffer,MAXPATHLEN+1);
-  char *result = getcwd(string_buffer,MAXPATHLEN);
-  GetFullPathName(drv, MAXPATHLEN, string_buffer, &result);
-  return GNativeString(string_buffer).getNative2UTF8();//MBCS cvt
-#else
-# error "Define something here for your operating system"
-#endif 
-}
+//GUTF8String 
+//GOS::cwd(const GUTF8String &dirname)
+//{
+//#if defined(UNIX) || defined(macintosh) || defined(OS2)
+//  if (dirname.length() && chdir(dirname.getUTF82Native())==-1)//MBCS cvt
+//    G_THROW(errmsg());
+//  char *string_buffer;
+//  GPBuffer<char> gstring_buffer(string_buffer,MAXPATHLEN+1);
+//  char *result = getcwd(string_buffer,MAXPATHLEN);
+//  if (!result)
+//    G_THROW(errmsg());
+//  return GNativeString(result).getNative2UTF8();//MBCS cvt
+//#elif defined (_WINRT_DLL)
+//	wchar_t drv[2];
+//	if (dirname.length() && _chdir(dirname.getUTF82Native()) == -1)//MBCS cvt
+//		G_THROW(errmsg());
+//	drv[0] = dot; drv[1] = 0;
+//	auto path = GetWorkingDirectory();
+//	std::string utf8_path = utf16_to_utf8(path);
+//	return GUTF8String(utf8_path.c_str());//MBCS cvt
+//#elif defined (WIN32)
+//  char drv[2];
+//  if (dirname.length() && _chdir(dirname.getUTF82Native())==-1)//MBCS cvt
+//    G_THROW(errmsg());
+//  drv[0]= dot ; drv[1]=0;
+//  char *string_buffer;
+//  GPBuffer<char> gstring_buffer(string_buffer,MAXPATHLEN+1);
+//  char *result = getcwd(string_buffer,MAXPATHLEN);
+//  GetFullPathName(drv, MAXPATHLEN, string_buffer, &result);
+//  return GNativeString(string_buffer).getNative2UTF8();//MBCS cvt
+//#else
+//# error "Define something here for your operating system"
+//#endif 
+//}
 
 GUTF8String
 GOS::getenv(const GUTF8String &name)

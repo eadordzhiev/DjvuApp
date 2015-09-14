@@ -112,7 +112,7 @@ class DJVUAPI GOS
       When argument #dirname# is specified, the current directory is changed
       to #dirname#. This function always returns the fully qualified name
       of the current directory. */
-  static GUTF8String cwd(const GUTF8String &dirname=GUTF8String());
+  //static GUTF8String cwd(const GUTF8String &dirname=GUTF8String());
 
   // -----------------------------------------
   // Functions for measuring time

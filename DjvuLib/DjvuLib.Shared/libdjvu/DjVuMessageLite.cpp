@@ -78,7 +78,9 @@
 #ifdef _WIN32
 #include <tchar.h>
 #include <windows.h>
+#ifndef _WINRT_DLL
 #include <winreg.h>
+#endif
 #endif
 #ifdef UNIX
 #include <unistd.h>
