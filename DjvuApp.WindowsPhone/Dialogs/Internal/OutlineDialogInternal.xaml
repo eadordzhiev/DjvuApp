@@ -4,11 +4,26 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:djvu="using:DjvuApp.Djvu"
     mc:Ignorable="d"
-    Title="{Binding Title}"
+    Title="{Binding Name}"
+    SecondaryButtonText="Back"
+    SecondaryButtonClick="BackButtonClickHandler"
     FullSizeDesired="True"
-    Style="{StaticResource FullScreenContentDialogStyle}" 
-	d:DataContext="{d:DesignData /SampleData/OutlineSampleDataSource/OutlineSampleDataSource.xaml}">
+    Style="{StaticResource FullScreenContentDialogStyle}"
+    x:Uid="OutlineDialog">
+    
+    <ContentDialog.TitleTemplate>
+        <DataTemplate>
+            <TextBlock Text="{Binding}">
+                <TextBlock.Transitions>
+                    <TransitionCollection>
+                        <ContentThemeTransition/>
+                    </TransitionCollection>
+                </TextBlock.Transitions>
+            </TextBlock>
+        </DataTemplate>
+    </ContentDialog.TitleTemplate>
 
     <ListView
         Margin="-20,0"
@@ -16,7 +31,7 @@
         ItemClick="ItemClickHandler"
         IsItemClickEnabled="True">
         <ItemsControl.ItemContainerStyle>
-            <Style TargetType="ContentControl"> 
+            <Style TargetType="ContentControl">
                 <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
             </Style>
         </ItemsControl.ItemContainerStyle>
@@ -29,17 +44,17 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock
 						Grid.Column="0"
-                        Text="{Binding Title}"
+                        Text="{Binding Name}"
                         TextWrapping="Wrap"
                         VerticalAlignment="Center"
                         Style="{StaticResource ListViewItemTextBlockStyle}" />
                     <Button
                         Grid.Column="1"
 						Padding="20,10"
-                        Visibility="{Binding HasItems, Converter={StaticResource BooleanToVisibilityConverter}}"
-                        Click="ButtonBase_OnClick" Style="{StaticResource CircleButtonStyle}">
-						<SymbolIcon Symbol="Forward"/>
-					</Button>
+                        Visibility="{Binding Items, Converter={StaticResource IsNullOrEmptyToVisibilityConverter}}"
+                        Click="MoreButtonClickHandler" Style="{StaticResource CircleButtonStyle}">
+                        <SymbolIcon Symbol="Forward"/>
+                    </Button>
                 </Grid>
             </DataTemplate>
         </ItemsControl.ItemTemplate>

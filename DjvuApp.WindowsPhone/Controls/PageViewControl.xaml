@@ -11,6 +11,8 @@
     
     <UserControl.Resources>
         <SolidColorBrush x:Key="ReaderCanvasForeground" Color="White"/>
+        <SolidColorBrush x:Key="SearchHighlightingBackgroundBrush" Color="Yellow" Opacity="0.33"/>
+        <SolidColorBrush x:Key="SelectionBackgroundBrush" Color="{ThemeResource PhoneAccentColor}" Opacity="0.33"/>
     </UserControl.Resources>
 
     <Canvas Background="Transparent">
@@ -29,5 +31,12 @@
             Width="{Binding Width, ElementName= pageViewControl}" 
             Height="{Binding Height, ElementName=pageViewControl}"
             Background="Transparent"/>
+        <Canvas
+            x:Name="selectionCanvas"
+            Width="0"
+            Height="0">
+            <Path x:Name="searchHighlightingShape" Fill="{StaticResource SearchHighlightingBackgroundBrush}"/>
+            <Path x:Name="selectionShape" Fill="{StaticResource SelectionBackgroundBrush}"/>
+        </Canvas>
     </Canvas>
 </UserControl>

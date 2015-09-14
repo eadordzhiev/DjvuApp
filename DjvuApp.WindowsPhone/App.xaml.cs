@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Resources;
+using Windows.Foundation;
 using Windows.Storage;
 using Windows.System;
 using Windows.UI.Popups;
@@ -222,6 +224,45 @@ namespace DjvuApp
 
             if (file != null)
                 OpenFile(file);
+        }
+
+        private static readonly List<WeakReference<IAsyncInfo>> _pendingDialogs = new List<WeakReference<IAsyncInfo>>();
+
+        private class PendingDialogAwaiter : IDisposable
+        {
+            private readonly WeakReference<IAsyncInfo> _reference;
+
+            public PendingDialogAwaiter(WeakReference<IAsyncInfo> reference)
+            {
+                _reference = reference;
+            }
+
+            public void Dispose()
+            {
+                _pendingDialogs.Remove(_reference);
+            }
+        }
+
+        public static IDisposable AddPendingDialog(IAsyncInfo asyncInfo)
+        {
+            var weakReference = new WeakReference<IAsyncInfo>(asyncInfo);
+            _pendingDialogs.Add(weakReference);
+
+            return new PendingDialogAwaiter(weakReference);
+        }
+
+        private static void DismissPendingDialogs()
+        {
+            foreach (var weakReference in _pendingDialogs)
+            {
+                IAsyncInfo asyncInfo;
+                if (weakReference.TryGetTarget(out asyncInfo))
+                {
+                    asyncInfo.Cancel();
+                }
+            }
+
+            _pendingDialogs.Clear();
         }
 
         public static async Task RateApp()

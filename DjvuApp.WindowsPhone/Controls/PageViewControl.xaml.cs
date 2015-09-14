@@ -1,10 +1,22 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
+using Windows.UI;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
 using DjvuApp.Djvu;
+using DjvuApp.Misc;
 
 namespace DjvuApp.Controls
 {
@@ -24,12 +36,14 @@ namespace DjvuApp.Controls
         private VsisWrapper _contentVsis;
         private SisWrapper _thumbnailSis;
         private DjvuPage _page;
-        private IZoomFactorObserver _zoomFactorObserver;
+        private PageViewObserver _pageViewObserver;
+        private int? _id;
+        public IReadOnlyCollection<TextLayerZone> TextLayer;
 
         private static void StateChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var sender = (PageViewControl) d;
-            sender.OnStateChanged();
+            var sender = (PageViewControl)d;
+            sender.OnStateChanged((PageViewControlState)e.OldValue, (PageViewControlState)e.NewValue);
         }
 
         public PageViewControl()
@@ -37,41 +51,181 @@ namespace DjvuApp.Controls
             this.InitializeComponent();
         }
 
-        private void OnStateChanged()
+        public void PageDecodedHandler(DjvuPage page, TextLayerZone textLayer)
         {
-            CleanUp();
+            _page = page;
 
-            if (State == null)
-            {
-                return;
-            }
-
-            _zoomFactorObserver = State.ZoomFactorObserver;
-            _zoomFactorObserver.ZoomFactorChanging += HandleZoomFactorChanging;
-            _zoomFactorObserver.ZoomFactorChanged += HandleZoomFactorChanged;
+            _pageViewObserver = State.ZoomFactorObserver;
+            _pageViewObserver.ZoomFactorChanging += HandleZoomFactorChanging;
+            _pageViewObserver.ZoomFactorChanged += HandleZoomFactorChanged;
+            _pageViewObserver.SelectionChanging += HandleSelectionChanging;
+            _pageViewObserver.SearchHighlightingRedrawingRequested += HandleSearchHighlightingRedrawingRequested;
 
             Width = State.Width;
             Height = State.Height;
 
-            _page = State.Document.GetPage(State.PageNumber);
-
             CreateThumbnailSurface();
 
-            if (!_zoomFactorObserver.IsZooming)
+            if (!_pageViewObserver.IsZooming)
             {
                 CreateContentSurface();
+            }
+
+            TextLayer = textLayer != null ? new[] { textLayer } : new TextLayerZone[0];
+
+            RedrawSelection();
+            RedrawSearchHighlighting();
+        }
+
+        private void HandleSearchHighlightingRedrawingRequested(object sender, EventArgs e)
+        {
+            RedrawSearchHighlighting();
+        }
+
+        private void HandleSelectionChanging()
+        {
+            RedrawSelection();
+        }
+
+        private static IEnumerable<TextLayerZone> GetSearchZones(IEnumerable<TextLayerZone> zones, string query)
+        {
+            return SearchHelper.Search(zones, query).SelectMany(zone => zone);
+        }
+
+        private void RedrawSearchHighlighting()
+        {
+            searchHighlightingShape.Data = null;
+
+            if (_pageViewObserver.SearchText == null)
+            {
+                return;
+            }
+
+            var zones = GetSearchZones(TextLayer, _pageViewObserver.SearchText);
+            searchHighlightingShape.Data = GetGeometryFromZones(zones);
+        }
+
+        Geometry GetGeometryFromZones(IEnumerable<TextLayerZone> zones)
+        {
+            var geometryGroup = new GeometryGroup();
+
+            foreach (var zone in zones)
+            {
+                var rect = PageRectToDipRect(zone.Bounds);
+                geometryGroup.Children.Add(new RectangleGeometry { Rect = rect });
+            }
+
+            return geometryGroup;
+        }
+
+        public static bool GetSelectionIndicesForPage(
+            uint pageNumber,
+            SelectionMarker selectionStart,
+            SelectionMarker selectionEnd,
+            out uint selectionStartIndex,
+            out uint selectionEndIndex)
+        {
+            if (selectionStart > selectionEnd)
+            {
+                var tmp = selectionStart;
+                selectionStart = selectionEnd;
+                selectionEnd = tmp;
+            }
+
+            selectionStartIndex = 0;
+            selectionEndIndex = 0;
+
+            if (selectionStart.PageNumber < pageNumber)
+            {
+                selectionStartIndex = 0;
+            }
+            else if (selectionStart.PageNumber == pageNumber)
+            {
+                selectionStartIndex = selectionStart.Index;
+            }
+            else
+            {
+                return false;
+            }
+
+            if (selectionEnd.PageNumber > pageNumber)
+            {
+                selectionEndIndex = uint.MaxValue;
+            }
+            else if (selectionEnd.PageNumber == pageNumber)
+            {
+                selectionEndIndex = selectionEnd.Index;
+            }
+            else
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private void RedrawSelection()
+        {
+            selectionShape.Data = null;
+
+            if (!_pageViewObserver.IsSelected)
+            {
+                return;
+            }
+
+            uint selectionStartIndex, selectionEndIndex;
+            if (!GetSelectionIndicesForPage(
+                pageNumber: State.PageNumber,
+                selectionStart: _pageViewObserver.SelectionStart,
+                selectionEnd: _pageViewObserver.SelectionEnd,
+                selectionStartIndex: out selectionStartIndex,
+                selectionEndIndex: out selectionEndIndex))
+            {
+                return;
+            }
+
+            var selectionZones = GetSelectionZones(TextLayer, selectionStartIndex, selectionEndIndex);
+            selectionShape.Data = GetGeometryFromZones(selectionZones);
+        }
+
+        Rect PageRectToDipRect(Rect pageRect)
+        {
+            var scaleFactor = Width / _page.Width;
+
+            return new Rect(
+                x: pageRect.X * scaleFactor,
+                y: (_page.Height - pageRect.Bottom) * scaleFactor,
+                width: pageRect.Width * scaleFactor,
+                height: pageRect.Height * scaleFactor);
+        }
+
+        private void OnStateChanged(PageViewControlState oldValue, PageViewControlState newValue)
+        {
+            CleanUp();
+
+            if (_id != null)
+            {
+                PageLoadScheduler.Instance.Unsubscribe(_id.Value);
+                _id = null;
+            }
+
+            if (newValue != null)
+            {
+                _id = PageLoadScheduler.Instance.Subscribe(newValue, PageDecodedHandler);
             }
         }
 
         private void CleanUp()
         {
-            if (_zoomFactorObserver != null)
+            if (_pageViewObserver != null)
             {
-                _zoomFactorObserver.ZoomFactorChanging -= HandleZoomFactorChanging;
-                _zoomFactorObserver.ZoomFactorChanged -= HandleZoomFactorChanged;
-                _zoomFactorObserver = null;
+                _pageViewObserver.ZoomFactorChanging -= HandleZoomFactorChanging;
+                _pageViewObserver.ZoomFactorChanged -= HandleZoomFactorChanged;
+                _pageViewObserver.SelectionChanging -= HandleSelectionChanging;
+                _pageViewObserver.SearchHighlightingRedrawingRequested -= HandleSearchHighlightingRedrawingRequested;
+                _pageViewObserver = null;
             }
-            
+
             if (_contentVsis != null)
             {
                 _contentVsis.Dispose();
@@ -86,7 +240,11 @@ namespace DjvuApp.Controls
 
             thumbnailContentCanvas.Background = null;
             contentCanvas.Background = null;
+            contentCanvas.Children.Clear();
+            selectionShape.Data = null;
+            searchHighlightingShape.Data = null;
             _page = null;
+            TextLayer = null;
         }
 
         private void HandleZoomFactorChanging()
@@ -105,9 +263,7 @@ namespace DjvuApp.Controls
 
         private void CreateContentSurface()
         {
-            Debug.Assert(_contentVsis == null);
-
-            var zoomFactor = _zoomFactorObserver.ZoomFactor;
+            var zoomFactor = _pageViewObserver.ZoomFactor;
             var pageViewSize = new Size(Width * zoomFactor, Height * zoomFactor);
 
             _contentVsis = new VsisWrapper(_page, _renderer.Value, pageViewSize);
@@ -123,8 +279,6 @@ namespace DjvuApp.Controls
 
         private void CreateThumbnailSurface()
         {
-            Debug.Assert(_thumbnailSis == null);
-
             const uint scaleFactor = 16;
             var pageViewSize = new Size(Width / scaleFactor, Height / scaleFactor);
 
@@ -137,6 +291,71 @@ namespace DjvuApp.Controls
             };
 
             thumbnailContentCanvas.Background = thumbnailBackgroundBrush;
+        }
+
+        IEnumerable<TextLayerZone> GetSelectionZones(IEnumerable<TextLayerZone> zones, uint selectionStart, uint selectionEnd)
+        {
+            foreach (var zone in zones)
+            {
+                if (zone.Type == ZoneType.Line || zone.Type == ZoneType.Word)
+                {
+                    if (selectionStart <= zone.StartIndex && zone.EndIndex <= selectionEnd)
+                    {
+                        yield return zone;
+                    }
+                    else
+                    {
+                        foreach (var childZone in GetSelectionZones(zone.Children, selectionStart, selectionEnd))
+                        {
+                            yield return childZone;
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var childZone in GetSelectionZones(zone.Children, selectionStart, selectionEnd))
+                    {
+                        yield return childZone;
+                    }
+                }
+
+            }
+        }
+
+        public TextLayerZone FindWordAtPoint(IReadOnlyCollection<TextLayerZone> zones, Point point)
+        {
+            if (_page == null)
+            {
+                return null;
+            }
+
+            var scaleFactor = _page.Width / Width;
+            var pagePoint = new Point(point.X * scaleFactor, _page.Height - point.Y * scaleFactor);
+
+            foreach (var zone in zones)
+            {
+                if (zone.Type == ZoneType.Word && zone.Bounds.Contains(pagePoint))
+                {
+                    return zone;
+                }
+
+                var result = FindWordAtPoint(zone.Children, point);
+                if (result != null)
+                {
+                    return result;
+                }
+            }
+
+            return null;
+        }
+
+        private static readonly CoreCursor HoverCursor = new CoreCursor(CoreCursorType.IBeam, 0);
+        private static readonly CoreCursor NormalCursor = new CoreCursor(CoreCursorType.Arrow, 0);
+
+        private void PointerMovedHandler(object sender, PointerRoutedEventArgs e)
+        {
+            var zone = FindWordAtPoint(TextLayer, e.GetCurrentPoint(this).Position);
+            CoreWindow.GetForCurrentThread().PointerCursor = zone != null ? HoverCursor : NormalCursor;
         }
     }
 }

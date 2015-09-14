@@ -38,18 +38,7 @@ namespace DjvuApp.Pages
             _navigationHelper.OnNavigatedTo(e);
 
             DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
-
-            if (_hasLicense == null)
-            {
-                _hasLicense = await LicenseValidator.GetLicenseStatusAsync();
-            }
-            if (_hasLicense != true)
-            {
-                var dialog = new MessageDialog("I don't like being pirated...");
-                await dialog.ShowAsync();
-                Application.Current.Exit();
-            }
-
+            
             ShowRateAppDialog();
         }
 

@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>bb68d66a-7449-4d07-9430-a13805f9e246</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>DjvuApp.Shared</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Dialogs\OutlineDialog.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\Books\CachedSqliteBookProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\Books\IBook.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\Books\IBookmark.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\Books\IBookProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\Books\SqliteBookProvider.cs" />
+  </ItemGroup>
+</Project>

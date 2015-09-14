@@ -111,6 +111,9 @@
       <DependentUpon>BookView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\SearchHelper.cs" />
+    <Compile Include="Dialogs\Internal\OutlineDialogInternal.xaml.cs">
+      <DependentUpon>OutlineDialogInternal.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Misc\FrameworkElementExtensions.cs" />
     <Compile Include="Controls\PageLoadObserver.cs" />
     <Compile Include="Controls\SelectionMarker.cs" />
@@ -139,9 +142,6 @@
     <Compile Include="Dialogs\Internal\JumpToPageDialogInternal.xaml.cs">
       <DependentUpon>JumpToPageDialogInternal.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\Internal\OutlineDialogInternal.xaml.cs">
-      <DependentUpon>OutlineDialogInternal.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Dialogs\Internal\RenameDialogInternal.xaml.cs">
       <DependentUpon>RenameDialogInternal.xaml</DependentUpon>
     </Compile>
@@ -149,18 +149,12 @@
       <DependentUpon>SelectBookmarkDialogInternal.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\JumpToPageDialog.cs" />
-    <Compile Include="Dialogs\OutlineDialog.cs" />
     <Compile Include="Dialogs\RenameDialog.cs" />
     <Compile Include="Dialogs\SelectBookmarkDialog.cs" />
     <Compile Include="Misc\IocContainer.cs" />
     <Compile Include="Misc\SQLite.cs" />
     <Compile Include="Misc\SQLiteAsync.cs" />
     <Compile Include="Misc\TextBoxExtensions.cs" />
-    <Compile Include="Model\Books\CachedSqliteBookProvider.cs" />
-    <Compile Include="Model\Books\IBook.cs" />
-    <Compile Include="Model\Books\IBookmark.cs" />
-    <Compile Include="Model\Books\IBookProvider.cs" />
-    <Compile Include="Model\Books\SqliteBookProvider.cs" />
     <Compile Include="Pages\AboutPage.xaml.cs">
       <DependentUpon>AboutPage.xaml</DependentUpon>
     </Compile>
@@ -294,6 +288,7 @@
     </SDKReference>
   </ItemGroup>
   <ItemGroup />
+  <Import Project="..\DjvuApp.Shared\DjvuApp.Shared.projitems" Label="Shared" />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
