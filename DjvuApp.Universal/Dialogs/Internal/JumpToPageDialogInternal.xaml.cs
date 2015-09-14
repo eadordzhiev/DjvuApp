@@ -1,6 +1,8 @@
 ﻿using System;
+using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 using DjvuApp.Misc;
 
 namespace DjvuApp.Dialogs.Internal
@@ -60,6 +62,14 @@ namespace DjvuApp.Dialogs.Internal
         {
             PageNumberText = CurrentPageNumber.ToString();
             pageNumberTextBox.FocusAndSelectAll();
+        }
+
+        private void KeyDownHandler(object sender, KeyRoutedEventArgs e)
+        {
+            if (e.Key == VirtualKey.Enter)
+            {
+                Hide();
+            }
         }
     }
 }

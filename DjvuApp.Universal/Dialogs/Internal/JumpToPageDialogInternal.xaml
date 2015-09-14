@@ -10,7 +10,8 @@
     IsPrimaryButtonEnabled="False"
     Loaded="LoadedHandler"
     x:Uid="JumpToPageDialog"
-    DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    DataContext="{Binding RelativeSource={RelativeSource Self}}"
+    KeyDown="KeyDownHandler">
 
     <StackPanel>
         <TextBox
