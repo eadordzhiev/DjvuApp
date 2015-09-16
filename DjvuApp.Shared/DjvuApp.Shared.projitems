@@ -10,6 +10,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Dialogs\OutlineDialog.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Misc\FrameworkElementExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Misc\LicenseValidator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Misc\SQLite.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Misc\SQLiteAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Misc\TextBoxExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Model\Books\CachedSqliteBookProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Model\Books\IBook.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Model\Books\IBookmark.cs" />

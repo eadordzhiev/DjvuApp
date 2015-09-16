@@ -348,14 +348,6 @@ namespace DjvuApp.Controls
 
             return null;
         }
-
-        private static readonly CoreCursor HoverCursor = new CoreCursor(CoreCursorType.IBeam, 0);
-        private static readonly CoreCursor NormalCursor = new CoreCursor(CoreCursorType.Arrow, 0);
-
-        private void PointerMovedHandler(object sender, PointerRoutedEventArgs e)
-        {
-            var zone = FindWordAtPoint(TextLayer, e.GetCurrentPoint(this).Position);
-            CoreWindow.GetForCurrentThread().PointerCursor = zone != null ? HoverCursor : NormalCursor;
-        }
+        
     }
 }

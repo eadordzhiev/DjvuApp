@@ -13,18 +13,6 @@
     Style="{StaticResource FullScreenContentDialogStyle}"
     x:Uid="OutlineDialog">
     
-    <ContentDialog.TitleTemplate>
-        <DataTemplate>
-            <TextBlock Text="{Binding}">
-                <TextBlock.Transitions>
-                    <TransitionCollection>
-                        <ContentThemeTransition/>
-                    </TransitionCollection>
-                </TextBlock.Transitions>
-            </TextBlock>
-        </DataTemplate>
-    </ContentDialog.TitleTemplate>
-
     <ListView
         Margin="-20,0"
         ItemsSource="{Binding Items}"

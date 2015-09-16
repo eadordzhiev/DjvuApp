@@ -135,11 +135,7 @@
     </Compile>
     <Compile Include="Dialogs\RenameDialog.cs" />
     <Compile Include="Dialogs\SelectBookmarkDialog.cs" />
-    <Compile Include="Misc\FrameworkElementExtensions.cs" />
     <Compile Include="Misc\IocContainer.cs" />
-    <Compile Include="Misc\SQLite.cs" />
-    <Compile Include="Misc\SQLiteAsync.cs" />
-    <Compile Include="Misc\TextBoxExtensions.cs" />
     <Compile Include="Misc\ViewModelLocator.cs" />
     <Compile Include="Pages\AboutPage.xaml.cs">
       <DependentUpon>AboutPage.xaml</DependentUpon>
