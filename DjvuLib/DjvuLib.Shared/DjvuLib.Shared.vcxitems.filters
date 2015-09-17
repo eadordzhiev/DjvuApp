@@ -2,8 +2,6 @@
 <Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)pch.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)StringConversion.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)DebugHelper.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\ZPCodec.h">
       <Filter>djvulibre\Headers</Filter>
     </ClInclude>
@@ -142,22 +140,47 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\DjvuMessage.h">
       <Filter>djvulibre\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)DjvuInterop.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Renderer.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)VsisWrapper.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)SisWrapper.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)config.h">
       <Filter>djvulibre\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)IBufferUtilities.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)WinrtByteStream.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Document.h">
+      <Filter>Djvu</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Page.h">
+      <Filter>Djvu</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)TextLayer.h">
+      <Filter>Djvu</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Outline.h">
+      <Filter>Djvu</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)DebugHelper.h">
+      <Filter>Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)IBufferUtilities.h">
+      <Filter>Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)StringConversion.h">
+      <Filter>Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Renderer.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)SisWrapper.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)VsisWrapper.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)WinrtByteStream.h">
+      <Filter>Djvu</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)StringConversion.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)DebugHelper.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\GURL.cpp">
       <Filter>djvulibre\Source</Filter>
     </ClCompile>
@@ -302,18 +325,45 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\BSEncodeByteStream.cpp">
       <Filter>djvulibre\Source</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)DjvuInterop.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Renderer.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)VsisWrapper.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)SisWrapper.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)config.cpp">
       <Filter>djvulibre\Source</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\IW44EncodeCodec.cpp">
       <Filter>djvulibre\Source</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)IBufferUtilities.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)WinrtByteStream.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Document.cpp">
+      <Filter>Djvu</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Page.cpp">
+      <Filter>Djvu</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)TextLayer.cpp">
+      <Filter>Djvu</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Outline.cpp">
+      <Filter>Djvu</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)DebugHelper.cpp">
+      <Filter>Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)IBufferUtilities.cpp">
+      <Filter>Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)StringConversion.cpp">
+      <Filter>Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Renderer.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)SisWrapper.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)VsisWrapper.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)WinrtByteStream.cpp">
+      <Filter>Djvu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="djvulibre">
@@ -324,6 +374,15 @@
     </Filter>
     <Filter Include="djvulibre\Source">
       <UniqueIdentifier>{02070d5e-0465-4e33-90eb-22cd99528035}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Djvu">
+      <UniqueIdentifier>{cec4244b-a590-485f-b0dd-f16bfb5499a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Misc">
+      <UniqueIdentifier>{4e3dfa07-a1de-460c-b475-ea34371942cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering">
+      <UniqueIdentifier>{67753691-f02e-4d65-aca4-ced0cec3e1a9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

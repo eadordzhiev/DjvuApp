@@ -1,5 +1,5 @@
 #pragma once
-#include "DjvuInterop.h"
+#include "Page.h"
 #include "Renderer.h"
 
 namespace DjvuApp

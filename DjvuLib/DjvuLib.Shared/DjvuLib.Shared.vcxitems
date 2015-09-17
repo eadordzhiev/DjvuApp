@@ -15,8 +15,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)DebugHelper.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)DjvuInterop.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Document.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)config.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Outline.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Page.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)IBufferUtilities.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\Arrays.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)libdjvu\atomic.h" />
@@ -68,6 +70,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Renderer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SisWrapper.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StringConversion.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)TextLayer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)VsisWrapper.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)WinrtByteStream.h" />
   </ItemGroup>
@@ -76,7 +79,9 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)DebugHelper.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)DjvuInterop.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Document.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Outline.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Page.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)IBufferUtilities.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)libdjvu\Arrays.cpp">
       <SDLCheck>false</SDLCheck>
@@ -328,6 +333,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)StringConversion.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)TextLayer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)VsisWrapper.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)WinrtByteStream.cpp" />
   </ItemGroup>
