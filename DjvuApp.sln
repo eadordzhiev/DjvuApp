@@ -11,7 +11,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DjvuLib.Shared", "DjvuLib\D
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DjvuLib.WindowsPhone", "DjvuLib\DjvuLib.WindowsPhone\DjvuLib.WindowsPhone.vcxproj", "{3C48B965-903C-43F3-B6A2-A37CAB7B5D61}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DjvuLib.Universal", "DjvuLib.Universal\DjvuLib.Universal.vcxproj", "{A642D1CF-2472-4D02-894A-02CC3D1C50B4}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DjvuLib.Universal", "DjvuLib\DjvuLib.Universal\DjvuLib.Universal.vcxproj", "{A642D1CF-2472-4D02-894A-02CC3D1C50B4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DjvuApp.Universal", "DjvuApp.Universal\DjvuApp.Universal.csproj", "{AB94C4F3-0503-4D03-BCFB-356875AC7B72}"
 EndProject

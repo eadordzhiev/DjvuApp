@@ -2,6 +2,7 @@
 
 #include <string>
 
+#define HAVE_NAMESPACES
 #define HAVE_EXCEPTIONS
 #define HAVE_STDINCLUDES
 #define DDJVUAPI

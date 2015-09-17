@@ -1,9 +1,15 @@
 ﻿#include "pch.h"
 #include "DjvuInterop.h"
+
+#include "libdjvu\DjVuImage.h"
+#include "libdjvu\DjVuDocument.h"
+#include "libdjvu\DjVmNav.h"
+#include "libdjvu\DjVuText.h"
+#include "libdjvu\ddjvuapi.h"
+#include "DebugHelper.h"
+#include "StringConversion.h"
 #include "IBufferUtilities.h"
 #include "WinrtByteStream.h"
-
-#include "libdjvu\DjVuText.h"
 
 using namespace concurrency;
 using namespace std;
@@ -93,19 +99,18 @@ Array<PageInfo>^ DjvuDocument::GetPageInfos()
 	return ref new Array<PageInfo>(pageInfos);
 }
 
-IVectorView<DjvuOutlineItem^>^ DjvuDocument::ProcessOutlineExpression(miniexp_t current)
+IVectorView<DjvuOutlineItem^>^ processNavChunk(const GP<DjVmNav> &nav, int &pos, int count, ddjvu_document_t* document)
 {
 	vector<DjvuOutlineItem^> result;
 
-	while (current != miniexp_nil)
+	for (; count > 0 && pos < nav->getBookMarkCount(); count--)
 	{
-		auto itemExp = miniexp_car(current);
+		GP<DjVmNav::DjVuBookMark> entry;
+		nav->getBookMark(entry, pos++);
 
-		auto name = miniexp_to_str(miniexp_car(itemExp));
-		itemExp = miniexp_cdr(itemExp);
-		auto url = miniexp_to_str(miniexp_car(itemExp));
-		itemExp = miniexp_cdr(itemExp);
-		auto items = ProcessOutlineExpression(itemExp);
+		auto name = utf8_to_ps((const char*) entry->displayname);
+		auto url = (const char*) entry->url;
+		auto items = processNavChunk(nav, pos, entry->count, document);
 
 		uint32_t pageNumber = 0;
 		if (url[0] == '#' && url[1] != '\0')
@@ -113,11 +118,8 @@ IVectorView<DjvuOutlineItem^>^ DjvuDocument::ProcessOutlineExpression(miniexp_t 
 			pageNumber = ddjvu_document_search_pageno(document, &url[1]) + 1;
 		}
 
-		auto item = ref new DjvuOutlineItem(utf8_to_ps(name), pageNumber, items);
-		
+		auto item = ref new DjvuOutlineItem(name, pageNumber, items);
 		result.push_back(item);
-
-		current = miniexp_cdr(current);
 	}
 
 	return ref new VectorView<DjvuOutlineItem^>(move(result));
@@ -127,22 +129,17 @@ IAsyncOperation<IVectorView<DjvuOutlineItem^>^>^ DjvuDocument::GetOutlineAsync()
 {
 	return create_async([=]() -> IVectorView<DjvuOutlineItem^>^
 	{
-		auto outline = ddjvu_document_get_outline(document);
+		auto djvuDocument = ddjvu_get_DjVuDocument(document);
+		auto nav = djvuDocument->get_djvm_nav();
 
-		if (outline == miniexp_nil)
+		if (!nav)
 		{
 			return nullptr;
 		}
 
-		if (!miniexp_consp(outline) || miniexp_car(outline) != miniexp_symbol("bookmarks"))
-		{
-			throw ref new FailureException("Outline data is corrupted.");
-		}
-
-		auto result = ProcessOutlineExpression(miniexp_cdr(outline));
-		ddjvu_miniexp_release(document, outline);
-		minilisp_gc();
-
+		int pos = 0;
+		auto result = processNavChunk(nav, pos, nav->getBookMarkCount(), document);
+				
 		return result;
 	});
 }
@@ -191,7 +188,7 @@ TextLayerZone^ readZone(const GP<DjVuTXT> &txt, DjVuTXT::Zone &zone, uint32_t& c
 
 	if (result->type == ZoneType::Word)
 	{
-		auto data = (const char*)(txt->textUTF8) + zone.text_start;
+		auto data = (const char*) txt->textUTF8 + zone.text_start;
 		auto length = zone.text_length;
 		if (length > 0 && data[length - 1] == zoneMatch.separator)
 			length -= 1;
@@ -221,17 +218,25 @@ IAsyncOperation<TextLayerZone^>^ DjvuDocument::GetTextLayerAsync(uint32_t pageNu
 	{
 		auto djvuDocument = ddjvu_get_DjVuDocument(document);
 
-		GP<DjVuFile> file = djvuDocument->get_djvu_file(pageNumber - 1);
+		auto file = djvuDocument->get_djvu_file(pageNumber - 1);
 		if (!file || !file->is_data_present())
+		{
 			return nullptr;
-		GP<ByteStream> bs = file->get_text();
+		}
+			
+		auto bs = file->get_text();
 		if (!bs)
+		{
 			return nullptr;
-		GP<DjVuText> text = DjVuText::create();
+		}
+
+		auto text = DjVuText::create();
 		text->decode(bs);
-		GP<DjVuTXT> txt = text->txt;
+		auto txt = text->txt;
 		if (!txt)
+		{
 			return nullptr;
+		}
 
 		uint32_t index = 0;
 		return readZone(txt, txt->page_zone, index);

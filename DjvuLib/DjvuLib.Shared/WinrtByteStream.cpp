@@ -23,20 +23,14 @@ WinrtByteStream::~WinrtByteStream()
 }
 
 template <typename TResult>
-TResult PerformSynchronously(IAsyncOperation<TResult>^ asyncOp)
+TResult performSynchronously(IAsyncOperation<TResult>^ asyncOp)
 {
-	//Concurrency::event synchronizer;
-	//Concurrency::task<TResult>(asyncOp).then([&](TResult taskResult) {
-	//	synchronizer.set();
-	//}, Concurrency::task_continuation_context::use_arbitrary());
-	//synchronizer.wait();
-	//return asyncOp->GetResults();
 	return task<TResult>(asyncOp).get();
 }
 
 size_t WinrtByteStream::read(void *buffer, size_t size)
 {
-	auto bytesRead = PerformSynchronously(dataReader->LoadAsync(size));
+	auto bytesRead = performSynchronously(dataReader->LoadAsync(size));
 	if (bytesRead > size)
 	{
 		throw new exception();

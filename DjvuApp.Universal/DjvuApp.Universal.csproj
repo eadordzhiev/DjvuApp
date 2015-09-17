@@ -266,7 +266,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DjvuLib.Universal\DjvuLib.Universal.vcxproj">
+    <ProjectReference Include="..\DjvuLib\DjvuLib.Universal\DjvuLib.Universal.vcxproj">
       <Project>{a642d1cf-2472-4d02-894a-02cc3d1c50b4}</Project>
       <Name>DjvuLib.Universal</Name>
     </ProjectReference>

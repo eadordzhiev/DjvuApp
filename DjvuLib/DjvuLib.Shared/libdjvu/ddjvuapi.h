@@ -1660,10 +1660,6 @@ union ddjvu_message_s {
 /* BACKDOORS                                          */
 /* -------------------------------------------------- */
 
-#ifdef __cplusplus
-} // extern "C"
-#endif
-
 /* ddjvu_get_DjVuImage ---
    ddjvu_get_DjVuDocument ---
    These functions provide an access to the libdjvu objects 
@@ -1684,6 +1680,10 @@ DDJVUAPI GP<DjVuDocument>
 ddjvu_get_DjVuDocument(ddjvu_document_t *document);
 #  endif
 # endif
+#endif
+
+#ifdef __cplusplus
+} // extern "C"
 #endif
 
 #endif /* DDJVUAPI_H */

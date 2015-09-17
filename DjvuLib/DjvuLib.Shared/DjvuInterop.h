@@ -1,5 +1,10 @@
 ﻿#pragma once
 
+typedef struct ddjvu_context_s ddjvu_context_t;
+typedef struct ddjvu_document_s ddjvu_document_t;
+typedef struct ddjvu_page_s ddjvu_page_t;
+typedef struct miniexp_s* miniexp_t;
+
 namespace DjvuApp { namespace Djvu 
 {
 	public enum class ZoneType
@@ -140,6 +145,5 @@ namespace DjvuApp { namespace Djvu
 
 		DjvuDocument(Windows::Storage::Streams::IRandomAccessStream^ stream);
 		DjvuPage^ GetPage(uint32_t pageNumber);
-		Windows::Foundation::Collections::IVectorView<DjvuOutlineItem^>^ ProcessOutlineExpression(miniexp_t current);
 	};
 } }

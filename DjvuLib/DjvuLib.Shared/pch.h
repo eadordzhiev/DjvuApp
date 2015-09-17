@@ -16,10 +16,3 @@
 #include <d2d1helper.h>
 #include <wrl.h>
 #include <robuffer.h>
-
-#include "libdjvu\DjVuImage.h"
-#include "libdjvu\DjVuDocument.h"
-#include "libdjvu\ddjvuapi.h"
-#include "libdjvu\miniexp.h"
-#include "DebugHelper.h"
-#include "StringConversion.h"
