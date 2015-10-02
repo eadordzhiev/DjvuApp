@@ -17,7 +17,6 @@
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
 
-            <common:StringFormatConverter x:Key="StringFormatConverter"/>
             <common:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <common:IsNullOrEmptyToVisibilityConverter x:Key="IsNullOrEmptyToVisibilityConverter"/>
 

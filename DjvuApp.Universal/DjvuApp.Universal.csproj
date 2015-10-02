@@ -104,9 +104,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Common\BooleanToVisibilityConverter.cs" />
-    <Compile Include="Common\INavigationService.cs" />
-    <Compile Include="Common\IsNullOrEmptyToVisibilityConverter.cs" />
     <Compile Include="Controls\BookView.xaml.cs">
       <DependentUpon>BookView.xaml</DependentUpon>
     </Compile>
@@ -118,10 +115,6 @@
     <Compile Include="Controls\SelectionMarker.cs" />
     <Compile Include="Controls\PageViewObserver.cs" />
     <Compile Include="Common\MenuFlyoutService.cs" />
-    <Compile Include="Common\NavigationHelper.cs" />
-    <Compile Include="Common\NavigationService.cs" />
-    <Compile Include="Common\StringFormatConverter.cs" />
-    <Compile Include="Common\SuspensionManager.cs" />
     <Compile Include="Controls\PageViewControl.xaml.cs">
       <DependentUpon>PageViewControl.xaml</DependentUpon>
     </Compile>

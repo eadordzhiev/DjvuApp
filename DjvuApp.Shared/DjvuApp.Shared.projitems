@@ -9,6 +9,12 @@
     <Import_RootNamespace>DjvuApp.Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Common\BooleanToVisibilityConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\INavigationService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\IsNullOrEmptyToVisibilityConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\NavigationHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\NavigationService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\SuspensionManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Dialogs\OutlineDialog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Misc\FrameworkElementExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Misc\LicenseValidator.cs" />
