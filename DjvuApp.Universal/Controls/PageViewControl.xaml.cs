@@ -4,26 +4,24 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
-using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Shapes;
 using DjvuApp.Djvu;
-using DjvuApp.Misc;
 
 namespace DjvuApp.Controls
 {
     public sealed partial class PageViewControl : UserControl
     {
-        private static readonly Lazy<Renderer> _renderer = new Lazy<Renderer>(() => new Renderer());
-        
         public PageViewControlState State
         {
             get { return (PageViewControlState)GetValue(StateProperty); }
@@ -33,8 +31,8 @@ namespace DjvuApp.Controls
         public static readonly DependencyProperty StateProperty =
             DependencyProperty.Register("State", typeof(PageViewControlState), typeof(PageViewControl), new PropertyMetadata(null, StateChangedCallback));
 
-        private VsisWrapper _contentVsis;
-        private SisWrapper _thumbnailSis;
+        private VsisPageRenderer _contentVsis;
+        private SisPageRenderer _thumbnailSis;
         private DjvuPage _page;
         private PageViewObserver _pageViewObserver;
         private int? _id;
@@ -231,13 +229,8 @@ namespace DjvuApp.Controls
                 _contentVsis.Dispose();
                 _contentVsis = null;
             }
-
-            if (_thumbnailSis != null)
-            {
-                _thumbnailSis.Dispose();
-                _thumbnailSis = null;
-            }
-
+            
+            _thumbnailSis = null;
             thumbnailContentCanvas.Background = null;
             contentCanvas.Background = null;
             contentCanvas.Children.Clear();
@@ -266,8 +259,7 @@ namespace DjvuApp.Controls
             var zoomFactor = _pageViewObserver.ZoomFactor;
             var pageViewSize = new Size(Width * zoomFactor, Height * zoomFactor);
 
-            _contentVsis = new VsisWrapper(_page, _renderer.Value, pageViewSize);
-            _contentVsis.CreateSurface();
+            _contentVsis = new VsisPageRenderer(_page, pageViewSize);
 
             var contentBackgroundBrush = new ImageBrush
             {
@@ -282,8 +274,7 @@ namespace DjvuApp.Controls
             const uint scaleFactor = 16;
             var pageViewSize = new Size(Width / scaleFactor, Height / scaleFactor);
 
-            _thumbnailSis = new SisWrapper(_page, _renderer.Value, pageViewSize);
-            _thumbnailSis.CreateSurface();
+            _thumbnailSis = new SisPageRenderer(_page, pageViewSize);
 
             var thumbnailBackgroundBrush = new ImageBrush
             {

@@ -1,0 +1,79 @@
+using System;
+using Windows.Foundation;
+using Windows.Graphics.DirectX;
+using Windows.Graphics.Display;
+using Windows.Graphics.Imaging;
+using Windows.UI;
+using DjvuApp.Djvu;
+using DjvuApp.Misc;
+using Microsoft.Graphics.Canvas;
+using Microsoft.Graphics.Canvas.UI.Xaml;
+
+namespace DjvuApp.Controls
+{
+    public class SisPageRenderer : IDisposable
+    {
+        public CanvasImageSource Source { get; private set; }
+
+        private DjvuPage _page;
+
+        public SisPageRenderer(DjvuPage page, Size pageViewSize)
+        {
+            _page = page;
+            var rawPixelsPerViewPixel = DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+            var width = (uint)Math.Min(pageViewSize.Width, page.Width / rawPixelsPerViewPixel);
+            var height = (uint)Math.Min(pageViewSize.Height, page.Height / rawPixelsPerViewPixel);
+
+            Source = new CanvasImageSource(
+                resourceCreator: CanvasDevice.GetSharedDevice(),
+                width: width,
+                height: height,
+                dpi: DisplayInformation.GetForCurrentView().LogicalDpi,
+                alphaMode: CanvasAlphaMode.Ignore);
+            
+            RenderRegion(new Rect(0, 0, width, height));
+
+            _page = null;
+        }
+
+        public void Dispose()
+        {
+            Source = null;
+        }
+
+        private uint ConvertDipsToPixels(double dips)
+        {
+            return (uint)Source.ConvertDipsToPixels((float)dips, CanvasDpiRounding.Floor);
+        }
+
+        private void RenderRegion(Rect updateRect)
+        {
+            var renderRegion = new BitmapBounds
+            {
+                X = ConvertDipsToPixels(updateRect.X),
+                Y = ConvertDipsToPixels(updateRect.Y),
+                Width = ConvertDipsToPixels(updateRect.Width),
+                Height = ConvertDipsToPixels(updateRect.Height)
+            };
+
+            using (var buffer = new HeapBuffer(renderRegion.Width * renderRegion.Height * 4))
+            {
+                _page.RenderRegion(
+                    buffer: buffer,
+                    rescaledPageSize: Source.SizeInPixels,
+                    renderRegion: renderRegion);
+
+                using (var canvasBitmap = CanvasBitmap.CreateFromBytes(
+                    resourceCreator: CanvasDevice.GetSharedDevice(),
+                    buffer: buffer,
+                    widthInPixels: (int)renderRegion.Width,
+                    heightInPixels: (int)renderRegion.Height,
+                    format: DirectXPixelFormat.B8G8R8A8UIntNormalized))
+                using (var drawingSession = Source.CreateDrawingSession(Colors.White, updateRect))
+                {
+                    drawingSession.DrawImage(canvasBitmap, updateRect);
+                }
+            }
+        }
+    }
+}

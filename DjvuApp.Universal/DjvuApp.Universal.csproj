@@ -110,6 +110,9 @@
     <Compile Include="Controls\BookView.xaml.cs">
       <DependentUpon>BookView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\SisPageRenderer.cs" />
+    <Compile Include="Controls\VsisPageRenderer.cs" />
+    <Compile Include="Misc\HeapBuffer.cs" />
     <Compile Include="Controls\SearchHelper.cs" />
     <Compile Include="Dialogs\Internal\OutlineDialogInternal.xaml.cs">
       <DependentUpon>OutlineDialogInternal.xaml</DependentUpon>

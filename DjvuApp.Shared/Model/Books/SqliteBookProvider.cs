@@ -148,14 +148,16 @@ namespace DjvuApp.Model.Books
             var page = await document.GetPageAsync(1);
 
             var maxWidth = 140 * DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
-            var aspectRatio = (double)page.Width / page.Height;
+            var aspectRatio = (double) page.Width / page.Height;
 
-            var width = (int)Math.Min(maxWidth, page.Width);
-            var height = (int)(width / aspectRatio);
-            var size = new Size(width, height);
+            var width = (uint) Math.Min(maxWidth, page.Width);
+            var height = (uint) (width / aspectRatio);
 
-            var bitmap = new WriteableBitmap(width, height);
-            await page.RenderRegionAsync(bitmap, size, new Rect(new Point(), size));
+            var bitmap = new WriteableBitmap((int) width, (int) height);
+            await page.RenderRegionAsync(
+                bitmap: bitmap,
+                rescaledPageSize: new BitmapSize { Width = width, Height = height },
+                renderRegion: new BitmapBounds { Width = width, Height = height });
 
             var booksFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Books", CreationCollisionOption.OpenIfExists);
             var thumbnailsFolder = await booksFolder.CreateFolderAsync("Thumbnails", CreationCollisionOption.OpenIfExists);

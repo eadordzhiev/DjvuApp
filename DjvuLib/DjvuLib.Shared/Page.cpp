@@ -11,6 +11,7 @@ using namespace std;
 
 using namespace Platform;
 using namespace Windows::Foundation;
+using namespace Windows::Graphics::Imaging;
 using namespace Windows::UI::Xaml::Media::Imaging;
 using namespace DjvuApp::Djvu;
 using namespace DjvuApp::Misc;
@@ -35,31 +36,26 @@ DjvuPage::~DjvuPage()
 	}
 }
 
-void DjvuPage::RenderRegion(void* bufferPtr, Size rescaledPageSize, Rect renderRegion)
+void DjvuPage::RenderRegion(void* bufferPtr, BitmapSize rescaledPageSize, BitmapBounds renderRegion)
 {
 	if (page == nullptr)
 	{
 		throw ref new ObjectDisposedException();
 	}
-
-	if (rescaledPageSize.Width < 1 || rescaledPageSize.Height < 1)
-	{
-		throw ref new InvalidArgumentException("The dimensions are out of the range.");
-	}
-
+	
 	ddjvu_rect_t prect;
 	ddjvu_rect_t rrect;
 	size_t rowsize;
 
-	rrect.x = (int)renderRegion.X;
-	rrect.y = (int)renderRegion.Y;
-	rrect.w = (unsigned int)renderRegion.Width;
-	rrect.h = (unsigned int)renderRegion.Height;
+	rrect.x = renderRegion.X;
+	rrect.y = renderRegion.Y;
+	rrect.w = renderRegion.Width;
+	rrect.h = renderRegion.Height;
 
 	prect.x = 0;
 	prect.y = 0;
-	prect.w = (unsigned int)rescaledPageSize.Width;
-	prect.h = (unsigned int)rescaledPageSize.Height;
+	prect.w = rescaledPageSize.Width;
+	prect.h = rescaledPageSize.Height;
 
 	rowsize = rrect.w * 4;
 
@@ -76,19 +72,51 @@ void DjvuPage::RenderRegion(void* bufferPtr, Size rescaledPageSize, Rect renderR
 	ddjvu_format_release(format);
 }
 
-IAsyncAction^ DjvuPage::RenderRegionAsync(WriteableBitmap^ bitmap, Size rescaledPageSize, Rect renderRegion)
+IAsyncAction^ DjvuPage::RenderRegionAsync(WriteableBitmap^ bitmap, BitmapSize rescaledPageSize, BitmapBounds renderRegion)
 {
-	auto buffer = bitmap->PixelBuffer;
+	if (bitmap == nullptr)
+	{
+		throw ref new NullReferenceException("Bitmap is null.");
+	}
 
-	if (buffer->Length < renderRegion.Width * renderRegion.Height)
+	auto pixelBuffer = bitmap->PixelBuffer;
+	
+	if (pixelBuffer->Length < renderRegion.Width * renderRegion.Height * 4)
+	{
+		throw ref new InvalidArgumentException("Buffer is too small.");
+	}
+
+	auto bufferPtr = IBufferUtilities::GetPointer(pixelBuffer);
+
+	if (bufferPtr == nullptr)
+	{
+		throw ref new NullReferenceException("bufferPtr == nullptr");
+	}
+
+	return create_async([=]
+	{
+		RenderRegion(bufferPtr, rescaledPageSize, renderRegion);
+	});
+}
+
+void DjvuPage::RenderRegion(Windows::Storage::Streams::IBuffer^ buffer, BitmapSize rescaledPageSize, BitmapBounds renderRegion)
+{
+	if (buffer == nullptr)
+	{
+		throw ref new NullReferenceException("Buffer is null.");
+	}
+
+	if (buffer->Length < renderRegion.Width * renderRegion.Height * 4)
 	{
 		throw ref new InvalidArgumentException("Buffer is too small.");
 	}
 
 	auto bufferPtr = IBufferUtilities::GetPointer(buffer);
 
-	return create_async([=]
+	if (bufferPtr == nullptr)
 	{
-		RenderRegion(bufferPtr, rescaledPageSize, renderRegion);
-	});
+		throw ref new NullReferenceException("bufferPtr == nullptr");
+	}
+
+	RenderRegion(bufferPtr, rescaledPageSize, renderRegion);
 }

@@ -24,14 +24,19 @@ namespace DjvuApp { namespace Djvu
 		}
 		Windows::Foundation::IAsyncAction^ RenderRegionAsync(
 			Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ bitmap,
-			Windows::Foundation::Size rescaledPageSize,
-			Windows::Foundation::Rect renderRegion
+			Windows::Graphics::Imaging::BitmapSize rescaledPageSize,
+			Windows::Graphics::Imaging::BitmapBounds renderRegion
+			);
+		void RenderRegion(
+			Windows::Storage::Streams::IBuffer^ buffer,
+			Windows::Graphics::Imaging::BitmapSize rescaledPageSize,
+			Windows::Graphics::Imaging::BitmapBounds renderRegion
 			);
 	internal:
         void RenderRegion(
             void* bufferPtr,
-            Windows::Foundation::Size rescaledPageSize,
-            Windows::Foundation::Rect renderRegion
+			Windows::Graphics::Imaging::BitmapSize rescaledPageSize,
+			Windows::Graphics::Imaging::BitmapBounds renderRegion
             );
 	private:
         uint32_t width, height, pageNumber;

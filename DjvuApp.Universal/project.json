@@ -3,7 +3,8 @@
     "JetBrains.Annotations": "10.0.0",
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.0.0",
     "MvvmLightLibs": "5.2.0",
-    "Unity": "4.0.1"
+    "Unity": "4.0.1",
+    "Win2D.uwp": "1.11.0"
   },
   "frameworks": {
     "uap10.0": {}
