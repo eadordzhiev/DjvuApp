@@ -10,6 +10,7 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.Resources;
 using Windows.Storage;
 using Windows.UI.Popups;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Navigation;
 using DjvuApp.Djvu;
@@ -144,12 +145,15 @@ namespace DjvuApp.ViewModel
                 () => CurrentPageNumber > 1);
         }
 
-        public void OnNavigatedTo(NavigationEventArgs e)
+        public async void OnNavigatedTo(NavigationEventArgs e)
         {
             if (e.NavigationMode == NavigationMode.New)
             {
-                LoadedHandler(e.Parameter);
+                await LoadedHandler(e.Parameter);
             }
+
+            var applicationView = ApplicationView.GetForCurrentView();
+            applicationView.Title = _book?.Title ?? _file.Name;
 
             _dataTransferManager.DataRequested += DataRequestedHandler;
             Application.Current.Suspending += ApplicationSuspendingHandler;
@@ -157,6 +161,9 @@ namespace DjvuApp.ViewModel
 
         public async void OnNavigatedFrom(NavigationEventArgs e)
         {
+            var applicationView = ApplicationView.GetForCurrentView();
+            applicationView.Title = string.Empty;
+
             _dataTransferManager.DataRequested -= DataRequestedHandler;
             Application.Current.Suspending -= ApplicationSuspendingHandler;
             await SaveLastOpenedPageAsync();
@@ -251,7 +258,7 @@ namespace DjvuApp.ViewModel
             _navigationService.GoBack();
         }
 
-        private async void LoadedHandler(object navigationParameter)
+        private async Task LoadedHandler(object navigationParameter)
         {
             IsProgressVisible = true;
 
