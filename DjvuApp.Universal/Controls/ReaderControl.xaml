@@ -20,10 +20,10 @@
     <ListView 
         x:Name="listView"
         SelectionMode="None"
+        IsTabStop="False"
         ScrollViewer.HorizontalScrollBarVisibility="Auto"
         ScrollViewer.HorizontalScrollMode="Enabled"
-        ScrollViewer.ZoomMode="Enabled"
-        ScrollViewer.IsZoomInertiaEnabled="False">
+        ScrollViewer.ZoomMode="Enabled">
         <ListView.ItemTemplate>
             <DataTemplate x:DataType="controls:PageViewControlState">
                 <controls:PageViewControl
@@ -60,7 +60,6 @@
         <ListView.Template>
             <ControlTemplate TargetType="ListView">
                 <ScrollViewer 
-                    x:Name="ScrollViewer"
                     IsTabStop="True"
                     HorizontalContentAlignment="Center" 
                     MinZoomFactor="1"
@@ -222,19 +221,26 @@
                                 Grid.Row="1"
                                 Grid.Column="1"
                                 Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}" />
-                                    <StackPanel x:Name="zoomControlsContainer" VerticalAlignment="Bottom" HorizontalAlignment="Right" Orientation="Horizontal">
-                                        <Button x:Name="zoomOutButton" FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                                        FontSize="8"
-                                        Content="&#xE108;"
-                                        Width="24"
-                                        Height="24"
-                                        Padding="0"/>
-                                        <Button x:Name="zoomInButton" FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                                        FontSize="8"
-                                        Content="&#xE109;"
-                                        Width="24"
-                                        Height="24"
-                                        Padding="0" Margin="6"/>
+                                    <StackPanel 
+                                        x:Name="zoomControlsContainer"
+                                        Margin="0,0,11,11"
+                                        VerticalAlignment="Bottom"
+                                        HorizontalAlignment="Right"
+                                        Orientation="Horizontal">
+                                        <Button
+                                            x:Name="zoomOutButton"
+                                            Padding="14,8,14,8"
+                                            IsTabStop="False" 
+                                            Content="&#xE738;"
+                                            FontFamily="ms-appx:///Assets/PhtoMDL2.1.53.ttf#Photos MDL2 Assets"
+                                            FontSize="16" />
+                                        <Button
+                                            x:Name="zoomInButton"
+                                            Padding="14,8,14,8"
+                                            IsTabStop="False"
+                                            Content="&#xE710;"
+                                            FontFamily="ms-appx:///Assets/PhtoMDL2.1.53.ttf#Photos MDL2 Assets"
+                                            FontSize="16" />
                                     </StackPanel>
                                 </Grid>
                             </Border>

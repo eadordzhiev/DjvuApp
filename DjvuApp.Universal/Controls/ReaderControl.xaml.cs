@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
@@ -213,16 +214,26 @@ namespace DjvuApp.Controls
 
         private void ZoomInButtonClickHandler(object sender, RoutedEventArgs e)
         {
-            var newZoomFactor = Math.Min(_scrollViewer.ZoomFactor * 1.1f, _scrollViewer.MaxZoomFactor);
-
-            _scrollViewer.ZoomToFactor(newZoomFactor);
+            ZoomToFactor(_scrollViewer.ZoomFactor * 1.1f);
         }
 
         private void ZoomOutButtonClickHandler(object sender, RoutedEventArgs e)
         {
-            var newZoomFactor = Math.Max(_scrollViewer.ZoomFactor / 1.1f, _scrollViewer.MinZoomFactor);
+            ZoomToFactor(_scrollViewer.ZoomFactor / 1.1f);
+        }
 
-            _scrollViewer.ZoomToFactor(newZoomFactor);
+        private void ZoomToFactor(float newZoomFactor)
+        {
+            newZoomFactor = Math.Max(newZoomFactor, _scrollViewer.MinZoomFactor);
+            newZoomFactor = Math.Min(newZoomFactor, _scrollViewer.MaxZoomFactor);
+
+            var currentZoomFactor = _scrollViewer.ZoomFactor;
+            var currentPan = new Vector2((float)_scrollViewer.HorizontalOffset, (float)_scrollViewer.VerticalOffset);
+            var centerOffset = new Vector2((float)_scrollViewer.ViewportWidth, (float)_scrollViewer.ViewportHeight) / 2;
+            var newPanX = (currentPan.X + centerOffset.X) * newZoomFactor / currentZoomFactor - centerOffset.X;
+            var newPanY = currentPan.Y + centerOffset.Y * (newZoomFactor / currentZoomFactor - 1);
+
+            _scrollViewer.ChangeView(newPanX, newPanY, newZoomFactor, false);
         }
 
         private void ViewChangedHandler(object sender, ScrollViewerViewChangedEventArgs e)
@@ -233,7 +244,7 @@ namespace DjvuApp.Controls
             var middlePageNumber = topPageNumber + visiblePagesCount / 2;
 
             SetPageNumberWithoutNotification((uint)middlePageNumber);
-
+            
             _pageViewObserver.OnZoomFactorChanged(_scrollViewer.ZoomFactor, e.IsIntermediate);
         }
 
