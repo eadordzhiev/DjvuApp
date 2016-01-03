@@ -147,10 +147,7 @@ namespace DjvuApp.ViewModel
 
         public async void OnNavigatedTo(NavigationEventArgs e)
         {
-            if (e.NavigationMode == NavigationMode.New)
-            {
-                await LoadedHandler(e.Parameter);
-            }
+            await LoadedHandler(e.Parameter);
 
             var applicationView = ApplicationView.GetForCurrentView();
             applicationView.Title = _book?.Title ?? _file.Name;
