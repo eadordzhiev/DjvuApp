@@ -221,12 +221,14 @@
                                 Grid.Row="1"
                                 Grid.Column="1"
                                 Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}" />
-                                    <StackPanel 
+                                    <StackPanel
                                         x:Name="zoomControlsContainer"
                                         Margin="0,0,11,11"
                                         VerticalAlignment="Bottom"
                                         HorizontalAlignment="Right"
-                                        Orientation="Horizontal">
+                                        Orientation="Horizontal" 
+                                        RequestedTheme="Dark"
+                                        Background="#66000000">
                                         <Button
                                             x:Name="zoomOutButton"
                                             Padding="14,8,14,8"
