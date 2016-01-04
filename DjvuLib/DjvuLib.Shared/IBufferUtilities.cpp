@@ -29,7 +29,7 @@ void* IBufferUtilities::GetPointer(IBuffer^ buffer)
 	return pointer;
 }
 
-void IBufferUtilities::GetPointer(IMemoryBufferReference^ reference, void** pointer, size_t* capacity)
+void IBufferUtilities::GetPointer(IMemoryBufferReference^ reference, void** pointer, UINT32* capacity)
 {
 	ComPtr<IInspectable> inspectable(reinterpret_cast<IInspectable*>(reference));
 

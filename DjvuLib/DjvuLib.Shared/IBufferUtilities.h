@@ -7,7 +7,7 @@ namespace DjvuApp {
 		{
 		public:
 			static void* GetPointer(Windows::Storage::Streams::IBuffer^ buffer);
-			static void GetPointer(Windows::Foundation::IMemoryBufferReference^ reference, void** pointer, size_t* capacity);
+			static void GetPointer(Windows::Foundation::IMemoryBufferReference^ reference, void** pointer, UINT32* capacity);
 		};
 	}
 }

@@ -106,7 +106,7 @@ SoftwareBitmap^ DjvuPage::RenderRegionToSoftwareBitmap(BitmapSize rescaledPageSi
 	auto memoryBufferReference = bitmapBuffer->CreateReference();
 
 	void* pointer;
-	size_t capacity;
+	UINT32 capacity;
 	IBufferUtilities::GetPointer(memoryBufferReference, &pointer, &capacity);
 
 	RenderRegion(pointer, rescaledPageSize, renderRegion);

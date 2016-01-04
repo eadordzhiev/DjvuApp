@@ -18,7 +18,7 @@
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <PackageCertificateKeyFile>DjvuApp.Universal_StoreKey.pfx</PackageCertificateKeyFile>
-    <PackageCertificateThumbprint>546C0F2EF75EAD33B1F76991DD709F57BA4D7A67</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>F633FC8BB151AB40E177AE4B5D0A446E12DA28A8</PackageCertificateThumbprint>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
     <AppxSymbolPackageEnabled>True</AppxSymbolPackageEnabled>
