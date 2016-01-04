@@ -104,7 +104,7 @@
                 Visibility="Collapsed"/>
         </Grid>
     </Grid>
-    
+
     <Page.BottomAppBar>
         <CommandBar x:Name="appBar" Visibility="{x:Bind ViewModel.IsProgressVisible, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=negate}">
             <CommandBar.PrimaryCommands>
@@ -164,6 +164,13 @@
                     Label="Share"
                     Command="{x:Bind ViewModel.ShareCommand}"/>
             </CommandBar.SecondaryCommands>
+            <CommandBar.Content>
+                <TextBlock Margin="12">
+                    <Run Text="{x:Bind ViewModel.CurrentPageNumber, Mode=OneWay}"/>
+                    <Run>|</Run>
+                    <Run Text="{x:Bind ViewModel.TotalPageNumber, Mode=OneWay}"/>
+                </TextBlock>
+            </CommandBar.Content>
         </CommandBar>
     </Page.BottomAppBar>
 </Page>

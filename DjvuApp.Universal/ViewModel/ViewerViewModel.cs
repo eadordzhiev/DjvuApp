@@ -93,6 +93,23 @@ namespace DjvuApp.ViewModel
             }
         }
 
+        public uint TotalPageNumber
+        {
+            get
+            {
+                return _totalPageNumber;
+            }
+
+            private set
+            {
+                if (_totalPageNumber != value)
+                {
+                    _totalPageNumber = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         public RelayCommand ShowOutlineCommand { get; }
 
         public ICommand JumpToPageCommand { get; }
@@ -113,6 +130,7 @@ namespace DjvuApp.ViewModel
         private bool _isCurrentPageBookmarked;
         private DjvuDocument _currentDocument;
         private uint _currentPageNumber;
+        private uint _totalPageNumber;
         private IReadOnlyList<DjvuOutlineItem> _outline;
 
         private readonly DataTransferManager _dataTransferManager;
@@ -292,6 +310,7 @@ namespace DjvuApp.ViewModel
             }
             
             CurrentDocument = document;
+            TotalPageNumber = document.PageCount;
 
             if (_book != null)
             {
