@@ -207,6 +207,12 @@ namespace DjvuApp.Controls
 
             var zoomInButton = (Button) _scrollViewer.FindDescendantByName("zoomInButton");
             var zoomOutButton = (Button) _scrollViewer.FindDescendantByName("zoomOutButton");
+            var zoomControlsContainer = (Panel) _scrollViewer.FindDescendantByName("zoomControlsContainer");
+
+            if (new MouseCapabilities().MousePresent == 0)
+            {
+                zoomControlsContainer.Visibility = Visibility.Collapsed;
+            }
 
             zoomInButton.Click += ZoomInButtonClickHandler;
             zoomOutButton.Click += ZoomOutButtonClickHandler;
