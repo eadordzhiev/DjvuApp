@@ -292,6 +292,8 @@ namespace DjvuApp.Controls
 
                 _scrollViewer.PointerMoved += PageViewControl_OnPointerMoved;
                 _scrollViewer.PointerReleased += PageViewControl_OnPointerReleased;
+                _scrollViewer.PointerCanceled += PageViewControl_OnPointerReleased;
+                _scrollViewer.PointerCaptureLost += PageViewControl_OnPointerReleased;
             }
         }
 
@@ -320,9 +322,12 @@ namespace DjvuApp.Controls
 
         private void PageViewControl_OnPointerReleased(object sender, PointerRoutedEventArgs e)
         {
+            _scrollViewer.ReleasePointerCapture(e.Pointer);
             _scrollViewer.PointerMoved -= PageViewControl_OnPointerMoved;
             _scrollViewer.PointerReleased -= PageViewControl_OnPointerReleased;
-            
+            _scrollViewer.PointerCanceled -= PageViewControl_OnPointerReleased;
+            _scrollViewer.PointerCaptureLost -= PageViewControl_OnPointerReleased;
+
             RaiseSelectionChanged();
         }
 
