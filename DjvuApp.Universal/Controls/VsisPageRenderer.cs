@@ -24,13 +24,13 @@ namespace DjvuApp.Controls
             _page = page;
 
             var rawPixelsPerViewPixel = DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
-            var width = (uint) Math.Min(pageViewSize.Width, page.Width / rawPixelsPerViewPixel);
-            var height = (uint) Math.Min(pageViewSize.Height, page.Height / rawPixelsPerViewPixel);
+            var width = Math.Min(pageViewSize.Width, page.Width / rawPixelsPerViewPixel);
+            var height = Math.Min(pageViewSize.Height, page.Height / rawPixelsPerViewPixel);
 
             _vsis = new CanvasVirtualImageSource(
                 resourceCreator: CanvasDevice.GetSharedDevice(),
-                width: width,
-                height: height,
+                width: (float) width,
+                height: (float) height,
                 dpi: DisplayInformation.GetForCurrentView().LogicalDpi,
                 alphaMode: CanvasAlphaMode.Ignore);
             _vsis.RegionsInvalidated += RegionsInvalidatedHandler;
