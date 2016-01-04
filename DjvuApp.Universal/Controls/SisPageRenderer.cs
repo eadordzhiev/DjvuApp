@@ -56,19 +56,11 @@ namespace DjvuApp.Controls
                 Height = ConvertDipsToPixels(updateRect.Height)
             };
 
-            using (var buffer = new HeapBuffer(renderRegion.Width * renderRegion.Height * 4))
+            using (var bitmap = _page.RenderRegionToSoftwareBitmap(Source.SizeInPixels, renderRegion))
             {
-                _page.RenderRegion(
-                    buffer: buffer,
-                    rescaledPageSize: Source.SizeInPixels,
-                    renderRegion: renderRegion);
-
-                using (var canvasBitmap = CanvasBitmap.CreateFromBytes(
+                using (var canvasBitmap = CanvasBitmap.CreateFromSoftwareBitmap(
                     resourceCreator: CanvasDevice.GetSharedDevice(),
-                    buffer: buffer,
-                    widthInPixels: (int)renderRegion.Width,
-                    heightInPixels: (int)renderRegion.Height,
-                    format: DirectXPixelFormat.B8G8R8A8UIntNormalized))
+                    sourceBitmap: bitmap))
                 using (var drawingSession = Source.CreateDrawingSession(Colors.White, updateRect))
                 {
                     drawingSession.DrawImage(canvasBitmap, updateRect);

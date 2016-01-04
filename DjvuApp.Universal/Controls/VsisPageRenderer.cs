@@ -51,7 +51,7 @@ namespace DjvuApp.Controls
 
         private void RenderRegion(Rect updateRect)
         {
-            var renderRegion = new BitmapBounds
+            var region = new BitmapBounds
             {
                 X = ConvertDipsToPixels(updateRect.X),
                 Y = ConvertDipsToPixels(updateRect.Y),
@@ -59,19 +59,11 @@ namespace DjvuApp.Controls
                 Height = ConvertDipsToPixels(updateRect.Height)
             };
 
-            using (var buffer = new HeapBuffer(renderRegion.Width * renderRegion.Height * 4))
+            using (var bitmap = _page.RenderRegionToSoftwareBitmap(_vsis.SizeInPixels, region))
             {
-                _page.RenderRegion(
-                    buffer: buffer,
-                    rescaledPageSize: _vsis.SizeInPixels,
-                    renderRegion: renderRegion);
-                
-                using (var canvasBitmap = CanvasBitmap.CreateFromBytes(
+                using (var canvasBitmap = CanvasBitmap.CreateFromSoftwareBitmap(
                     resourceCreator: CanvasDevice.GetSharedDevice(),
-                    buffer: buffer,
-                    widthInPixels: (int)renderRegion.Width,
-                    heightInPixels: (int)renderRegion.Height,
-                    format: DirectXPixelFormat.B8G8R8A8UIntNormalized))
+                    sourceBitmap: bitmap))
                 using (var drawingSession = _vsis.CreateDrawingSession(Colors.White, updateRect))
                 {
                     drawingSession.DrawImage(canvasBitmap, updateRect);

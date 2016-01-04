@@ -3,10 +3,11 @@
 namespace DjvuApp {
 	namespace Misc
 	{
-		ref class IBufferUtilities sealed
+		class IBufferUtilities abstract sealed
 		{
-		internal:
+		public:
 			static void* GetPointer(Windows::Storage::Streams::IBuffer^ buffer);
+			static void GetPointer(Windows::Foundation::IMemoryBufferReference^ reference, void** pointer, size_t* capacity);
 		};
 	}
 }

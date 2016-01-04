@@ -1,8 +1,10 @@
 #include "pch.h"
+#include <MemoryBuffer.h>
 #include "IBufferUtilities.h"
 
 using namespace Microsoft::WRL;
 using namespace Platform;
+using namespace Windows::Foundation;
 using namespace Windows::Storage::Streams;
 using namespace DjvuApp::Misc;
 
@@ -25,4 +27,13 @@ void* IBufferUtilities::GetPointer(IBuffer^ buffer)
 	ThrowIfFailed(bufferByteAccess->Buffer(&pointer));
 
 	return pointer;
+}
+
+void IBufferUtilities::GetPointer(IMemoryBufferReference^ reference, void** pointer, size_t* capacity)
+{
+	ComPtr<IInspectable> inspectable(reinterpret_cast<IInspectable*>(reference));
+
+	ComPtr<IMemoryBufferByteAccess> bufferByteAccess;
+	ThrowIfFailed(inspectable.As(&bufferByteAccess));
+	ThrowIfFailed(bufferByteAccess->GetBuffer((BYTE**) pointer, capacity));
 }

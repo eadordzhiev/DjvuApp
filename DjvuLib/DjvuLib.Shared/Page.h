@@ -27,8 +27,7 @@ namespace DjvuApp { namespace Djvu
 			Windows::Graphics::Imaging::BitmapSize rescaledPageSize,
 			Windows::Graphics::Imaging::BitmapBounds renderRegion
 			);
-		void RenderRegion(
-			Windows::Storage::Streams::IBuffer^ buffer,
+		Windows::Graphics::Imaging::SoftwareBitmap^ RenderRegionToSoftwareBitmap(
 			Windows::Graphics::Imaging::BitmapSize rescaledPageSize,
 			Windows::Graphics::Imaging::BitmapBounds renderRegion
 			);
