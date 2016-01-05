@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
+using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -48,7 +49,7 @@ namespace DjvuApp.Controls
         {
             this.InitializeComponent();
         }
-        
+
         public void PageDecodedHandler(DjvuPage page, TextLayerZone textLayer)
         {
             _page = page;
@@ -181,7 +182,7 @@ namespace DjvuApp.Controls
             {
                 return;
             }
-            
+
             var selectionZones = GetSelectionZones(TextLayer, selectionStartIndex, selectionEndIndex);
             selectionShape.Data = GetGeometryFromZones(selectionZones);
         }
@@ -196,7 +197,7 @@ namespace DjvuApp.Controls
                 width: pageRect.Width * scaleFactor,
                 height: pageRect.Height * scaleFactor);
         }
-        
+
         private void OnStateChanged(PageViewControlState oldValue, PageViewControlState newValue)
         {
             CleanUp();
@@ -229,7 +230,7 @@ namespace DjvuApp.Controls
                 _contentVsis.Dispose();
                 _contentVsis = null;
             }
-            
+
             _thumbnailSis = null;
             thumbnailContentCanvas.Background = null;
             contentCanvas.Background = null;
@@ -271,8 +272,11 @@ namespace DjvuApp.Controls
 
         private void CreateThumbnailSurface()
         {
-            const uint scaleFactor = 16;
-            var pageViewSize = new Size(Width / scaleFactor, Height / scaleFactor);
+            const uint scaleFactor = 8;
+            var rawPixelsPerViewPixel = DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+            var pageWidth = _page.Width / rawPixelsPerViewPixel;
+            var pageHeight = _page.Height / rawPixelsPerViewPixel;
+            var pageViewSize = new Size(pageWidth / scaleFactor, pageHeight / scaleFactor);
 
             _thumbnailSis = new SisPageRenderer(_page, pageViewSize);
 
@@ -283,7 +287,7 @@ namespace DjvuApp.Controls
 
             thumbnailContentCanvas.Background = thumbnailBackgroundBrush;
         }
-        
+
         IEnumerable<TextLayerZone> GetSelectionZones(IEnumerable<TextLayerZone> zones, uint selectionStart, uint selectionEnd)
         {
             foreach (var zone in zones)
@@ -309,10 +313,10 @@ namespace DjvuApp.Controls
                         yield return childZone;
                     }
                 }
-                
+
             }
         }
-        
+
         public TextLayerZone FindWordAtPoint(IReadOnlyCollection<TextLayerZone> zones, Point point)
         {
             if (_page == null)
@@ -322,7 +326,7 @@ namespace DjvuApp.Controls
 
             var scaleFactor = _page.Width / Width;
             var pagePoint = new Point(point.X * scaleFactor, _page.Height - point.Y * scaleFactor);
-            
+
             foreach (var zone in zones)
             {
                 if (zone.Type == ZoneType.Word && zone.Bounds.Contains(pagePoint))
