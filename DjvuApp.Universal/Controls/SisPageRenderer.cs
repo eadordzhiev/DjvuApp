@@ -11,7 +11,7 @@ using Microsoft.Graphics.Canvas.UI.Xaml;
 
 namespace DjvuApp.Controls
 {
-    public class SisPageRenderer : IDisposable
+    public sealed class SisPageRenderer
     {
         public CanvasImageSource Source { get; private set; }
 
@@ -35,12 +35,7 @@ namespace DjvuApp.Controls
 
             _page = null;
         }
-
-        public void Dispose()
-        {
-            Source = null;
-        }
-
+        
         private uint ConvertDipsToPixels(double dips)
         {
             return (uint)Source.ConvertDipsToPixels((float)dips, CanvasDpiRounding.Floor);

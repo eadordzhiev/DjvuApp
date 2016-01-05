@@ -12,7 +12,7 @@ using Microsoft.Graphics.Canvas.UI.Xaml;
 
 namespace DjvuApp.Controls
 {
-    public class VsisPageRenderer : IDisposable
+    public sealed class VsisPageRenderer : IDisposable
     {
         public ImageSource Source => _vsis?.Source;
 
@@ -32,6 +32,11 @@ namespace DjvuApp.Controls
                 dpi: DisplayInformation.GetForCurrentView().LogicalDpi,
                 alphaMode: CanvasAlphaMode.Ignore);
             _vsis.RegionsInvalidated += RegionsInvalidatedHandler;
+        }
+
+        ~VsisPageRenderer()
+        {
+            Dispose();
         }
 
         Size FindBestSize(Size desiredSize)
@@ -94,6 +99,8 @@ namespace DjvuApp.Controls
             _vsis.RegionsInvalidated -= RegionsInvalidatedHandler;
             _vsis = null;
             _page = null;
+
+            GC.SuppressFinalize(this);
         }
     }
 }
