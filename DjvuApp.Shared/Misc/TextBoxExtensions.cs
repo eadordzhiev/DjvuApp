@@ -11,9 +11,9 @@ namespace DjvuApp.Misc
 {
     public static class TextBoxExtensions
     {
-        public static void FocusAndSelectAll(this TextBox textBox)
+        public static async void FocusAndSelectAll(this TextBox textBox)
         {
-            textBox.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            await textBox.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 textBox.Focus(FocusState.Programmatic);
                 textBox.SelectAll();

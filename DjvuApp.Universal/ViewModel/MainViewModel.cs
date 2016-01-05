@@ -88,7 +88,9 @@ namespace DjvuApp.ViewModel
             });
             ShareBookCommand = new RelayCommand<IBook>(ShareBook);
             
+#pragma warning disable 4014
             RefreshBooks();
+#pragma warning restore 4014
         }
 
         public void OnNavigatedTo(NavigationEventArgs e)
