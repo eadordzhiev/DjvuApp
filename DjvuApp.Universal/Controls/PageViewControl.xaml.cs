@@ -352,5 +352,11 @@ namespace DjvuApp.Controls
             var zone = FindWordAtPoint(TextLayer, e.GetCurrentPoint(this).Position);
             CoreWindow.GetForCurrentThread().PointerCursor = zone != null ? HoverCursor : NormalCursor;
         }
+
+        private void UnloadedHandler(object sender, RoutedEventArgs e)
+        {
+            _contentVsis?.Dispose();
+            _contentVsis = null;
+        }
     }
 }
