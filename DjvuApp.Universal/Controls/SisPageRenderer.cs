@@ -21,16 +21,16 @@ namespace DjvuApp.Controls
         {
             _page = page;
             var rawPixelsPerViewPixel = DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
-            var width = (uint)Math.Min(pageViewSize.Width, page.Width / rawPixelsPerViewPixel);
-            var height = (uint)Math.Min(pageViewSize.Height, page.Height / rawPixelsPerViewPixel);
+            var width = Math.Min(pageViewSize.Width, page.Width / rawPixelsPerViewPixel);
+            var height = Math.Min(pageViewSize.Height, page.Height / rawPixelsPerViewPixel);
 
             Source = new CanvasImageSource(
                 resourceCreator: CanvasDevice.GetSharedDevice(),
-                width: width,
-                height: height,
+                width: (float)width,
+                height: (float)height,
                 dpi: DisplayInformation.GetForCurrentView().LogicalDpi,
                 alphaMode: CanvasAlphaMode.Ignore);
-            
+
             RenderRegion(new Rect(0, 0, width, height));
 
             _page = null;
