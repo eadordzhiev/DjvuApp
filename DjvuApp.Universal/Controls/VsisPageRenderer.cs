@@ -23,17 +23,32 @@ namespace DjvuApp.Controls
         {
             _page = page;
 
-            var rawPixelsPerViewPixel = DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
-            var width = Math.Min(pageViewSize.Width, page.Width / rawPixelsPerViewPixel);
-            var height = Math.Min(pageViewSize.Height, page.Height / rawPixelsPerViewPixel);
+            var size = FindBestSize(pageViewSize);
 
             _vsis = new CanvasVirtualImageSource(
                 resourceCreator: CanvasDevice.GetSharedDevice(),
-                width: (float) width,
-                height: (float) height,
+                width: (float) size.Width,
+                height: (float) size.Height,
                 dpi: DisplayInformation.GetForCurrentView().LogicalDpi,
                 alphaMode: CanvasAlphaMode.Ignore);
             _vsis.RegionsInvalidated += RegionsInvalidatedHandler;
+        }
+
+        Size FindBestSize(Size desiredSize)
+        {
+            var rawPixelsPerViewPixel = DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+            var pageWidth = _page.Width / rawPixelsPerViewPixel;
+            var pageHeight = _page.Height / rawPixelsPerViewPixel;
+
+            int red;
+            for (red = 1; red < 16; red++)
+            {
+                if (pageWidth / red < desiredSize.Width &&
+                    pageHeight / red < desiredSize.Height)
+                    break;
+            }
+
+            return new Size(pageWidth / red, pageHeight / red);
         }
 
         private void RegionsInvalidatedHandler(CanvasVirtualImageSource sender, CanvasRegionsInvalidatedEventArgs args)
