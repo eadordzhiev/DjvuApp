@@ -310,6 +310,7 @@ namespace DjvuApp.ViewModel
             }
             
             CurrentDocument = document;
+            CurrentPageNumber = _book?.LastOpenedPage ?? 1;
             TotalPageNumber = document.PageCount;
 
             if (_book != null)
@@ -318,12 +319,6 @@ namespace DjvuApp.ViewModel
 
                 _bookmarks = new ObservableCollection<IBookmark>(await _provider.GetBookmarksAsync(_book));
                 _bookmarks.CollectionChanged += (sender, e) => UpdateIsCurrentPageBookmarked();
-
-                var lastOpenedPage = _book.LastOpenedPage;
-                if (lastOpenedPage != null)
-                {
-                    CurrentPageNumber = (uint)lastOpenedPage;
-                }
             }
 
             _outline = await document.GetOutlineAsync();
