@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
@@ -36,7 +37,7 @@ namespace DjvuApp.Controls
         private SisPageRenderer _thumbnailSis;
         private DjvuPage _page;
         private PageViewObserver _pageViewObserver;
-        private int? _id;
+        private CancellationTokenSource _pageDecodingCts;
         public IReadOnlyCollection<TextLayerZone> TextLayer;
 
         private static void StateChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -50,8 +51,13 @@ namespace DjvuApp.Controls
             this.InitializeComponent();
         }
 
-        public void PageDecodedHandler(DjvuPage page, TextLayerZone textLayer)
+        private void PageDecodedHandler(DjvuPage page, TextLayerZone textLayer, CancellationToken ct)
         {
+            if (ct.IsCancellationRequested)
+            {
+                return;
+            }
+
             _page = page;
 
             _pageViewObserver = State.ZoomFactorObserver;
@@ -201,16 +207,13 @@ namespace DjvuApp.Controls
         private void OnStateChanged(PageViewControlState oldValue, PageViewControlState newValue)
         {
             CleanUp();
-
-            if (_id != null)
-            {
-                PageLoadScheduler.Instance.Unsubscribe(_id.Value);
-                _id = null;
-            }
-
+            
+            _pageDecodingCts?.Cancel();
+            
             if (newValue != null)
             {
-                _id = PageLoadScheduler.Instance.Subscribe(newValue, PageDecodedHandler);
+                _pageDecodingCts = new CancellationTokenSource();
+                PageLoadScheduler.Instance.Subscribe(newValue, PageDecodedHandler, _pageDecodingCts.Token);
             }
         }
 

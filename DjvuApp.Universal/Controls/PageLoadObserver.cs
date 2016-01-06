@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Core;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using DjvuApp.Djvu;
 
@@ -13,71 +16,93 @@ namespace DjvuApp.Controls
         class Obj
         {
             public PageViewControlState State { get; set; }
-            public Action<DjvuPage, TextLayerZone> Callback { get; set; }
+            public Action<DjvuPage, TextLayerZone, CancellationToken> Callback { get; set; }
+            public CancellationToken CancellationToken { get; set; }
         }
 
         public static PageLoadScheduler Instance = new PageLoadScheduler();
 
-        private Dictionary<int, Obj> states = new Dictionary<int, Obj>();
+        private readonly Queue<Obj> _tasks = new Queue<Obj>();
 
-        readonly DispatcherTimer _timer = new DispatcherTimer();
-
-        private int _lastId;
+        private readonly Timer _timer;
+        
+        private uint _concurrentTasksCount;
 
         public PageLoadScheduler()
         {
-            _timer.Interval = TimeSpan.FromMilliseconds(30);
-            _timer.Tick += Timer_Tick;
-            _timer.Start();
+            _timer = new Timer(Timer_Tick, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(30));
         }
 
-        public int Subscribe(PageViewControlState state, Action<DjvuPage, TextLayerZone> callback)
+        public void Subscribe(PageViewControlState state, Action<DjvuPage, TextLayerZone, CancellationToken> callback, CancellationToken ct)
         {
-            _lastId++;
-            states[_lastId] = new Obj { State = state, Callback = callback };
-            return _lastId;
-        }
-        
-        public void Unsubscribe(int id)
-        {
-            states.Remove(id);
+            lock(_tasks)
+            {
+                _tasks.Enqueue(new Obj { State = state, Callback = callback, CancellationToken = ct });
+            }
         }
 
-        public void Start()
+        private void Start()
         {
-            _timer.Start();
+            _concurrentTasksCount--;
+
+            if (_concurrentTasksCount < Environment.ProcessorCount)
+            {
+                _timer.Change(TimeSpan.Zero, TimeSpan.FromMilliseconds(30));
+            }
         }
 
-        public void Stop()
+        private void Stop()
         {
-            _timer.Stop();
+            _concurrentTasksCount++;
+
+            if (_concurrentTasksCount >= Environment.ProcessorCount)
+            {
+                _timer.Change(-1, -1);
+            }
         }
 
-        private async void Timer_Tick(object sender, object e)
+        private void Timer_Tick(object sender)
         {
-            if (!states.Any())
+            for (int i = 0; i < Environment.ProcessorCount - _concurrentTasksCount; i++)
+            {
+                Obj task;
+
+                lock (_tasks)
+                {
+                    if (!_tasks.Any())
+                        return;
+
+                    task = _tasks.Dequeue();
+                }
+
+                DoJob(task);
+            }
+        }
+
+        private async void DoJob(Obj obj)
+        {
+            if (obj.CancellationToken.IsCancellationRequested)
             {
                 return;
             }
-
-            var pair = states.Last();
-            var obj = pair.Value;
-            var id = pair.Key;
-
+            Stop();
             var document = obj.State.Document;
             var pageNumber = obj.State.PageNumber;
-
-            Stop();
             var page = await document.GetPageAsync(pageNumber);
-            TextLayerZone textLayer = null;
-            textLayer = await document.GetTextLayerAsync(pageNumber);
+
+            if (obj.CancellationToken.IsCancellationRequested)
+            {
+                Start();
+                return;
+            }
+            var textLayer = await document.GetTextLayerAsync(pageNumber);
             Start();
 
-            if (states.ContainsKey(id))
+            if (obj.CancellationToken.IsCancellationRequested)
             {
-                states.Remove(id);
-                obj.Callback(page, textLayer);
+                return;
             }
+            await CoreApplication.MainView.Dispatcher.RunAsync(CoreDispatcherPriority.Low, () => obj.Callback(page, textLayer, obj.CancellationToken));
         }
     }
 }
