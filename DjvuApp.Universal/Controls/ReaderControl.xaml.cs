@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Devices.Input;
 using Windows.Foundation;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
@@ -98,7 +99,12 @@ namespace DjvuApp.Controls
 
             var pageState = _pageStates[pageNumber - 1];
 
-            var zoomFactor = ActualWidth / pageState.Width;
+            var zoomFactor = UIViewSettings.GetForCurrentView().UserInteractionMode == UserInteractionMode.Mouse
+                ? ActualHeight / pageState.Height
+                : ActualWidth / pageState.Width;
+            zoomFactor = Math.Min(zoomFactor, _scrollViewer.MaxZoomFactor);
+            zoomFactor = Math.Max(zoomFactor, _scrollViewer.MinZoomFactor);
+
             var verticalOffset = pageNumber + 1;
             var horizontalOffset = (ActualWidth - pageState.Width) / 2 * zoomFactor;
 
