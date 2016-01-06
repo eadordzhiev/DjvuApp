@@ -21,6 +21,8 @@
 [Rr]eleases/
 x64/
 x86/
+ARM/
+Win32/
 build/
 bld/
 [Bb]in/
@@ -166,6 +168,7 @@ rcf/
 
 # Windows Store app package directory
 AppPackages/
+BundleArtifacts/
 
 # Visual Studio cache files
 # files ending in .cache can be ignored
