@@ -62,7 +62,7 @@
                 <ScrollViewer 
                     IsTabStop="True"
                     HorizontalContentAlignment="Center" 
-                    MinZoomFactor="1"
+                    MinZoomFactor="0.2"
                     MaxZoomFactor="5"
                     Loaded="ScrollViewerLoadedHandler"
                     TabNavigation="{TemplateBinding TabNavigation}"

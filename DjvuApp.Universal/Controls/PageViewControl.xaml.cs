@@ -260,6 +260,12 @@ namespace DjvuApp.Controls
             var zoomFactor = _pageViewObserver.ZoomFactor;
             var pageViewSize = new Size(Width * zoomFactor, Height * zoomFactor);
 
+            var thumbnailSize = _thumbnailSis.Source.Size;
+            if (pageViewSize.Width < thumbnailSize.Width && pageViewSize.Height < thumbnailSize.Height)
+            {
+                return;
+            }
+
             _contentVsis = new VsisPageRenderer(_page, pageViewSize);
 
             var contentBackgroundBrush = new ImageBrush
