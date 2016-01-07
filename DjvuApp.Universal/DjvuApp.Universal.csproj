@@ -274,8 +274,8 @@
     <SDKReference Include="Microsoft.VCLibs, Version=14.0">
       <Name>Visual C++ 2015 Runtime for Universal Windows Platform Apps</Name>
     </SDKReference>
-    <SDKReference Include="SQLite.UAP.2015, Version=3.9.2">
-      <Name>SQLite for Universal App Platform</Name>
+    <SDKReference Include="SQLite.UAP.2015, Version=3.10.0">
+      <Name>SQLite for Universal App Platform %28SQLite.UAP.2015, Version=3.10.0%29</Name>
     </SDKReference>
   </ItemGroup>
   <ItemGroup />
