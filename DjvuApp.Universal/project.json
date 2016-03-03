@@ -4,7 +4,7 @@
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.0.0",
     "MvvmLightLibs": "5.2.0",
     "Unity": "4.0.1",
-    "Win2D.uwp": "1.13.0"
+    "Win2D.uwp": "1.16.0"
   },
   "frameworks": {
     "uap10.0": {}
