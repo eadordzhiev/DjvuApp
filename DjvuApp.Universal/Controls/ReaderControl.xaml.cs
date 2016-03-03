@@ -189,7 +189,9 @@ namespace DjvuApp.Controls
 
             if (ActualWidth != oldContainerSize?.Width)
             {
+                var verticalOffset = _scrollViewer?.VerticalOffset;
                 Load();
+                _scrollViewer?.ChangeView(null, verticalOffset, null, true);
             }
         }
 
