@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Devices.Input;
 using Windows.Foundation;
+using Windows.System;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -373,8 +374,8 @@ namespace DjvuApp.Controls
                 }
             }
         }
-        
-        private async void CopyButtonClickHandler(object sender, RoutedEventArgs e)
+
+        public async Task CopySelection()
         {
             var stringBuilder = new StringBuilder();
 
@@ -386,7 +387,7 @@ namespace DjvuApp.Controls
                 {
                     continue;
                 }
-                
+
                 var textLayer = await Source.GetTextLayerAsync(pageNumber);
                 if (textLayer == null)
                 {
@@ -400,6 +401,11 @@ namespace DjvuApp.Controls
             dataPackage.SetText(stringBuilder.ToString());
 
             Clipboard.SetContent(dataPackage);
+        }
+
+        private async void CopyButtonClickHandler(object sender, RoutedEventArgs e)
+        {
+            await CopySelection();
         }
         
         private SelectionMarker? _lastSearchPosition;
@@ -484,6 +490,29 @@ namespace DjvuApp.Controls
             RaiseSelectionChanged();
 
             GoToPage(found.Start.PageNumber);
+        }
+
+        private bool _isControlPressed;
+
+        private async void KeyDownHandler(object sender, KeyRoutedEventArgs e)
+        {
+            if (e.Key == VirtualKey.Control)
+            {
+                _isControlPressed = true;
+            }
+
+            if (_isControlPressed && e.Key == VirtualKey.C)
+            {
+                await CopySelection();
+            }
+        }
+
+        private void KeyUpHandler(object sender, KeyRoutedEventArgs e)
+        {
+            if (e.Key == VirtualKey.Control)
+            {
+                _isControlPressed = false;
+            }
         }
     }
 }
