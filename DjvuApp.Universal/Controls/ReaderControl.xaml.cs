@@ -377,8 +377,13 @@ namespace DjvuApp.Controls
 
         public async Task CopySelection()
         {
-            var stringBuilder = new StringBuilder();
+            if (!IsSelected)
+            {
+                return;
+            }
 
+            var stringBuilder = new StringBuilder();
+            
             for (var pageNumber = SelectionStart.PageNumber; pageNumber <= SelectionEnd.PageNumber; pageNumber++)
             {
                 uint selectionStartIndex, selectionEndIndex;
