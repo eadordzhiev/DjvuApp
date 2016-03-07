@@ -261,6 +261,12 @@
   <data name="ViewerPage_AddBookmarkAppBarButton.Label" xml:space="preserve">
     <value>Добавить закладку</value>
   </data>
+  <data name="ViewerPage_AddToLibraryButton.Content" xml:space="preserve">
+    <value>Добавить в "Мои книги"</value>
+  </data>
+  <data name="ViewerPage_AddToLibraryMessageTextBlock.Text" xml:space="preserve">
+    <value>Закладки не будут работать, пока вы не добавите файл в "Мои книги"</value>
+  </data>
   <data name="ViewerPage_JumpToPageAppBarButton.Label" xml:space="preserve">
     <value>Перейти на страницу</value>
   </data>

@@ -261,6 +261,12 @@
   <data name="ViewerPage_AddBookmarkAppBarButton.Label" xml:space="preserve">
     <value>Add bookmark</value>
   </data>
+  <data name="ViewerPage_AddToLibraryButton.Content" xml:space="preserve">
+    <value>Add to the library</value>
+  </data>
+  <data name="ViewerPage_AddToLibraryMessageTextBlock.Text" xml:space="preserve">
+    <value>Bookmarks won't be available unless you add this file to the library.</value>
+  </data>
   <data name="ViewerPage_JumpToPageAppBarButton.Label" xml:space="preserve">
     <value>Jump to page</value>
   </data>

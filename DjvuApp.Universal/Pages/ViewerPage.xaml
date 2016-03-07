@@ -32,6 +32,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <TextBlock
+                x:Uid="ViewerPage_AddToLibraryMessageTextBlock"
                 Grid.Column="1"
                 VerticalAlignment="Center"
                 Margin="0,12"
@@ -46,6 +47,7 @@
                 <SymbolIcon Symbol="Clear"/>
             </Button>
             <Button
+                x:Uid="ViewerPage_AddToLibraryButton"
                 Grid.Column="0"
                 Margin="12"
                 MinWidth="120"
