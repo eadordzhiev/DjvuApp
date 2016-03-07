@@ -99,6 +99,9 @@
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <Content Include="Assets\PhtoMDL2.1.53.ttf" />
+    <None Include="ApplicationInsights.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="DjvuApp.Universal_StoreKey.pfx" />
     <None Include="project.json" />
     <PRIResource Include="strings\ru\Resources.resw" />
