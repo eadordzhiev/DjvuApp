@@ -364,6 +364,8 @@ namespace DjvuApp.Controls
 
         private void UnloadedHandler(object sender, RoutedEventArgs e)
         {
+            CoreWindow.GetForCurrentThread().PointerCursor = NormalCursor;
+
             _contentVsis?.Dispose();
             _contentVsis = null;
         }
