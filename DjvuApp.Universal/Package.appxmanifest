@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="56649Uselessguy.DjVuReader" Publisher="CN=9CA7A286-9193-4526-BAD4-40A4D7D3A37C" Version="2016.3.4.0" />
+  <Identity Name="56649Uselessguy.DjVuReader" Publisher="CN=9CA7A286-9193-4526-BAD4-40A4D7D3A37C" Version="2016.3.5.0" />
   <mp:PhoneIdentity PhoneProductId="657e98c3-fc8b-4af5-b8b4-2e3a2309c301" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>DjVu Reader</DisplayName>
