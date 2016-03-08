@@ -21,12 +21,12 @@ namespace DjvuApp.Model.Books
         public static async Task<CachedSqliteBookProvider> CreateNewAsync()
         {
             var provider = new CachedSqliteBookProvider();
-            await provider.RefreshCache();
+            await provider.RefreshCacheAsync();
 
             return provider;
         }
 
-        public async Task RefreshCache()
+        public async Task RefreshCacheAsync()
         {
             var books = await Provider.GetBooksAsync();
             _books = books.ToList();

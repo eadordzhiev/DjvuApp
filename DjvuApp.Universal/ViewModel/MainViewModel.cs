@@ -72,8 +72,8 @@ namespace DjvuApp.ViewModel
             _bookProvider = bookProvider;
             _resourceLoader = ResourceLoader.GetForCurrentView();
 
-            RenameBookCommand = new RelayCommand<IBook>(RenameBook);
-            RemoveBookCommand = new RelayCommand<IBook>(RemoveBook);
+            RenameBookCommand = new RelayCommand<IBook>(async book => await RenameBookAsync(book));
+            RemoveBookCommand = new RelayCommand<IBook>(async book => await RemoveBookAsync(book));
             AddBookCommand = new RelayCommand(async () =>
             {
                 var picker = new FileOpenPicker();
@@ -83,24 +83,24 @@ namespace DjvuApp.ViewModel
                 var files = await picker.PickMultipleFilesAsync();
                 foreach (var file in files)
                 {
-                    await AddBookFromFile(file);
+                    await AddBookFromFileAsync(file);
                 }
             });
             ShareBookCommand = new RelayCommand<IBook>(ShareBook);
             
 #pragma warning disable 4014
-            RefreshBooks();
+            RefreshBooksAsync();
 #pragma warning restore 4014
         }
 
-        public void OnNavigatedTo(NavigationEventArgs e)
+        public async void OnNavigatedTo(NavigationEventArgs e)
         {
             if (e.NavigationMode == NavigationMode.New)
             {
                 var file = e.Parameter as IStorageFile;
                 if (file != null)
                 {
-                    AddBookFromFile(file);
+                    await AddBookFromFileAsync(file);
                 }
             }
         }
@@ -127,7 +127,7 @@ namespace DjvuApp.ViewModel
             DataTransferManager.ShowShareUI();
         }
         
-        private async Task AddBookFromFile(IStorageFile file)
+        private async Task AddBookFromFileAsync(IStorageFile file)
         {
             var dialog = new BusyIndicator();
             var taskDescription = _resourceLoader.GetString("Application_Opening");
@@ -141,12 +141,12 @@ namespace DjvuApp.ViewModel
             }
             catch (NotImplementedException)
             {
-                await ShowDocumentTypeIsNotSupportedMessage();
+                await ShowDocumentTypeIsNotSupportedMessageAsync();
                 return;
             }
             catch (Exception)
             {
-                await ShowDocumentOpeningErrorMessage();
+                await ShowDocumentOpeningErrorMessageAsync();
                 return;
             }
             finally
@@ -157,7 +157,7 @@ namespace DjvuApp.ViewModel
             Books.Insert(0, book);
         }
 
-        private async void RenameBook(IBook book)
+        private async Task RenameBookAsync(IBook book)
         {
             var name = await RenameDialog.ShowAsync(book.Title);
 
@@ -167,7 +167,7 @@ namespace DjvuApp.ViewModel
             }
         }
 
-        private async void RemoveBook(IBook book)
+        private async Task RemoveBookAsync(IBook book)
         {
             var titleFormat = _resourceLoader.GetString("RemoveBookDialog_Title");
             var title = string.Format(titleFormat, book.Title);
@@ -186,7 +186,7 @@ namespace DjvuApp.ViewModel
             await dialog.ShowAsync();
         }
         
-        private async Task RefreshBooks()
+        private async Task RefreshBooksAsync()
         {
             var books = 
                 from book in await _bookProvider.GetBooksAsync()
@@ -214,8 +214,8 @@ namespace DjvuApp.ViewModel
                 
                 dialog.Hide();
 
-                await cachedProvider.RefreshCache();
-                await RefreshBooks();
+                await cachedProvider.RefreshCacheAsync();
+                await RefreshBooksAsync();
                 return;
             }
 
@@ -229,7 +229,7 @@ namespace DjvuApp.ViewModel
             HasBooks = Books.Any();
         }
 
-        private async Task ShowDocumentOpeningErrorMessage()
+        private async Task ShowDocumentOpeningErrorMessageAsync()
         {
             var resourceLoader = ResourceLoader.GetForCurrentView();
             var title = resourceLoader.GetString("DocumentOpeningErrorDialog_Title");
@@ -241,7 +241,7 @@ namespace DjvuApp.ViewModel
             await dialog.ShowAsync();
         }
 
-        private async Task ShowDocumentTypeIsNotSupportedMessage()
+        private async Task ShowDocumentTypeIsNotSupportedMessageAsync()
         {
             var resourceLoader = ResourceLoader.GetForCurrentView();
             var title = resourceLoader.GetString("DocumentTypeIsNotSupportedDialog_Title");
