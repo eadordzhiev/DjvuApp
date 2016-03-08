@@ -19,6 +19,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
+using DjvuApp.Dialogs;
 using DjvuApp.Misc;
 using DjvuApp.Pages;
 
@@ -26,8 +27,6 @@ namespace DjvuApp
 {
     public sealed partial class App : Application
     {
-        private static readonly List<WeakReference<IAsyncInfo>> _pendingDialogs = new List<WeakReference<IAsyncInfo>>(); 
-
         public App()
         {
             Microsoft.ApplicationInsights.WindowsAppInitializer.InitializeAsync();
@@ -75,7 +74,7 @@ namespace DjvuApp
 
         private void OnNavigated(object sender, NavigationEventArgs e)
         {
-            DismissPendingDialogs();
+            DialogManager.GetForCurrentThread().DismissPendingDialogs();
         }
 
         protected override void OnLaunched(LaunchActivatedEventArgs e)
@@ -109,46 +108,9 @@ namespace DjvuApp
             rootFrame.Navigate(typeof(ViewerPage), file);
             rootFrame.BackStack.Clear();
 
-            DismissPendingDialogs();
+            DialogManager.GetForCurrentThread().DismissPendingDialogs();
 
             Window.Current.Activate();
-        }
-
-        private class PendingDialogAwaiter : IDisposable
-        {
-            private readonly WeakReference<IAsyncInfo> _reference;
-
-            public PendingDialogAwaiter(WeakReference<IAsyncInfo> reference)
-            {
-                _reference = reference;
-            }
-
-            public void Dispose()
-            {
-                _pendingDialogs.Remove(_reference);
-            }
-        }
-
-        public static IDisposable AddPendingDialog(IAsyncInfo asyncInfo)
-        {
-            var weakReference = new WeakReference<IAsyncInfo>(asyncInfo);
-            _pendingDialogs.Add(weakReference);
-
-            return new PendingDialogAwaiter(weakReference);
-        }
-
-        private static void DismissPendingDialogs()
-        {
-            foreach (var weakReference in _pendingDialogs)
-            {
-                IAsyncInfo asyncInfo;
-                if (weakReference.TryGetTarget(out asyncInfo))
-                {
-                    asyncInfo.Cancel();
-                }
-            }
-
-            _pendingDialogs.Clear();
         }
         
         public static async Task RateApp()

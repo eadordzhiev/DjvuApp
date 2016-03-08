@@ -117,6 +117,7 @@
     <Compile Include="Controls\SisPageRenderer.cs" />
     <Compile Include="Controls\VsisPageRenderer.cs" />
     <Compile Include="Controls\SearchHelper.cs" />
+    <Compile Include="Dialogs\DialogManager.cs" />
     <Compile Include="Dialogs\Internal\OutlineDialogInternal.xaml.cs">
       <DependentUpon>OutlineDialogInternal.xaml</DependentUpon>
     </Compile>

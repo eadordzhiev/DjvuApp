@@ -14,7 +14,7 @@ namespace DjvuApp.Dialogs
         {
             var dialog = new CreateBookmarkDialogInternal();
             var task = dialog.ShowAsync();
-            using (App.AddPendingDialog(task))
+            using (DialogManager.GetForCurrentThread().AddPendingDialog(task))
             {
                 try
                 {

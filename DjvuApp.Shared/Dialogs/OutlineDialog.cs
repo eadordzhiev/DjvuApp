@@ -21,7 +21,7 @@ namespace DjvuApp.Dialogs
                 DataContext = new DjvuOutlineItem(title, 0, outline)
             };
             var task = dialog.ShowAsync();
-            using (App.AddPendingDialog(task))
+            using (DialogManager.GetForCurrentThread().AddPendingDialog(task))
             {
                 try
                 {

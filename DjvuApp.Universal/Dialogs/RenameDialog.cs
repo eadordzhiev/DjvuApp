@@ -15,7 +15,7 @@ namespace DjvuApp.Dialogs
             var dialog = new RenameDialogInternal();
             dialog.NewName = oldName;
             var task = dialog.ShowAsync();
-            using (App.AddPendingDialog(task))
+            using (DialogManager.GetForCurrentThread().AddPendingDialog(task))
             {
                 try
                 {

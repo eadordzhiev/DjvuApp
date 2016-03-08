@@ -17,7 +17,7 @@ namespace DjvuApp.Dialogs
                 PageCount = pageCount
             };
             var task = dialog.ShowAsync();
-            using (App.AddPendingDialog(task))
+            using (DialogManager.GetForCurrentThread().AddPendingDialog(task))
             {
                 try
                 {
