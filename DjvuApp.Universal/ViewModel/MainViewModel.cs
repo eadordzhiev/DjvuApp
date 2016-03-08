@@ -80,10 +80,10 @@ namespace DjvuApp.ViewModel
                 picker.FileTypeFilter.Add(".djvu");
                 picker.FileTypeFilter.Add(".djv");
 
-                var file = await picker.PickSingleFileAsync();
-                if (file != null)
+                var files = await picker.PickMultipleFilesAsync();
+                foreach (var file in files)
                 {
-                    AddBookFromFile(file);
+                    await AddBookFromFile(file);
                 }
             });
             ShareBookCommand = new RelayCommand<IBook>(ShareBook);
@@ -127,7 +127,7 @@ namespace DjvuApp.ViewModel
             DataTransferManager.ShowShareUI();
         }
         
-        private async void AddBookFromFile(IStorageFile file)
+        private async Task AddBookFromFile(IStorageFile file)
         {
             var dialog = new BusyIndicator();
             var taskDescription = _resourceLoader.GetString("Application_Opening");
@@ -141,12 +141,12 @@ namespace DjvuApp.ViewModel
             }
             catch (NotImplementedException)
             {
-                ShowDocumentTypeIsNotSupportedMessage();
+                await ShowDocumentTypeIsNotSupportedMessage();
                 return;
             }
             catch (Exception)
             {
-                ShowDocumentOpeningErrorMessage();
+                await ShowDocumentOpeningErrorMessage();
                 return;
             }
             finally
@@ -229,7 +229,7 @@ namespace DjvuApp.ViewModel
             HasBooks = Books.Any();
         }
 
-        private async void ShowDocumentOpeningErrorMessage()
+        private async Task ShowDocumentOpeningErrorMessage()
         {
             var resourceLoader = ResourceLoader.GetForCurrentView();
             var title = resourceLoader.GetString("DocumentOpeningErrorDialog_Title");
@@ -241,7 +241,7 @@ namespace DjvuApp.ViewModel
             await dialog.ShowAsync();
         }
 
-        private async void ShowDocumentTypeIsNotSupportedMessage()
+        private async Task ShowDocumentTypeIsNotSupportedMessage()
         {
             var resourceLoader = ResourceLoader.GetForCurrentView();
             var title = resourceLoader.GetString("DocumentTypeIsNotSupportedDialog_Title");
