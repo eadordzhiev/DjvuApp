@@ -6,7 +6,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:common="using:DjvuApp.Common"
     xmlns:books="using:DjvuApp.Model.Books"
-    xmlns:controls="using:DjvuApp.Controls"
     mc:Ignorable="d"
     x:Name="page">
 
