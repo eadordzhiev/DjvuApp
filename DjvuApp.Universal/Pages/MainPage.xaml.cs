@@ -62,7 +62,7 @@ namespace DjvuApp.Pages
                 dialog.Commands.Add(new UICommand(rateButtonCaption, async command =>
                 {
                     settings.Values[key] = 1000;
-                    await App.RateApp();
+                    await App.RateAppAsync();
                 }));
                 dialog.Commands.Add(new UICommand(cancelButtonCaption));
                 dialog.CancelCommandIndex = unchecked((uint) -1);

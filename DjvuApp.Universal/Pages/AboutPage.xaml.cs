@@ -50,7 +50,7 @@ From Russia with love :)";
 
         private async void RateButtonClickHandler(object sender, RoutedEventArgs e)
         {
-            await App.RateApp();
+            await App.RateAppAsync();
         }
     }
 }
