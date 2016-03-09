@@ -3,28 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DjvuApp.WindowsPhone", "DjvuApp.WindowsPhone\DjvuApp.WindowsPhone.csproj", "{C0D02CBD-08EF-43F5-896C-EF91F04DEBD6}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DjvuLib", "DjvuLib", "{6AB00766-2BCF-4F5C-958E-8A901E894ECF}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DjvuLib.Shared", "DjvuLib\DjvuLib.Shared\DjvuLib.Shared.vcxitems", "{53299EF0-0100-4B34-9AE8-911BC86503AC}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DjvuLib.WindowsPhone", "DjvuLib\DjvuLib.WindowsPhone\DjvuLib.WindowsPhone.vcxproj", "{3C48B965-903C-43F3-B6A2-A37CAB7B5D61}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DjvuLib.Universal", "DjvuLib\DjvuLib.Universal\DjvuLib.Universal.vcxproj", "{A642D1CF-2472-4D02-894A-02CC3D1C50B4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DjvuApp.Universal", "DjvuApp.Universal\DjvuApp.Universal.csproj", "{AB94C4F3-0503-4D03-BCFB-356875AC7B72}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "DjvuApp.Shared", "DjvuApp.Shared\DjvuApp.Shared.shproj", "{BB68D66A-7449-4D07-9430-A13805F9E246}"
-EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		DjvuLib\DjvuLib.Shared\DjvuLib.Shared.vcxitems*{a642d1cf-2472-4d02-894a-02cc3d1c50b4}*SharedItemsImports = 4
-		DjvuApp.Shared\DjvuApp.Shared.projitems*{ab94c4f3-0503-4d03-bcfb-356875ac7b72}*SharedItemsImports = 4
 		DjvuLib\DjvuLib.Shared\DjvuLib.Shared.vcxitems*{53299ef0-0100-4b34-9ae8-911bc86503ac}*SharedItemsImports = 9
-		DjvuLib\DjvuLib.Shared\DjvuLib.Shared.vcxitems*{3c48b965-903c-43f3-b6a2-a37cab7b5d61}*SharedItemsImports = 4
-		DjvuApp.Shared\DjvuApp.Shared.projitems*{c0d02cbd-08ef-43f5-896c-ef91f04debd6}*SharedItemsImports = 4
-		DjvuApp.Shared\DjvuApp.Shared.projitems*{bb68d66a-7449-4d07-9430-a13805f9e246}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -35,30 +25,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C0D02CBD-08EF-43F5-896C-EF91F04DEBD6}.Debug|ARM.ActiveCfg = Debug|ARM
-		{C0D02CBD-08EF-43F5-896C-EF91F04DEBD6}.Debug|ARM.Build.0 = Debug|ARM
-		{C0D02CBD-08EF-43F5-896C-EF91F04DEBD6}.Debug|ARM.Deploy.0 = Debug|ARM
-		{C0D02CBD-08EF-43F5-896C-EF91F04DEBD6}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{C0D02CBD-08EF-43F5-896C-EF91F04DEBD6}.Debug|x86.ActiveCfg = Debug|x86
-		{C0D02CBD-08EF-43F5-896C-EF91F04DEBD6}.Debug|x86.Build.0 = Debug|x86
-		{C0D02CBD-08EF-43F5-896C-EF91F04DEBD6}.Debug|x86.Deploy.0 = Debug|x86
-		{C0D02CBD-08EF-43F5-896C-EF91F04DEBD6}.Release|ARM.ActiveCfg = Release|ARM
-		{C0D02CBD-08EF-43F5-896C-EF91F04DEBD6}.Release|ARM.Build.0 = Release|ARM
-		{C0D02CBD-08EF-43F5-896C-EF91F04DEBD6}.Release|ARM.Deploy.0 = Release|ARM
-		{C0D02CBD-08EF-43F5-896C-EF91F04DEBD6}.Release|x64.ActiveCfg = Release|Any CPU
-		{C0D02CBD-08EF-43F5-896C-EF91F04DEBD6}.Release|x86.ActiveCfg = Release|x86
-		{C0D02CBD-08EF-43F5-896C-EF91F04DEBD6}.Release|x86.Build.0 = Release|x86
-		{C0D02CBD-08EF-43F5-896C-EF91F04DEBD6}.Release|x86.Deploy.0 = Release|x86
-		{3C48B965-903C-43F3-B6A2-A37CAB7B5D61}.Debug|ARM.ActiveCfg = Debug|ARM
-		{3C48B965-903C-43F3-B6A2-A37CAB7B5D61}.Debug|ARM.Build.0 = Debug|ARM
-		{3C48B965-903C-43F3-B6A2-A37CAB7B5D61}.Debug|x64.ActiveCfg = Debug|Win32
-		{3C48B965-903C-43F3-B6A2-A37CAB7B5D61}.Debug|x86.ActiveCfg = Debug|Win32
-		{3C48B965-903C-43F3-B6A2-A37CAB7B5D61}.Debug|x86.Build.0 = Debug|Win32
-		{3C48B965-903C-43F3-B6A2-A37CAB7B5D61}.Release|ARM.ActiveCfg = Release|ARM
-		{3C48B965-903C-43F3-B6A2-A37CAB7B5D61}.Release|ARM.Build.0 = Release|ARM
-		{3C48B965-903C-43F3-B6A2-A37CAB7B5D61}.Release|x64.ActiveCfg = Release|Win32
-		{3C48B965-903C-43F3-B6A2-A37CAB7B5D61}.Release|x86.ActiveCfg = Release|Win32
-		{3C48B965-903C-43F3-B6A2-A37CAB7B5D61}.Release|x86.Build.0 = Release|Win32
 		{A642D1CF-2472-4D02-894A-02CC3D1C50B4}.Debug|ARM.ActiveCfg = Debug|ARM
 		{A642D1CF-2472-4D02-894A-02CC3D1C50B4}.Debug|ARM.Build.0 = Debug|ARM
 		{A642D1CF-2472-4D02-894A-02CC3D1C50B4}.Debug|x64.ActiveCfg = Debug|x64
@@ -95,7 +61,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{53299EF0-0100-4B34-9AE8-911BC86503AC} = {6AB00766-2BCF-4F5C-958E-8A901E894ECF}
-		{3C48B965-903C-43F3-B6A2-A37CAB7B5D61} = {6AB00766-2BCF-4F5C-958E-8A901E894ECF}
 		{A642D1CF-2472-4D02-894A-02CC3D1C50B4} = {6AB00766-2BCF-4F5C-958E-8A901E894ECF}
 	EndGlobalSection
 EndGlobal
