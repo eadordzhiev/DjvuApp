@@ -38,7 +38,7 @@ namespace DjvuApp.Dialogs
             UpdateSize();
             
             _popup.IsOpen = true;
-            Window.Current.SizeChanged += Current_SizeChanged;
+            Window.Current.SizeChanged += SizeChangedHandler;
 
             _content.OnOpen();
         }
@@ -53,7 +53,7 @@ namespace DjvuApp.Dialogs
             await _content.OnClose();
 
             _popup.IsOpen = false;
-            Window.Current.SizeChanged -= Current_SizeChanged;
+            Window.Current.SizeChanged -= SizeChangedHandler;
         }
 
         private void UpdateSize()
@@ -62,7 +62,7 @@ namespace DjvuApp.Dialogs
             _content.Height = Window.Current.Bounds.Height;
         }
 
-        private void Current_SizeChanged(object sender, Windows.UI.Core.WindowSizeChangedEventArgs e)
+        private void SizeChangedHandler(object sender, Windows.UI.Core.WindowSizeChangedEventArgs e)
         {
             UpdateSize();
         }
