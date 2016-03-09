@@ -6,12 +6,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.ApplicationModel;
+using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.Resources;
 using Windows.Storage;
 using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
 using Windows.UI.Xaml.Navigation;
 using DjvuApp.Djvu;
 using DjvuApp.Common;
@@ -171,7 +171,7 @@ namespace DjvuApp.ViewModel
             applicationView.Title = _book?.Title ?? _file.Name;
 
             _dataTransferManager.DataRequested += DataRequestedHandler;
-            Application.Current.Suspending += ApplicationSuspendingHandler;
+            CoreApplication.Suspending += ApplicationSuspendingHandler;
         }
 
         public async void OnNavigatedFrom(NavigationEventArgs e)
@@ -180,7 +180,7 @@ namespace DjvuApp.ViewModel
             applicationView.Title = string.Empty;
 
             _dataTransferManager.DataRequested -= DataRequestedHandler;
-            Application.Current.Suspending -= ApplicationSuspendingHandler;
+            CoreApplication.Suspending -= ApplicationSuspendingHandler;
             await SaveLastOpenedPageAsync();
         }
 
