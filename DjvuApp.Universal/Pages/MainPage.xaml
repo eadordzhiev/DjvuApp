@@ -49,7 +49,7 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="books:IBook">
                         <!-- This wrapper is needed as a workaround of a XAML UI bug, which prevents visual states from working -->
-                        <UserControl>
+                        <Border Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
                             <RelativePanel Margin="12" ToolTipService.ToolTip="{x:Bind Title}">
                                 <Border 
                                     x:Name="thumbnail"
@@ -107,28 +107,28 @@
                                         </VisualState>
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
+                            </RelativePanel>
 
-                                <common:MenuFlyoutService.MenuFlyout>
-                                    <MenuFlyout Placement="Bottom">
-                                        <MenuFlyoutItem 
+                            <common:MenuFlyoutService.MenuFlyout>
+                                <MenuFlyout Placement="Bottom">
+                                    <MenuFlyoutItem 
                                             x:Uid="MainPage_RenameMenuItem"
                                             Command="{Binding ViewModel.RenameBookCommand, ElementName=page}"
                                             CommandParameter="{x:Bind }"
                                             Text="rename..."/>
-                                        <MenuFlyoutItem
+                                    <MenuFlyoutItem
                                             x:Uid="MainPage_RemoveMenuItem"
                                             Command="{Binding ViewModel.RemoveBookCommand, ElementName=page}"
                                             CommandParameter="{x:Bind }"
                                             Text="remove"/>
-                                        <MenuFlyoutItem
+                                    <MenuFlyoutItem
                                             x:Uid="MainPage_ShareMenuItem"
                                             Command="{Binding ViewModel.ShareBookCommand, ElementName=page}"
                                             CommandParameter="{x:Bind }"
                                             Text="share..."/>
-                                    </MenuFlyout>
-                                </common:MenuFlyoutService.MenuFlyout>
-                            </RelativePanel>
-                        </UserControl>
+                                </MenuFlyout>
+                            </common:MenuFlyoutService.MenuFlyout>
+                        </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </GridView>
