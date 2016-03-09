@@ -14,7 +14,6 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using DjvuApp.Common;
 using DjvuApp.Djvu;
 using DjvuApp.Misc;
 
@@ -39,8 +38,6 @@ namespace DjvuApp.Controls
         public SelectionMarker SelectionEnd { get; private set; }
 
         public bool IsSelected { get; private set; }
-
-        public event EventHandler SelectionChanged;
 
         public static readonly DependencyProperty SourceProperty =
             DependencyProperty.Register("Source", typeof(DjvuDocument), typeof(ReaderControl), new PropertyMetadata(null, SourceChangedCallback));
@@ -136,8 +133,6 @@ namespace DjvuApp.Controls
                 SelectionStart = SelectionEnd;
                 SelectionEnd = tmp;
             }
-
-            SelectionChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void Load()
@@ -285,7 +280,7 @@ namespace DjvuApp.Controls
 
             var pageViewControl = VisualTreeHelper
                 .FindElementsInHostCoordinates(e.GetCurrentPoint(null).Position, this, true)
-                .OfType<PageViewControl>()
+                .OfType<TextLayerControl>()
                 .FirstOrDefault();
 
             if (pageViewControl?.TextLayer == null)
@@ -316,7 +311,7 @@ namespace DjvuApp.Controls
         {
             var pageViewControl = VisualTreeHelper
                 .FindElementsInHostCoordinates(e.GetCurrentPoint(null).Position, this, true)
-                .OfType<PageViewControl>()
+                .OfType<TextLayerControl>()
                 .FirstOrDefault();
 
             if (pageViewControl?.TextLayer == null)
@@ -375,7 +370,7 @@ namespace DjvuApp.Controls
             }
         }
 
-        public async Task CopySelection()
+        private async Task CopySelection()
         {
             if (!IsSelected)
             {
@@ -388,7 +383,7 @@ namespace DjvuApp.Controls
             {
                 uint selectionStartIndex, selectionEndIndex;
 
-                if (!PageViewControl.GetSelectionIndicesForPage(pageNumber, SelectionStart, SelectionEnd, out selectionStartIndex, out selectionEndIndex))
+                if (!TextLayerControl.GetSelectionIndicesForPage(pageNumber, SelectionStart, SelectionEnd, out selectionStartIndex, out selectionEndIndex))
                 {
                     continue;
                 }

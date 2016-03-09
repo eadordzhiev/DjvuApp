@@ -118,6 +118,9 @@
     <Compile Include="Controls\NavigationService.cs" />
     <Compile Include="Controls\SisPageRenderer.cs" />
     <Compile Include="Controls\SuspensionManager.cs" />
+    <Compile Include="Controls\TextLayerControl.xaml.cs">
+      <DependentUpon>TextLayerControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\VsisPageRenderer.cs" />
     <Compile Include="Controls\SearchHelper.cs" />
     <Compile Include="Dialogs\DialogManager.cs" />
@@ -239,6 +242,10 @@
     <Page Include="Controls\ReaderControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\TextLayerControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dialogs\Internal\BusyIndicatorInternal.xaml">
       <SubType>Designer</SubType>
