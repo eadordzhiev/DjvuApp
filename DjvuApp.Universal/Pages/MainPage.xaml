@@ -47,28 +47,88 @@
                 IsItemClickEnabled="True"
                 Padding="12">
                 <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <controls:BookView Margin="12" ToolTipService.ToolTip="{Binding Title}">
-                            <common:MenuFlyoutService.MenuFlyout>
-                                <MenuFlyout Placement="Bottom">
-                                    <MenuFlyoutItem 
-                                        x:Uid="MainPage_RenameMenuItem"
-                                        Command="{Binding ViewModel.RenameBookCommand, ElementName=page}"
-                                        CommandParameter="{Binding}"
-                                        Text="rename..."/>
-                                    <MenuFlyoutItem
-                                        x:Uid="MainPage_RemoveMenuItem"
-                                        Command="{Binding ViewModel.RemoveBookCommand, ElementName=page}"
-                                        CommandParameter="{Binding}"
-                                        Text="remove"/>
-                                    <MenuFlyoutItem
-                                        x:Uid="MainPage_ShareMenuItem"
-                                        Command="{Binding ViewModel.ShareBookCommand, ElementName=page}"
-                                        CommandParameter="{Binding}"
-                                        Text="share..."/>
-                                </MenuFlyout>
-                            </common:MenuFlyoutService.MenuFlyout>
-                        </controls:BookView>
+                    <DataTemplate x:DataType="books:IBook">
+                        <!-- This wrapper is needed as a workaround of a XAML UI bug, which prevents visual states from working -->
+                        <UserControl>
+                            <RelativePanel Margin="12" ToolTipService.ToolTip="{x:Bind Title}">
+                                <Border 
+                                    x:Name="thumbnail"
+                                    RelativePanel.AlignLeftWithPanel="True"
+                                    Width="140"
+                                    Height="140"
+                                    Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
+                                    <Image Source="{x:Bind ThumbnailPath}" Stretch="Uniform"/>
+                                </Border>
+                                <TextBlock
+                                    x:Name="title"
+                                    RelativePanel.Below="thumbnail"
+                                    RelativePanel.AlignLeftWith="thumbnail"
+                                    Width="140"
+                                    Text="{x:Bind Title, Mode=OneWay}"
+                                    Style="{ThemeResource BodyTextBlockStyle}"
+                                    TextTrimming="CharacterEllipsis"
+                                    TextWrapping="NoWrap"/>
+                                <TextBlock
+                                    x:Name="subtitle"
+                                    RelativePanel.Below="title"
+                                    RelativePanel.AlignLeftWith="title"
+                                    Width="140"
+                                    Text="{x:Bind LastOpeningTime}"
+                                    Style="{ThemeResource CaptionTextBlockStyle}"
+                                    Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
+                                    TextTrimming="CharacterEllipsis"
+                                    TextWrapping="NoWrap"/>
+
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup>
+                                        <VisualState x:Name="WideState">
+                                            <VisualState.StateTriggers>
+                                                <AdaptiveTrigger MinWindowWidth="500"/>
+                                            </VisualState.StateTriggers>
+                                            <VisualState.Setters>
+                                                <Setter Target="title.(RelativePanel.Below)" Value="thumbnail"/>
+                                                <Setter Target="title.(RelativePanel.AlignLeftWith)" Value="thumbnail"/>
+                                                <Setter Target="title.(RelativePanel.RightOf)" Value=""/>
+                                                <Setter Target="title.Margin" Value="0,6,0,0"/>
+                                                <Setter Target="subtitle.Margin" Value="0"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="NarrowState">
+                                            <VisualState.StateTriggers>
+                                                <AdaptiveTrigger MinWindowWidth="0"/>
+                                            </VisualState.StateTriggers>
+                                            <VisualState.Setters>
+                                                <Setter Target="title.(RelativePanel.Below)" Value=""/>
+                                                <Setter Target="title.(RelativePanel.AlignLeftWith)" Value=""/>
+                                                <Setter Target="title.(RelativePanel.RightOf)" Value="thumbnail"/>
+                                                <Setter Target="title.Margin" Value="12,0"/>
+                                                <Setter Target="subtitle.Margin" Value="12,0"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+
+                                <common:MenuFlyoutService.MenuFlyout>
+                                    <MenuFlyout Placement="Bottom">
+                                        <MenuFlyoutItem 
+                                            x:Uid="MainPage_RenameMenuItem"
+                                            Command="{Binding ViewModel.RenameBookCommand, ElementName=page}"
+                                            CommandParameter="{x:Bind }"
+                                            Text="rename..."/>
+                                        <MenuFlyoutItem
+                                            x:Uid="MainPage_RemoveMenuItem"
+                                            Command="{Binding ViewModel.RemoveBookCommand, ElementName=page}"
+                                            CommandParameter="{x:Bind }"
+                                            Text="remove"/>
+                                        <MenuFlyoutItem
+                                            x:Uid="MainPage_ShareMenuItem"
+                                            Command="{Binding ViewModel.ShareBookCommand, ElementName=page}"
+                                            CommandParameter="{x:Bind }"
+                                            Text="share..."/>
+                                    </MenuFlyout>
+                                </common:MenuFlyoutService.MenuFlyout>
+                            </RelativePanel>
+                        </UserControl>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </GridView>

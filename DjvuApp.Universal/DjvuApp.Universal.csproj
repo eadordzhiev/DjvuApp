@@ -111,9 +111,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\BookView.xaml.cs">
-      <DependentUpon>BookView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\BooleanToVisibilityConverter.cs" />
     <Compile Include="Controls\INavigationService.cs" />
     <Compile Include="Controls\IsNullOrEmptyToVisibilityConverter.cs" />
@@ -235,10 +232,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Controls\BookView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Controls\PageViewControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
