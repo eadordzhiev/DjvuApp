@@ -78,7 +78,7 @@ namespace DjvuApp.Common
             // When this page is part of the visual tree make two changes:
             // 1) Map application view state to visual state for the page
             // 2) Handle hardware navigation requests
-            this.Page.Loaded += async (sender, e) =>
+            this.Page.Loaded += (sender, e) =>
             {
 #if WINDOWS_UWP
                 var navigationManager = SystemNavigationManager.GetForCurrentView();
@@ -99,14 +99,6 @@ namespace DjvuApp.Common
                         this.CoreWindow_PointerPressed;
                 }
 #endif
-
-                var hasLicense = await LicenseValidator.Current.GetIsLicensedAsync();
-                if (!hasLicense)
-                {
-                    var dialog = new MessageDialog("I don't like being pirated...");
-                    await dialog.ShowAsync();
-                    Application.Current.Exit();
-                }
             };
 
             // Undo the same changes when the page is no longer visible

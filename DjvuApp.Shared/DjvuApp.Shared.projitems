@@ -17,7 +17,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Common\SuspensionManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Dialogs\OutlineDialog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Misc\FrameworkElementExtensions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Misc\LicenseValidator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Misc\SQLite.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Misc\SQLiteAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Misc\TextBoxExtensions.cs" />
