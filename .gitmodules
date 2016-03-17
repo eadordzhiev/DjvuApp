@@ -1,0 +1,3 @@
+[submodule "lib/DjvuLib"]
+	path = lib/DjvuLib
+	url = https://github.com/eadordzhiev/DjvuLib.git
