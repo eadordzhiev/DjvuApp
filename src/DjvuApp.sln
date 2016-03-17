@@ -3,18 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DjvuLib", "lib\DjvuLib", "{6AB00766-2BCF-4F5C-958E-8A901E894ECF}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DjvuLib", "..\lib\DjvuLib", "{6AB00766-2BCF-4F5C-958E-8A901E894ECF}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DjvuLib.Shared", "lib\DjvuLib\src\DjvuLib.Shared\DjvuLib.Shared.vcxitems", "{53299EF0-0100-4B34-9AE8-911BC86503AC}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DjvuLib.Shared", "..\lib\DjvuLib\src\DjvuLib.Shared\DjvuLib.Shared.vcxitems", "{53299EF0-0100-4B34-9AE8-911BC86503AC}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DjvuLib.Universal", "lib\DjvuLib\src\DjvuLib.Universal\DjvuLib.Universal.vcxproj", "{A642D1CF-2472-4D02-894A-02CC3D1C50B4}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DjvuLib.Universal", "..\lib\DjvuLib\src\DjvuLib.Universal\DjvuLib.Universal.vcxproj", "{A642D1CF-2472-4D02-894A-02CC3D1C50B4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DjvuApp.Universal", "src\DjvuApp.Universal\DjvuApp.Universal.csproj", "{AB94C4F3-0503-4D03-BCFB-356875AC7B72}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DjvuApp.Universal", "DjvuApp.Universal\DjvuApp.Universal.csproj", "{AB94C4F3-0503-4D03-BCFB-356875AC7B72}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		lib\DjvuLib\src\DjvuLib.Shared\DjvuLib.Shared.vcxitems*{a642d1cf-2472-4d02-894a-02cc3d1c50b4}*SharedItemsImports = 4
-		lib\DjvuLib\src\DjvuLib.Shared\DjvuLib.Shared.vcxitems*{53299ef0-0100-4b34-9ae8-911bc86503ac}*SharedItemsImports = 9
+		..\lib\DjvuLib\src\DjvuLib.Shared\DjvuLib.Shared.vcxitems*{a642d1cf-2472-4d02-894a-02cc3d1c50b4}*SharedItemsImports = 4
+		..\lib\DjvuLib\src\DjvuLib.Shared\DjvuLib.Shared.vcxitems*{53299ef0-0100-4b34-9ae8-911bc86503ac}*SharedItemsImports = 9
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
