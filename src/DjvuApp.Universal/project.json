@@ -1,13 +1,13 @@
 ﻿{
   "dependencies": {
-    "JetBrains.Annotations": "10.0.0",
-    "Microsoft.ApplicationInsights": "1.2.3",
+    "JetBrains.Annotations": "10.1.4",
+    "Microsoft.ApplicationInsights": "2.1.0",
     "Microsoft.ApplicationInsights.PersistenceChannel": "1.2.3",
     "Microsoft.ApplicationInsights.WindowsApps": "1.1.1",
-    "Microsoft.NETCore.UniversalWindowsPlatform": "5.0.0",
-    "MvvmLightLibs": "5.2.0",
+    "Microsoft.NETCore.UniversalWindowsPlatform": "5.2.0",
+    "MvvmLightLibs": "5.3.0",
     "Unity": "4.0.1",
-    "Win2D.uwp": "1.16.0"
+    "Win2D.uwp": "1.18.0"
   },
   "frameworks": {
     "uap10.0": {}
