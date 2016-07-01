@@ -25,8 +25,7 @@ namespace DjvuApp.Misc
 
         private static void ConfigureContainer(IUnityContainer container)
         {
-            var provider = CachedSqliteBookProvider.CreateNewAsync().Result;
-            container.RegisterInstance<IBookProvider>(provider, new ContainerControlledLifetimeManager());
+            container.RegisterInstance<IBookProvider>(new SqliteBookProvider());
             container.RegisterInstance<INavigationService>(new NavigationService());
         }
     }

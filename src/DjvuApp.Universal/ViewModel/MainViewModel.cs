@@ -195,9 +195,6 @@ namespace DjvuApp.ViewModel
 
             if (books.Any(book => book.ThumbnailPath == null))
             {
-                var cachedProvider = (CachedSqliteBookProvider)_bookProvider;
-                var sqliteProvider = cachedProvider.Provider;
-                
                 var dialog = new BusyIndicator();
                 dialog.Show();
 
@@ -209,12 +206,11 @@ namespace DjvuApp.ViewModel
                     var progressFormat = _resourceLoader.GetString("Application_MigrationProgress");
                     dialog.TaskDescription = string.Format(progressFormat, i + 1, booksArray.Length);
 
-                    await sqliteProvider.UpdateThumbnail(book);
+                    await _bookProvider.UpdateThumbnail(book);
                 }
                 
                 dialog.Hide();
-
-                await cachedProvider.RefreshCacheAsync();
+                
                 await RefreshBooksAsync();
                 return;
             }

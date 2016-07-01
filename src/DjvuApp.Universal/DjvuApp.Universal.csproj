@@ -164,7 +164,6 @@
     <Compile Include="Misc\SQLite.cs" />
     <Compile Include="Misc\SQLiteAsync.cs" />
     <Compile Include="Misc\TextBoxExtensions.cs" />
-    <Compile Include="Model\Books\CachedSqliteBookProvider.cs" />
     <Compile Include="Model\Books\IBook.cs" />
     <Compile Include="Model\Books\IBookmark.cs" />
     <Compile Include="Model\Books\IBookProvider.cs" />

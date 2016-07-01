@@ -31,5 +31,7 @@ namespace DjvuApp.Model.Books
         Task UpdateLastOpenedPageAsync(
             [NotNull] IBook book,
             uint pageNumber);
+
+        Task UpdateThumbnail(IBook book);
     }
 }
