@@ -6,6 +6,7 @@
     "Microsoft.ApplicationInsights.WindowsApps": "1.1.1",
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.2.0",
     "MvvmLightLibs": "5.3.0",
+    "sqlite-net-pcl": "1.1.2",
     "Unity": "4.0.1",
     "Win2D.uwp": "1.18.0"
   },

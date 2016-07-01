@@ -20,7 +20,7 @@ namespace DjvuApp.Model.Books
 {
     public class SqliteBookProvider : IBookProvider
     {
-        private sealed class SqliteBook : IBook
+        private sealed class SqliteBook : IBook, INotifyPropertyChanged
         {
             private string _title;
             private uint _lastOpenedPage;

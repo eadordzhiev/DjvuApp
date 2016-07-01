@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 
 namespace DjvuApp.Model.Books
 {
-    public interface IBook : INotifyPropertyChanged, IEquatable<IBook>
+    public interface IBook : IEquatable<IBook>
     {
         Guid Guid { get; }
 
