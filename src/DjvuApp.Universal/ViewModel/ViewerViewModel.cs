@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -13,6 +12,7 @@ using Windows.ApplicationModel.Resources;
 using Windows.Storage;
 using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Navigation;
 using DjvuApp.Djvu;
 using DjvuApp.Common;
@@ -271,7 +271,14 @@ namespace DjvuApp.ViewModel
             dialog.Commands.Add(new UICommand(buttonCaption));
             await dialog.ShowAsync();
 
-            _navigationService.GoBack();
+            if (_navigationService.CanGoBack())
+            {
+                _navigationService.GoBack();
+            }
+            else
+            {
+                Application.Current.Exit();
+            }
         }
 
         private async Task LoadedHandler(object navigationParameter)
