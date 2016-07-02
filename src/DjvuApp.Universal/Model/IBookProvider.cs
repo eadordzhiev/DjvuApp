@@ -11,5 +11,7 @@ namespace DjvuApp.Model
         ReadOnlyObservableCollection<IBook> Books { get; }
 
         Task<IBook> AddBookAsync([NotNull] IStorageFile file);
+
+        Task RefreshAsync();
     }
 }

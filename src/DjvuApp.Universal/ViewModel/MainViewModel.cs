@@ -94,6 +94,28 @@ namespace DjvuApp.ViewModel
             BooksCollectionView.SortDescriptions.Add(new SortDescription("LastOpeningTime", ListSortDirection.Descending));
             BooksCollectionView.VectorChanged += (sender, args) => UpdateHasBooks();
             UpdateHasBooks();
+
+            MigrateAsync();
+        }
+
+        private async Task MigrateAsync()
+        {
+            var migrator = await LegacyDbMigrator.CreateAsync();
+            if (migrator.IsMigrationNeeded)
+            {
+                var dialog = new BusyIndicator();
+                dialog.TaskDescription = _resourceLoader.GetString("Application_MigrationMessage");
+                dialog.Show();
+                try
+                {
+                    await migrator.MigrateAsync();
+                    await _bookProvider.RefreshAsync();
+                }
+                finally
+                {
+                    dialog.Hide();
+                }
+            }
         }
 
         public async void OnNavigatedTo(NavigationEventArgs e)

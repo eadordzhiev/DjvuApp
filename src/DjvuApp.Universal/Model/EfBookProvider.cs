@@ -12,25 +12,27 @@ namespace DjvuApp.Model
 {
     public class EfBookProvider : IBookProvider
     {
-        public ReadOnlyObservableCollection<IBook> Books { get; private set; }
+        public ReadOnlyObservableCollection<IBook> Books { get; }
 
         private readonly EfBooksContext _context = new EfBooksContext();
         private readonly ObservableCollection<IBook> _books = new ObservableCollection<IBook>();
 
         private EfBookProvider()
         {
+            Books = new ReadOnlyObservableCollection<IBook>(_books);
             _context.Database.Migrate();
         }
 
         public static async Task<IBookProvider> CreateAsync()
         {
             var provider = new EfBookProvider();
-            await provider.InitializeAsync();
+            await provider.RefreshAsync();
             return provider;
         }
 
-        private async Task InitializeAsync()
+        public async Task RefreshAsync()
         {
+            _books.Clear();
             var bookDtos = await _context.Books
                 .Include(bookDto => bookDto.Bookmarks)
                 .ToArrayAsync();
@@ -38,7 +40,6 @@ namespace DjvuApp.Model
             {
                 _books.Add(new EfBook(bookDto, _context, _books));
             }
-            Books = new ReadOnlyObservableCollection<IBook>(_books);
         }
         
         public async Task<IBook> AddBookAsync(IStorageFile file)
