@@ -90,7 +90,7 @@ namespace DjvuApp.Controls
 
         private void GoToPage(uint pageNumber)
         {
-            if (Source == null || _containerSize == null)
+            if (Source == null || _containerSize == null || _scrollViewer == null)
             {
                 return;
             }
