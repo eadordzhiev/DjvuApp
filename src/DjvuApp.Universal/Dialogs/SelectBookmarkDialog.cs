@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DjvuApp.Dialogs.Internal;
-using DjvuApp.Model.Books;
+using DjvuApp.Model;
 
 namespace DjvuApp.Dialogs
 {

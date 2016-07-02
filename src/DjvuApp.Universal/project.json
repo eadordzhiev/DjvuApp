@@ -4,6 +4,8 @@
     "Microsoft.ApplicationInsights": "2.1.0",
     "Microsoft.ApplicationInsights.PersistenceChannel": "1.2.3",
     "Microsoft.ApplicationInsights.WindowsApps": "1.1.1",
+    "Microsoft.EntityFrameworkCore.Sqlite": "1.0.0",
+    "Microsoft.EntityFrameworkCore.Tools": "1.0.0-preview2-final",
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.2.0",
     "MvvmLightLibs": "5.3.0",
     "sqlite-net-pcl": "1.1.2",

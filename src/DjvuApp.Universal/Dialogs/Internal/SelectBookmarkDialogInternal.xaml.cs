@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Windows.UI.Xaml.Controls;
-using DjvuApp.Model.Books;
+using DjvuApp.Model;
 
 namespace DjvuApp.Dialogs.Internal
 {

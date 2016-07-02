@@ -10,8 +10,10 @@ using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.UI.Popups;
 using Windows.UI.Xaml.Navigation;
+using CollectionView;
 using DjvuApp.Dialogs;
-using DjvuApp.Model.Books;
+using DjvuApp.Model;
+using DjvuApp.Pages;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using JetBrains.Annotations;
@@ -36,31 +38,31 @@ namespace DjvuApp.ViewModel
             }
         }
 
-        public ObservableCollection<IBook> Books
+        public ListCollectionView BooksCollectionView
         {
-            get { return _books; }
+            get { return _booksCollectionView; }
 
             private set
             {
-                if (_books == value)
+                if (_booksCollectionView == value)
                 {
                     return;
                 }
 
-                _books = value;
+                _booksCollectionView = value;
                 RaisePropertyChanged();
             }
         }
 
-        public ICommand RenameBookCommand { get; private set; }
+        public ICommand RenameBookCommand { get; }
 
-        public ICommand RemoveBookCommand { get; private set; }
+        public ICommand RemoveBookCommand { get; }
 
-        public ICommand AddBookCommand { get; private set; }
+        public ICommand AddBookCommand { get; }
 
-        public ICommand ShareBookCommand { get; private set; }
+        public ICommand ShareBookCommand { get; }
 
-        private ObservableCollection<IBook> _books;
+        private ListCollectionView _booksCollectionView;
         private bool _hasBooks;
 
         private readonly IBookProvider _bookProvider;
@@ -87,10 +89,11 @@ namespace DjvuApp.ViewModel
                 }
             });
             ShareBookCommand = new RelayCommand<IBook>(ShareBook);
-            
-#pragma warning disable 4014
-            RefreshBooksAsync();
-#pragma warning restore 4014
+
+            BooksCollectionView = new ListCollectionView(_bookProvider.Books);
+            BooksCollectionView.SortDescriptions.Add(new SortDescription("LastOpeningTime", ListSortDirection.Descending));
+            BooksCollectionView.VectorChanged += (sender, args) => UpdateHasBooks();
+            UpdateHasBooks();
         }
 
         public async void OnNavigatedTo(NavigationEventArgs e)
@@ -105,7 +108,7 @@ namespace DjvuApp.ViewModel
             }
         }
 
-        private void ShareBook(IBook book)
+        private static void ShareBook(IBook book)
         {
             var dataTransferManager = DataTransferManager.GetForCurrentView();
             TypedEventHandler<DataTransferManager, DataRequestedEventArgs> dataRequestedHandler = null;
@@ -117,7 +120,7 @@ namespace DjvuApp.ViewModel
                 var deferral = e.Request.GetDeferral();
 
                 e.Request.Data.Properties.Title = book.Title;
-                var file = await StorageFile.GetFileFromPathAsync(book.Path);
+                var file = await StorageFile.GetFileFromPathAsync(book.BookPath);
                 e.Request.Data.SetStorageItems(new IStorageItem[] { file }, true);
 
                 deferral.Complete();
@@ -133,38 +136,29 @@ namespace DjvuApp.ViewModel
             var taskDescription = _resourceLoader.GetString("Application_Opening");
             dialog.TaskDescription = string.Format(taskDescription, file.Name);
             dialog.Show();
-
-            IBook book;
+            
             try
             {
-                book = await _bookProvider.AddBookAsync(file);
+                await _bookProvider.AddBookAsync(file);
             }
             catch (NotImplementedException)
             {
                 await ShowDocumentTypeIsNotSupportedMessageAsync();
-                return;
             }
-            catch (Exception)
+            catch
             {
                 await ShowDocumentOpeningErrorMessageAsync();
-                return;
             }
             finally
             {
                 dialog.Hide();
             }
-            
-            Books.Insert(0, book);
         }
 
-        private async Task RenameBookAsync(IBook book)
+        private static async Task RenameBookAsync(IBook book)
         {
-            var name = await RenameDialog.ShowAsync(book.Title);
-
-            if (name != book.Title)
-            {
-                await _bookProvider.ChangeTitleAsync(book, name);
-            }
+            book.Title = await RenameDialog.ShowAsync(book.Title);
+            await book.SaveChangesAsync();
         }
 
         private async Task RemoveBookAsync(IBook book)
@@ -176,56 +170,18 @@ namespace DjvuApp.ViewModel
             var cancelButtonCaption = _resourceLoader.GetString("RemoveBookDialog_CancelButton_Caption");
 
             var dialog = new MessageDialog(content, title);
-            dialog.Commands.Add(new UICommand(removeButtonCaption, async command =>
-            {
-                Books.Remove(book);
-                await _bookProvider.RemoveBookAsync(book);
-            }));
+            dialog.Commands.Add(new UICommand(removeButtonCaption, async command => await book.RemoveAsync()));
             dialog.Commands.Add(new UICommand(cancelButtonCaption));
 
             await dialog.ShowAsync();
         }
         
-        private async Task RefreshBooksAsync()
-        {
-            var books = 
-                from book in await _bookProvider.GetBooksAsync()
-                orderby book.LastOpeningTime descending 
-                select book;
-
-            if (books.Any(book => book.ThumbnailPath == null))
-            {
-                var dialog = new BusyIndicator();
-                dialog.Show();
-
-                var booksArray = books.ToArray();
-                for (int i = 0; i < booksArray.Length; i++)
-                {
-                    var book = booksArray[i];
-
-                    var progressFormat = _resourceLoader.GetString("Application_MigrationProgress");
-                    dialog.TaskDescription = string.Format(progressFormat, i + 1, booksArray.Length);
-
-                    await _bookProvider.UpdateThumbnail(book);
-                }
-                
-                dialog.Hide();
-                
-                await RefreshBooksAsync();
-                return;
-            }
-
-            Books = new ObservableCollection<IBook>(books);
-            Books.CollectionChanged += (sender, args) => UpdateHasBooks();
-            UpdateHasBooks();
-        }
-
         private void UpdateHasBooks()
         {
-            HasBooks = Books.Any();
+            HasBooks = BooksCollectionView.Any();
         }
 
-        private async Task ShowDocumentOpeningErrorMessageAsync()
+        private static async Task ShowDocumentOpeningErrorMessageAsync()
         {
             var resourceLoader = ResourceLoader.GetForCurrentView();
             var title = resourceLoader.GetString("DocumentOpeningErrorDialog_Title");
@@ -237,7 +193,7 @@ namespace DjvuApp.ViewModel
             await dialog.ShowAsync();
         }
 
-        private async Task ShowDocumentTypeIsNotSupportedMessageAsync()
+        private static async Task ShowDocumentTypeIsNotSupportedMessageAsync()
         {
             var resourceLoader = ResourceLoader.GetForCurrentView();
             var title = resourceLoader.GetString("DocumentTypeIsNotSupportedDialog_Title");

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 using DjvuApp.Djvu;
 using DjvuApp.Common;
 using DjvuApp.Dialogs;
-using DjvuApp.Model.Books;
+using DjvuApp.Model;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 
@@ -135,17 +136,15 @@ namespace DjvuApp.ViewModel
         private IReadOnlyList<DjvuOutlineItem> _outline;
 
         private readonly DataTransferManager _dataTransferManager;
-        private readonly IBookProvider _provider;
         private readonly INavigationService _navigationService;
         private readonly ResourceLoader _resourceLoader;
-        private ObservableCollection<IBookmark> _bookmarks;
+        private ReadOnlyObservableCollection<IBookmark> _bookmarks;
         private IBook _book;
         private IStorageFile _file;
 
-        public ViewerViewModel(IBookProvider provider, INavigationService navigationService)
+        public ViewerViewModel(INavigationService navigationService)
         {
             _dataTransferManager = DataTransferManager.GetForCurrentView();
-            _provider = provider;
             _navigationService = navigationService;
             _resourceLoader = ResourceLoader.GetForCurrentView();
 
@@ -166,7 +165,62 @@ namespace DjvuApp.ViewModel
 
         public async void OnNavigatedTo(NavigationEventArgs e)
         {
-            await LoadedHandler(e.Parameter);
+            IsProgressVisible = true;
+
+            _book = e.Parameter as IBook;
+            if (_book != null)
+            {
+                _file = await StorageFile.GetFileFromPathAsync(_book.BookPath);
+            }
+            else if (e.Parameter is IStorageFile)
+            {
+                _file = (IStorageFile)e.Parameter;
+            }
+            else
+            {
+                throw new Exception("Invalid parameter.");
+            }
+
+            DjvuDocument document;
+
+            try
+            {
+                document = await DjvuDocument.LoadAsync(_file);
+            }
+            catch
+            {
+                if (Debugger.IsAttached)
+                {
+                    throw;
+                }
+
+                IsProgressVisible = false;
+                ShowFileOpeningError();
+                return;
+            }
+
+            CurrentDocument = document;
+            CurrentPageNumber = _book?.LastOpenedPage ?? 1;
+            TotalPageNumber = document.PageCount;
+
+            if (_book != null)
+            {
+                _book.LastOpeningTime = DateTime.Now;
+                await _book.SaveChangesAsync();
+
+                _bookmarks = _book?.Bookmarks;
+                ((INotifyCollectionChanged) _bookmarks).CollectionChanged += Bookmarks_CollectionChanged;
+                UpdateIsCurrentPageBookmarked();
+            }
+
+            _outline = await document.GetOutlineAsync();
+
+            IsProgressVisible = false;
+
+            ShowOutlineCommand.RaiseCanExecuteChanged();
+            AddBookmarkCommand.RaiseCanExecuteChanged();
+            RemoveBookmarkCommand.RaiseCanExecuteChanged();
+            ShowBookmarksCommand.RaiseCanExecuteChanged();
 
             var applicationView = ApplicationView.GetForCurrentView();
             applicationView.Title = _book?.Title ?? _file.Name;
@@ -175,8 +229,18 @@ namespace DjvuApp.ViewModel
             CoreApplication.Suspending += ApplicationSuspendingHandler;
         }
 
+        private void Bookmarks_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            UpdateIsCurrentPageBookmarked();
+        }
+
         public async void OnNavigatedFrom(NavigationEventArgs e)
         {
+            if (_bookmarks != null)
+            {
+                ((INotifyCollectionChanged)_bookmarks).CollectionChanged -= Bookmarks_CollectionChanged;
+            }
+
             var applicationView = ApplicationView.GetForCurrentView();
             applicationView.Title = string.Empty;
 
@@ -197,7 +261,8 @@ namespace DjvuApp.ViewModel
             if (_book == null || CurrentPageNumber == 0)
                 return;
 
-            await _provider.UpdateLastOpenedPageAsync(_book, CurrentPageNumber);
+            _book.LastOpenedPage = CurrentPageNumber;
+            await _book.SaveChangesAsync();
         }
 
         private void DataRequestedHandler(DataTransferManager sender, DataRequestedEventArgs e)
@@ -215,9 +280,8 @@ namespace DjvuApp.ViewModel
             if (!IsCurrentPageBookmarked)
                 return;
 
-            var bookmark = _bookmarks.First(item => item.PageNumber == CurrentPageNumber);
-            await _provider.RemoveBookmarkAsync(bookmark);
-            _bookmarks.Remove(bookmark);
+            var bookmark = _bookmarks.Single(item => item.PageNumber == CurrentPageNumber);
+            await bookmark.RemoveAsync();
             IsCurrentPageBookmarked = false;
         }
 
@@ -229,8 +293,7 @@ namespace DjvuApp.ViewModel
             var title = await CreateBookmarkDialog.ShowAsync();
             if (title == null)
                 return;
-            var bookmark = await _provider.CreateBookmarkAsync(_book, title, CurrentPageNumber);
-            _bookmarks.Add(bookmark);
+            await _book.AddBookmarkAsync(title, CurrentPageNumber);
             IsCurrentPageBookmarked = true;
         }
 
@@ -279,64 +342,6 @@ namespace DjvuApp.ViewModel
             {
                 Application.Current.Exit();
             }
-        }
-
-        private async Task LoadedHandler(object navigationParameter)
-        {
-            IsProgressVisible = true;
-
-            _book = navigationParameter as IBook;
-            if (_book != null)
-            {
-                _file = await StorageFile.GetFileFromPathAsync(_book.Path);
-            }
-            else if (navigationParameter is IStorageFile)
-            {
-                _file = (IStorageFile) navigationParameter;
-            }
-            else
-            {
-                throw new Exception("Invalid parameter.");
-            }
-            
-            DjvuDocument document;
-
-            try
-            {
-                document = await DjvuDocument.LoadAsync(_file);
-            }
-            catch (Exception)
-            {
-                if (Debugger.IsAttached)
-                {
-                    Debugger.Break();
-                }
-
-                IsProgressVisible = false;
-                ShowFileOpeningError();
-                return;
-            }
-            
-            CurrentDocument = document;
-            CurrentPageNumber = _book?.LastOpenedPage ?? 1;
-            TotalPageNumber = document.PageCount;
-
-            if (_book != null)
-            {
-                await _provider.UpdateLastOpeningTimeAsync(_book);
-
-                _bookmarks = new ObservableCollection<IBookmark>(await _provider.GetBookmarksAsync(_book));
-                _bookmarks.CollectionChanged += (sender, e) => UpdateIsCurrentPageBookmarked();
-            }
-
-            _outline = await document.GetOutlineAsync();
-
-            IsProgressVisible = false;
-            
-            ShowOutlineCommand.RaiseCanExecuteChanged();
-            AddBookmarkCommand.RaiseCanExecuteChanged();
-            RemoveBookmarkCommand.RaiseCanExecuteChanged();
-            ShowBookmarksCommand.RaiseCanExecuteChanged();
         }
 
         private void OnCurrentPageNumberChanged()

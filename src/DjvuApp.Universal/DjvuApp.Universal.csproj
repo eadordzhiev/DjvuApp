@@ -102,6 +102,7 @@
     <Content Include="ApplicationInsights.config">
       <SubType>Designer</SubType>
     </Content>
+    <None Include="App.config" />
     <None Include="DjvuApp.Universal_StoreKey.pfx" />
     <None Include="project.json" />
     <PRIResource Include="strings\ru\Resources.resw" />
@@ -111,6 +112,8 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Common\ICollectionViewEx.cs" />
+    <Compile Include="Common\ListCollectionView.cs" />
     <Compile Include="Controls\BooleanToVisibilityConverter.cs" />
     <Compile Include="Controls\INavigationService.cs" />
     <Compile Include="Controls\IsNullOrEmptyToVisibilityConverter.cs" />
@@ -159,13 +162,25 @@
     <Compile Include="Dialogs\OutlineDialog.cs" />
     <Compile Include="Dialogs\RenameDialog.cs" />
     <Compile Include="Dialogs\SelectBookmarkDialog.cs" />
+    <Compile Include="Migrations\20160702114701_Initial.cs" />
+    <Compile Include="Migrations\20160702114701_Initial.designer.cs">
+      <DependentUpon>20160702114701_Initial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\EfBooksContextModelSnapshot.cs" />
     <Compile Include="Misc\FrameworkElementExtensions.cs" />
     <Compile Include="Misc\IocContainer.cs" />
     <Compile Include="Misc\TextBoxExtensions.cs" />
-    <Compile Include="Model\Books\IBook.cs" />
-    <Compile Include="Model\Books\IBookmark.cs" />
-    <Compile Include="Model\Books\IBookProvider.cs" />
-    <Compile Include="Model\Books\SqliteBookProvider.cs" />
+    <Compile Include="Model\EfBook.cs" />
+    <Compile Include="Model\EfBookDto.cs" />
+    <Compile Include="Model\EfBookmark.cs" />
+    <Compile Include="Model\EfBookmarkDto.cs" />
+    <Compile Include="Model\EfBooksContext.cs" />
+    <Compile Include="Model\IBook.cs" />
+    <Compile Include="Model\IBookmark.cs" />
+    <Compile Include="Model\IBookProvider.cs" />
+    <Compile Include="Model\ISaveChanges.cs" />
+    <Compile Include="Model\LegacyDbMigrator.cs" />
+    <Compile Include="Model\EfBookProvider.cs" />
     <Compile Include="Pages\AboutPage.xaml.cs">
       <DependentUpon>AboutPage.xaml</DependentUpon>
     </Compile>
@@ -290,9 +305,6 @@
   <ItemGroup>
     <SDKReference Include="Microsoft.VCLibs, Version=14.0">
       <Name>Visual C++ 2015 Runtime for Universal Windows Platform Apps</Name>
-    </SDKReference>
-    <SDKReference Include="SQLite.UAP.2015, Version=3.10.1">
-      <Name>SQLite for Universal App Platform %28SQLite.UAP.2015, Version=3.10.1%29</Name>
     </SDKReference>
   </ItemGroup>
   <ItemGroup />

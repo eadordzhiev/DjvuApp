@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:books="using:DjvuApp.Model.Books"
+    xmlns:model="using:DjvuApp.Model"
     mc:Ignorable="d"
     Title="Bookmarks"
     FullSizeDesired="True"
@@ -33,7 +33,7 @@
                 </Style>
             </ItemsControl.ItemContainerStyle>
             <ItemsControl.ItemTemplate>
-                <DataTemplate x:DataType="books:IBookmark">
+                <DataTemplate x:DataType="model:IBookmark">
                     <StackPanel Margin="0,12">
                         <TextBlock Text="{x:Bind Title}" Style="{StaticResource SubtitleTextBlockStyle}"/>
                         <TextBlock>

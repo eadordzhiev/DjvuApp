@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:common="using:DjvuApp.Common"
-    xmlns:books="using:DjvuApp.Model.Books"
+    xmlns:model="using:DjvuApp.Model"
     mc:Ignorable="d"
     x:Name="page">
 
@@ -41,12 +41,12 @@
                 Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
                 Visibility="{x:Bind ViewModel.HasBooks, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=negate}"/>
             <GridView
-                ItemsSource="{x:Bind ViewModel.Books, Mode=OneWay}"
+                ItemsSource="{x:Bind ViewModel.BooksCollectionView, Mode=OneWay}"
                 ItemClick="ItemClickHandler"
                 IsItemClickEnabled="True"
                 Padding="12">
                 <ItemsControl.ItemTemplate>
-                    <DataTemplate x:DataType="books:IBook">
+                    <DataTemplate x:DataType="model:IBook">
                         <!-- This wrapper is needed as a workaround of a XAML UI bug, which prevents visual states from working -->
                         <Border Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
                             <RelativePanel Margin="12" ToolTipService.ToolTip="{x:Bind Title}">
