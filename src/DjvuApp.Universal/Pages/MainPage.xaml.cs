@@ -25,17 +25,10 @@ namespace DjvuApp.Pages
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            _navigationHelper.OnNavigatedTo(e);
-
             ViewModel.OnNavigatedTo(e);
             ShowRateAppDialog();
         }
-
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
-        {
-            _navigationHelper.OnNavigatedFrom(e);
-        }
-
+        
         private async void ShowRateAppDialog()
         {
             const string key = "RateDialog_AppLaunchCount";

@@ -10,15 +10,14 @@ namespace DjvuApp.Common
 {
     public sealed class NavigationService : INavigationService
     {
-        private Frame Frame
-        {
-            get { return (Frame) Window.Current.Content; }
-        }
+        private static Frame Frame => (Frame) Window.Current.Content;
 
         public bool Navigate(Type sourcePageType)
         {
             return Frame.Navigate(sourcePageType);
         }
+
+        public bool CanGoBack => Frame != null && Frame.CanGoBack;
 
         public void Navigate(Type sourcePageType, object parameter)
         {
@@ -27,17 +26,15 @@ namespace DjvuApp.Common
 
         public void ClearStack()
         {
-            ((Frame) Window.Current.Content).BackStack.Clear();
+            Frame.BackStack.Clear();
         }
 
         public void GoBack()
         {
-            if (this.Frame != null && this.Frame.CanGoBack) this.Frame.GoBack();
-        }
-
-        public bool CanGoBack()
-        {
-            return this.Frame != null && this.Frame.CanGoBack;
+            if (Frame != null && Frame.CanGoBack)
+            {
+                Frame.GoBack();
+            }
         }
     }
 }

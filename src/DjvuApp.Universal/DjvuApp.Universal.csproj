@@ -114,13 +114,12 @@
     </Compile>
     <Compile Include="Common\ICollectionViewEx.cs" />
     <Compile Include="Common\ListCollectionView.cs" />
-    <Compile Include="Controls\BooleanToVisibilityConverter.cs" />
-    <Compile Include="Controls\INavigationService.cs" />
-    <Compile Include="Controls\IsNullOrEmptyToVisibilityConverter.cs" />
-    <Compile Include="Controls\NavigationHelper.cs" />
-    <Compile Include="Controls\NavigationService.cs" />
+    <Compile Include="Common\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Common\INavigationService.cs" />
+    <Compile Include="Common\IsNullOrEmptyToVisibilityConverter.cs" />
+    <Compile Include="Common\NavigationHelper.cs" />
+    <Compile Include="Common\NavigationService.cs" />
     <Compile Include="Controls\SisPageRenderer.cs" />
-    <Compile Include="Controls\SuspensionManager.cs" />
     <Compile Include="Controls\TextLayerControl.xaml.cs">
       <DependentUpon>TextLayerControl.xaml</DependentUpon>
     </Compile>

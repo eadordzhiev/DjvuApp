@@ -21,19 +21,12 @@ namespace DjvuApp.Pages
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            _navigationHelper.OnNavigatedTo(e);
-
             var version = Package.Current.Id.Version;
             versionTextBlock.Text = $@"Version {version.Major}.{version.Minor}.{version.Build}.{version.Revision}
 By Eldar Dordzhiev
 From Russia with love :)";
         }
-
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
-        {
-            _navigationHelper.OnNavigatedFrom(e);
-        }
-
+        
         private async void ContactMeButtonClickHandler(object sender, RoutedEventArgs e)
         {
             var recipient = new EmailRecipient("djvureaderwp@gmail.com", "Djvu Reader developer");

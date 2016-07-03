@@ -30,15 +30,11 @@ namespace DjvuApp.Pages
         
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            _navigationHelper.OnNavigatedFrom(e);
-
             ViewModel.OnNavigatedFrom(e);
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            _navigationHelper.OnNavigatedTo(e);
-
             _navigationParameter = e.Parameter;
             
             ViewModel.OnNavigatedTo(e);

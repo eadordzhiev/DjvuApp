@@ -334,7 +334,7 @@ namespace DjvuApp.ViewModel
             dialog.Commands.Add(new UICommand(buttonCaption));
             await dialog.ShowAsync();
 
-            if (_navigationService.CanGoBack())
+            if (_navigationService.CanGoBack)
             {
                 _navigationService.GoBack();
             }
