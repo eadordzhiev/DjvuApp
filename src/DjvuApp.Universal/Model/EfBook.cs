@@ -140,6 +140,8 @@ namespace DjvuApp.Model
 
             var bookFile = await StorageFile.GetFileFromPathAsync(BookPath);
             await bookFile.DeleteAsync();
+            var thumbnailFile = await StorageFile.GetFileFromPathAsync(ThumbnailPath);
+            await thumbnailFile.DeleteAsync();
         }
 
         public async Task SaveChangesAsync()
